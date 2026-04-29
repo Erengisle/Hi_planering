@@ -33,38 +33,54 @@
             margin-top: 20px; border-top: 1px solid #4a6278; padding-top: 20px;
             color: #e67e22; font-weight: bold;
         }
-        nav a.reexam-link:hover, nav a.reexam-link.active { color: #f39c12; }
+        nav a.reexam-link:hover, nav a.reexam-link.active { color: #f39c12; background: #2c3e50; }
         main { flex: 1; padding: 30px; overflow-y: auto; }
         .section { display: none; }
         .section.active { display: block; }
+        .section h1 { margin-bottom: 15px; color: #2c3e50; }
         .intro-text {
             line-height: 1.6; margin-bottom: 20px; background: white; padding: 20px;
             border-radius: 8px;
         }
+        .intro-text p + p { margin-top: 10px; }
         table {
             width: 100%; border-collapse: collapse; margin-top: 20px;
             background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px;
             overflow: hidden;
         }
-        th {
+        thead th {
             background: #2980b9; color: white; padding: 12px; text-align: left;
             font-weight: normal;
         }
-        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
-        tr:last-child td { border-bottom: none; }
-        tr:nth-child(even) td { background: #f8f8f8; }
-        h1 { margin-bottom: 15px; color: #2c3e50; }
+        tbody td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:nth-child(even) td { background: #f8f8f8; }
         .reexam-container {
             background: white; padding: 30px; border-radius: 8px; max-width: 600px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .reexam-container label { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
-        .reexam-container input[type="checkbox"] { width: 20px; height: 20px; }
+        .reexam-container label { display: flex; align-items: center; gap: 10px; margin: 20px 0; cursor: pointer; }
+        .reexam-container input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; }
         .reexam-container button {
             background: #2980b9; color: white; border: none; padding: 12px 24px;
-            font-size: 1em; border-radius: 4px; cursor: pointer;
+            font-size: 1em; border-radius: 4px; cursor: pointer; transition: background 0.2s;
         }
+        .reexam-container button:hover:not(:disabled) { background: #2471a3; }
         .reexam-container button:disabled { background: #95a5a6; cursor: not-allowed; }
+        .loading {
+            display: flex; align-items: center; gap: 12px; padding: 20px;
+            color: #7f8c8d; font-size: 1em;
+        }
+        .spinner {
+            width: 24px; height: 24px; border: 3px solid #ddd;
+            border-top-color: #2980b9; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error-msg {
+            background: #fdecea; border: 1px solid #e74c3c; color: #c0392b;
+            padding: 16px 20px; border-radius: 8px; line-height: 1.5;
+        }
         @media (max-width: 768px) {
             .container { flex-direction: column; }
             nav { width: 100%; max-height: 0; overflow: hidden; padding: 0; }
@@ -72,20 +88,21 @@
             .menu-toggle { display: block; }
             main { padding: 15px; }
             table { font-size: 0.85em; }
-            th, td { padding: 8px; }
+            thead th, tbody td { padding: 8px; }
         }
     </style>
 </head>
 <body>
     <header>
         <h1>📖 Historia våren 2026</h1>
-        <button class="menu-toggle" onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
+        <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
+                onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
     </header>
     <div class="container">
         <nav>
             <h2>Moment</h2>
             <ul id="menu"></ul>
-            <a href="#" data-section="reexam" class="reexam-link">Omprov</a>
+            <a href="#" data-section="reexam" class="reexam-link" id="reexam-link">Omprov</a>
         </nav>
         <main>
             <div id="intro" class="section active">
@@ -94,57 +111,87 @@
                     <p>Det här är planeringen för vårterminens moment i Historia. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
                     <p>Normalt läser vi sex moment, men i år har vi anpassat till fem för att ge mer tid åt varje område.</p>
                 </div>
+                <div id="load-status" class="loading">
+                    <div class="spinner"></div>
+                    <span>Hämtar planering…</span>
+                </div>
             </div>
-            <!-- Innehållssektioner genereras dynamiskt -->
+
+            <div id="reexam" class="section">
+                <h1>Omprov</h1>
+                <div class="reexam-container">
+                    <p><strong>Har du pratat med läraren om omprov?</strong></p>
+                    <label>
+                        <input type="checkbox" id="reexam-checkbox">
+                        Ja, jag har pratat med läraren och fått klartecken för omprov.
+                    </label>
+                    <button id="reexam-button" disabled
+                            onclick="window.location.href='https://script.google.com/macros/s/AKfycbzQ9bJkfGaGHQ4NLTvmVLqIRhE_-FykrklET4yMEtUbpLM2MxUy9wB9AkemcjrHDrku7w/exec'">
+                        Gå till omprov
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
 
     <script>
-        // Ditt Sheet-ID (från URL:en)
         const SHEET_ID = '1cVdaItarMaK2NVzBKZCy-CuTGAnyW5BL4tyHCcW3oII';
-        const GID = '0';  // Första fliken
+        const GID = '0';
         const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}`;
+        const TIMEOUT_MS = 10000;
 
         let data = [];
+        let timeoutId = null;
 
-        // Denna funktion anropas automatiskt av Google JSONP
         function handleData(response) {
+            clearTimeout(timeoutId);
+            hideLoadStatus();
+
             try {
                 const table = response.table;
                 if (!table || !table.rows || table.rows.length < 2) {
-                    console.warn('Ingen data i Sheet');
+                    showError('Kalkylbladet verkar tomt eller saknar rader.');
                     return;
                 }
 
                 data = [];
                 const rows = table.rows;
-                // Hoppa över rubrikraden (index 0)
                 for (let i = 1; i < rows.length; i++) {
                     const cells = rows[i].c;
-                    if (cells && cells.length >= 5) {
-                        data.push({
-                            moment: cells[0]?.v?.toString().trim() || '',
-                            vecka: cells[1]?.v?.toString().trim() || '',
-                            dag1: cells[2]?.v?.toString().trim() || '',
-                            dag2: cells[3]?.v?.toString().trim() || '',
-                            kommentar: cells[4]?.v?.toString().trim() || ''
-                        });
-                    }
+                    if (!cells || cells.length < 5) continue;
+                    const moment = cells[0]?.v?.toString().trim() || '';
+                    if (!moment) continue;
+                    data.push({
+                        moment,
+                        vecka:     cells[1]?.v?.toString().trim() || '',
+                        dag1:      cells[2]?.v?.toString().trim() || '',
+                        dag2:      cells[3]?.v?.toString().trim() || '',
+                        kommentar: cells[4]?.v?.toString().trim() || ''
+                    });
                 }
 
                 buildMenu();
                 buildSections();
 
-                // Omprov-checkbox
-                const reexamCheckbox = document.getElementById('reexam-checkbox');
-                if (reexamCheckbox) {
-                    reexamCheckbox.addEventListener('change', function() {
-                        document.getElementById('reexam-button').disabled = !this.checked;
-                    });
-                }
             } catch (error) {
                 console.error('Fel vid tolkning av data:', error);
+                showError('Det gick inte att tolka data från kalkylbladet.');
             }
+        }
+
+        function hideLoadStatus() {
+            const el = document.getElementById('load-status');
+            if (el) el.remove();
+        }
+
+        function showError(msg) {
+            hideLoadStatus();
+            const el = document.getElementById('intro');
+            if (!el) return;
+            const div = document.createElement('div');
+            div.className = 'error-msg';
+            div.textContent = 'Fel: ' + msg;
+            el.appendChild(div);
         }
 
         function buildMenu() {
@@ -158,43 +205,43 @@
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#';
-                a.dataset.section = moment.toLowerCase().replace(/\s+/g, '-');
+                a.dataset.section = slugify(moment);
                 a.textContent = moment;
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
                     showSection(a.dataset.section);
-                    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
-                    a.classList.add('active');
+                    setActiveLink(a);
                 });
                 li.appendChild(a);
                 menu.appendChild(li);
             });
 
-            const reexamLink = document.querySelector('.reexam-link');
+            const reexamLink = document.getElementById('reexam-link');
             if (reexamLink) {
-                reexamLink.addEventListener('click', (e) => {
+                reexamLink.onclick = (e) => {
                     e.preventDefault();
                     showSection('reexam');
-                    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
-                    reexamLink.classList.add('active');
-                });
+                    setActiveLink(reexamLink);
+                };
             }
+
+            document.getElementById('reexam-checkbox')?.addEventListener('change', function () {
+                document.getElementById('reexam-button').disabled = !this.checked;
+            });
         }
 
         function buildSections() {
             const main = document.querySelector('main');
             if (!main) return;
 
-            // Ta bort tidigare dynamiska sektioner
-            const oldSections = main.querySelectorAll('.section:not(#intro):not(#reexam)');
-            oldSections.forEach(s => s.remove());
+            main.querySelectorAll('.section:not(#intro):not(#reexam)').forEach(s => s.remove());
 
             const moments = [...new Set(data.map(row => row.moment))];
             moments.forEach(moment => {
                 if (moment === 'Omprov') return;
 
                 const section = document.createElement('div');
-                section.id = moment.toLowerCase().replace(/\s+/g, '-');
+                section.id = slugify(moment);
                 section.className = 'section';
 
                 const h1 = document.createElement('h1');
@@ -202,15 +249,32 @@
                 section.appendChild(h1);
 
                 const table = document.createElement('table');
-                table.innerHTML = `<tr><th>Vecka</th><th>Dag 1</th><th>Dag 2</th><th>Kommentar</th></tr>`;
-                const rows = data.filter(row => row.moment === moment);
-                rows.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${row.vecka}</td><td>${row.dag1}</td><td>${row.dag2}</td><td>${row.kommentar}</td>`;
-                    table.appendChild(tr);
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                ['Vecka', 'Dag 1', 'Dag 2', 'Kommentar'].forEach(text => {
+                    const th = document.createElement('th');
+                    th.textContent = text;
+                    headerRow.appendChild(th);
                 });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                data.filter(row => row.moment === moment).forEach(row => {
+                    const tr = document.createElement('tr');
+                    [row.vecka, row.dag1, row.dag2, row.kommentar].forEach(text => {
+                        const td = document.createElement('td');
+                        td.textContent = text;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
                 section.appendChild(table);
-                main.appendChild(section);
+
+                // Infoga före #reexam så ordningen bevaras
+                const reexam = document.getElementById('reexam');
+                main.insertBefore(section, reexam);
             });
         }
 
@@ -221,26 +285,27 @@
             if (window.innerWidth <= 768) document.querySelector('nav').classList.remove('open');
         }
 
-        // Ladda JSONP-skriptet dynamiskt
+        function setActiveLink(link) {
+            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        }
+
+        function slugify(str) {
+            return str.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        // Timeout om JSONP aldrig svarar
+        timeoutId = setTimeout(() => {
+            showError('Kalkylbladet svarar inte. Kontrollera att det är publikt och att Sheet-ID är korrekt.');
+        }, TIMEOUT_MS);
+
         const script = document.createElement('script');
         script.src = JSONP_URL;
+        script.onerror = () => {
+            clearTimeout(timeoutId);
+            showError('Kunde inte ansluta till Google Sheets. Kontrollera Sheet-ID och att kalkylbladet är publikt.');
+        };
         document.head.appendChild(script);
     </script>
-
-    <!-- Hårdkodad Omprov-sektion -->
-    <div id="reexam" class="section" style="display:none;">
-        <h1>Omprov</h1>
-        <div class="reexam-container">
-            <p><strong>Har du pratat med läraren om omprov?</strong></p>
-            <label>
-                <input type="checkbox" id="reexam-checkbox">
-                Ja, jag har pratat med läraren och fått klartecken för omprov.
-            </label>
-            <button id="reexam-button" disabled 
-                    onclick="window.location.href='https://script.google.com/macros/s/AKfycbzQ9bJkfGaGHQ4NLTvmVLqIRhE_-FykrklET4yMEtUbpLM2MxUy9wB9AkemcjrHDrku7w/exec'">
-                Gå till omprov
-            </button>
-        </div>
-    </div>
 </body>
 </html>
