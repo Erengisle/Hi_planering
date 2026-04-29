@@ -8,140 +8,67 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f9f9f9; }
         header {
-            background: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            background: #2c3e50; color: white; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
         }
-        header h1 { font-size: 1.5em; margin: 0; }
+        header h1 { font-size: 1.5em; }
         .menu-toggle {
-            display: none;
-            background: none;
-            border: 1px solid white;
-            color: white;
-            padding: 8px 16px;
-            font-size: 1em;
-            cursor: pointer;
-            border-radius: 4px;
+            display: none; background: none; border: 1px solid white; color: white;
+            padding: 8px 16px; font-size: 1em; cursor: pointer; border-radius: 4px;
         }
         .container { display: flex; min-height: 100vh; }
         nav {
-            width: 260px;
-            background: #34495e;
-            color: white;
-            padding: 20px 0;
-            flex-shrink: 0;
-            transition: all 0.3s;
+            width: 260px; background: #34495e; color: white; padding: 20px 0;
+            flex-shrink: 0; transition: all 0.3s;
         }
         nav h2 { padding: 0 20px; margin-bottom: 20px; color: #ecf0f1; }
         nav ul { list-style: none; }
         nav li { margin-bottom: 5px; }
         nav a {
-            display: block;
-            color: #bdc3c7;
-            text-decoration: none;
-            padding: 10px 20px;
+            display: block; color: #bdc3c7; text-decoration: none; padding: 10px 20px;
             transition: background 0.2s;
         }
         nav a:hover, nav a.active { background: #2c3e50; color: white; }
-        /* Stil för Omprov-länken */
         nav a.reexam-link {
-            margin-top: 20px;
-            border-top: 1px solid #4a6278;
-            padding-top: 20px;
-            color: #e67e22;
-            font-weight: bold;
+            margin-top: 20px; border-top: 1px solid #4a6278; padding-top: 20px;
+            color: #e67e22; font-weight: bold;
         }
-        nav a.reexam-link:hover, nav a.reexam-link.active {
-            background: #2c3e50;
-            color: #f39c12;
-        }
-        main {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
+        nav a.reexam-link:hover, nav a.reexam-link.active { color: #f39c12; }
+        main { flex: 1; padding: 30px; overflow-y: auto; }
         .section { display: none; }
         .section.active { display: block; }
-        .intro-text { line-height: 1.6; margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        .intro-text {
+            line-height: 1.6; margin-bottom: 20px; background: white; padding: 20px;
             border-radius: 8px;
+        }
+        table {
+            width: 100%; border-collapse: collapse; margin-top: 20px;
+            background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px;
             overflow: hidden;
         }
         th {
-            background: #2980b9;
-            color: white;
-            padding: 12px;
-            text-align: left;
+            background: #2980b9; color: white; padding: 12px; text-align: left;
             font-weight: normal;
         }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            vertical-align: top;
-        }
+        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; }
         tr:last-child td { border-bottom: none; }
         tr:nth-child(even) td { background: #f8f8f8; }
-        .comment { font-size: 0.9em; color: #555; margin-top: 10px; font-style: italic; background: white; padding: 10px; border-radius: 4px; }
         h1 { margin-bottom: 15px; color: #2c3e50; }
-
-        /* Stil för Omprov-sektionen */
         .reexam-container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 600px;
+            background: white; padding: 30px; border-radius: 8px; max-width: 600px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .reexam-container label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-            cursor: pointer;
-        }
-        .reexam-container input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-        }
+        .reexam-container label { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
+        .reexam-container input[type="checkbox"] { width: 20px; height: 20px; }
         .reexam-container button {
-            background: #2980b9;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1em;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
+            background: #2980b9; color: white; border: none; padding: 12px 24px;
+            font-size: 1em; border-radius: 4px; cursor: pointer;
         }
-        .reexam-container button:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-        }
-        .reexam-container button:not(:disabled):hover {
-            background: #1c6ea4;
-        }
-
-        /* Responsiv */
+        .reexam-container button:disabled { background: #95a5a6; cursor: not-allowed; }
         @media (max-width: 768px) {
             .container { flex-direction: column; }
-            nav {
-                width: 100%;
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease;
-                padding: 0;
-            }
+            nav { width: 100%; max-height: 0; overflow: hidden; padding: 0; }
             nav.open { max-height: 600px; padding: 20px 0; }
-            nav h2 { margin-bottom: 10px; }
             .menu-toggle { display: block; }
             main { padding: 15px; }
             table { font-size: 0.85em; }
@@ -157,161 +84,135 @@
     <div class="container">
         <nav>
             <h2>Moment</h2>
-            <ul>
-                <li><a href="#" data-section="ww1">1. Första världskriget</a></li>
-                <li><a href="#" data-section="interwar">2. Mellankrigstiden</a></li>
-                <li><a href="#" data-section="ww2">3. Andra världskriget</a></li>
-                <li><a href="#" data-section="europeAfter">4. Europa efter världskrigen</a></li>
-                <li><a href="#" data-section="worldAfter1">5. Världen efter världskrigen</a></li>
-            </ul>
+            <ul id="menu"></ul>
             <a href="#" data-section="reexam" class="reexam-link">Omprov</a>
         </nav>
         <main>
-            <!-- Introduktion -->
             <div id="intro" class="section active">
                 <h1>Välkommen!</h1>
                 <div class="intro-text">
-                    <p>Det här är planeringen för kursens fem moment i Historia. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter. Varje moment avslutas med ett prov (totalt fem examinationer).</p>
-                    <p>Normalt läser vi sex moment, men i år har vi anpassat till fem för att ge mer tid till varje område. Frågor? Prata med din lärare.</p>
+                    <p>Det här är planeringen för vårterminens moment i Historia. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
+                    <p>Normalt läser vi sex moment, men i år har vi anpassat till fem för att ge mer tid åt varje område.</p>
                 </div>
             </div>
-
-            <!-- 1. Första världskriget -->
-            <div id="ww1" class="section">
-                <h1>1. Första världskriget</h1>
-                <p>Sidor i boken: 361–377</p>
-                <table>
-                    <tr><th>Vecka</th><th>Onsdag</th><th>Torsdag</th><th>Kommentar</th></tr>
-                    <tr><td>34</td><td></td><td>Introduktion till kursen. Vad förväntas av dig som elev?</td><td>I boken: sid 361 - 377</td></tr>
-                    <tr><td>35</td><td>Läs dokumentet i pärmen "Sverige i förändring" och svara på frågorna. Se Classroom.</td><td>Vi går igenom svaren och tittar på svensk historia under 1700-talet.</td><td></td></tr>
-                    <tr><td>36</td><td>Vi läste om nationalism och imperialism</td><td>Läs utdraget ur "Enkel historia", sid 17 - 21. Titta på mind map "Första världskriget: bakgrund och utbrott". Sidor i boken: 361 - 366</td><td></td></tr>
-                    <tr><td>37</td><td>Påbörja övningen "Varför världskrig" (i pärmen) hemma.</td><td>Vi börjar med att gå igenom fråga 2, 3 och 4 till "Varför världskrig" och sedan "Vad hände i Sarajevo?"</td><td></td></tr>
-                    <tr><td>38</td><td>Programdag: ingen lektion.</td><td>Om kriget och "Potatisbrist och brödfusk".</td><td></td></tr>
-                    <tr><td>39</td><td>"Potatisbrist och brödfusk" + SAMBAND</td><td>Samband: ingen (utom Dante och Johannes och Kristers) kom till lektionen.</td><td></td></tr>
-                    <tr><td>40</td><td>Sambandsövning</td><td>Sambandsövning</td><td></td></tr>
-                    <tr><td>41</td><td>Tidslinje. Vi börjar på instuderingsuppgifterna.</td><td>Ni fick i uppgift att påbörja instuderingsuppgifterna som läxa. Ni får arbeta med dem hela lektionen.</td><td></td></tr>
-                    <tr><td>42</td><td>Arbeta med frågorna och kanske vi hinner gå igenom några frågor (eller alla?).</td><td>Programdag: ingen lektion.</td><td></td></tr>
-                    <tr><td>43</td><td>Frågestund: om man undrar över något kring området. Jag pratar lite om hur provet är utformat.</td><td><strong>Prov på Första världskriget.</strong></td><td></td></tr>
-                </table>
-            </div>
-
-            <!-- 2. Mellankrigstiden -->
-            <div id="interwar" class="section">
-                <h1>2. Mellankrigstiden</h1>
-                <p>Sidor i boken: 381–408 (vissa delar kan utgå, se kommentar). Pärmtexter finns för den som tycker boken är svår.</p>
-                <table>
-                    <tr><th>Vecka</th><th>Onsdag</th><th>Torsdag</th><th>Kommentar</th></tr>
-                    <tr><td>45</td><td>Mellankrigstiden. Introduktion. Sidorna 381 - 386 i boken + frågor.</td><td>Läs sid: 387 - 388 + frågor och sidorna i pärmen om Ryssland (först), sedan i boken, sid 388 -389.</td><td>I boken: sid 381 - 408. I pärmen finns text och frågor. På grund av tidsbrist tas vissa sidor om Sverige och Finland bort. Vecka 49 är lärare bortrest – då arbetar ni med tidslinjen och instuderingsfrågorna.</td></tr>
-                    <tr><td>46</td><td>Sid 387 - 389 + frågor.</td><td>Sid 390 - 398 + frågor.</td><td></td></tr>
-                    <tr><td>47</td><td>Sid 399 - 403 + frågor.</td><td>Sverige och Finland: 404 - 408 + frågor.</td><td></td></tr>
-                    <tr><td>48</td><td>Sambandsövning</td><td>Sambandsövning + tidslinje + påbörja instuderingsfrågorna.</td><td></td></tr>
-                    <tr><td>49</td><td>Tidslinje och instuderingsfrågor.</td><td>Klara med instuderingsfrågor</td><td>Lärare bortrest – självstudier.</td></tr>
-                    <tr><td>50</td><td><strong>Prov på mellankrigstiden</strong></td><td>Jullov!</td><td></td></tr>
-                </table>
-            </div>
-
-            <!-- 3. Andra världskriget -->
-            <div id="ww2" class="section">
-                <h1>3. Andra världskriget</h1>
-                <p>Sidor i boken: 413–431 + pärmmaterial</p>
-                <table>
-                    <tr><th>Vecka</th><th>Onsdag</th><th>Torsdag</th><th>Kommentar</th></tr>
-                    <tr><td>2</td><td></td><td>Vi läser i pärmen sid 29-30 och svarar på frågorna 1-4. I boken är det sidorna 413 - 419 och tillhörande frågor.</td><td>Planeringen kan ändras vid sjukdom etc., men provdatum ligger fast.</td></tr>
-                    <tr><td>3</td><td>LÄXA: I pärmen, läs sidorna 31-32 (+ frågor 5-11) och i boken sid 417-422 (med frågor)</td><td>LÄXA: i boken, sid 423 - 429, 430 - 431 och tillhörande frågor.</td><td></td></tr>
-                    <tr><td>4</td><td>I pärmen: "Källor till Förintelsen". Läs igenom texterna hemma.</td><td>I pärmen, "Motstånd mot nazismen"</td><td></td></tr>
-                    <tr><td>5</td><td>I pärmen: "Varför Förintelsen" och "Vägen mot Förintelsen"</td><td>I pärmen, "Sverige och Tyskland"</td><td></td></tr>
-                    <tr><td>6</td><td>Sambandsövning och tidslinje</td><td><strong>Prov</strong></td><td></td></tr>
-                </table>
-            </div>
-
-            <!-- 4. Europa efter världskrigen -->
-            <div id="europeAfter" class="section">
-                <h1>4. Europa efter världskrigen</h1>
-                <p>Sidor: 447–469. Övningar i pärm: Begrepp, Europa förändras, Tidslinje, Sambandsövning.</p>
-                <table>
-                    <tr><th>Vecka</th><th>Onsdag</th><th>Torsdag</th><th>Kommentar</th></tr>
-                    <tr><td>7</td><td>Introduktion: uppgift, plan och nästa provdatum</td><td>Läxa: sid 447 - 450 + frågor</td><td>Sidor i boken: 447 - 469. Uppgifter/övningar i pärmen: # Begrepp (hemsida med quiz) # Europa förändras # Tidslinje # Sambandsövning</td></tr>
-                    <tr><td>8</td><td>Boken: sid 454 - 455 och sedan en källövning: "Livet i DDR"</td><td>Fortsätta och avsluta "Livet i DDR"</td><td></td></tr>
-                    <tr><td>9</td><td colspan="2">SPORTLOV</td><td></td></tr>
-                    <tr><td>10</td><td>–</td><td>–</td><td></td></tr>
-                    <tr><td>11</td><td>NP i SvA!!!</td><td>Vi är på teater.</td><td></td></tr>
-                    <tr><td>12</td><td>(1.) Först: frågorna ni gjorde förra veckan, sid 459 - 464, sedan sid 465 - 469 + frågor. Sist: Tidslinje</td><td>Sambandsövning (vilka begrepp hör samman)</td><td></td></tr>
-                    <tr><td>13</td><td>Tidslinje, sambandsövning</td><td>Fortsätta med sambandsövning? Påbörja instuderingsfrågor.</td><td></td></tr>
-                    <tr><td>14</td><td>Gå igenom instuderingsfrågorna + repetition.</td><td><strong>Prov!</strong></td><td></td></tr>
-                </table>
-            </div>
-
-            <!-- 5. Världen efter världskrigen -->
-            <div id="worldAfter1" class="section">
-                <h1>5. Världen efter världskrigen</h1>
-                <p>Område: Kalla kriget, avkolonisering, Mellanöstern, Asien, 11/9, arabiska våren, terrorism. Sidor: 499–529 (se detaljer i tabellen).</p>
-                <table>
-                    <tr><th>Vecka</th><th>Onsdag</th><th>Torsdag</th><th>Kommentar</th></tr>
-                    <tr><td>15</td><td>Introduktion: Kalla kriget, Kubakrisen, Koreakriget</td><td>Vietnamkriget</td><td></td></tr>
-                    <tr><td>16</td><td>Vietnamkriget, sid 502-503, USA, sid 506 - 510</td><td>Läxa till idag: sid 504 + 506 - 510 (USA). Om vi hinner: Avkoloniseringen, sid 511 - 514</td><td></td></tr>
-                    <tr><td>17</td><td>Mellanöstern, sid 515 - 519</td><td>Asien, sid 520 - 522</td><td></td></tr>
-                    <tr><td>18</td><td>Latinamerika, sid 523 + Attacken mot tvillingtornen, sid 524 - 526 (NP, Ma B/C)</td><td>Den arabiska våren, sid 526 - 527</td><td></td></tr>
-                    <tr><td>19</td><td>Terrorismen, sid 528 - 529 + Mot ett modernare samhälle, sid 530 - 531</td><td></td><td></td></tr>
-                    <tr><td>20</td><td>"Ondskans axelmakter"</td><td>"Sputnik-moment"</td><td></td></tr>
-                    <tr><td>21</td><td>Sambandsövning</td><td>Tidslinje + instuderingsfrågor</td><td></td></tr>
-                    <tr><td>22</td><td>Instuderingsfrågor</td><td><strong>Prov (sista...)</strong></td><td></td></tr>
-                </table>
-            </div>
-
-            <!-- Omprov -->
-            <div id="reexam" class="section">
-                <h1>Omprov</h1>
-                <div class="reexam-container">
-                    <p><strong>Har du pratat med läraren om omprov?</strong></p>
-                    <label>
-                        <input type="checkbox" id="confirm-checkbox">
-                        Ja, jag har pratat med läraren och fått klartecken för omprov.
-                    </label>
-                    <button id="reexam-button" disabled onclick="window.location.href='https://script.google.com/macros/s/AKfycbzQ9bJkfGaGHQ4NLTvmVLqIRhE_-FykrklET4yMEtUbpLM2MxUy9wB9AkemcjrHDrku7w/exec'">
-                        Gå till omprov
-                    </button>
-                </div>
-            </div>
+            <!-- Innehållssektioner genereras dynamiskt -->
         </main>
     </div>
 
     <script>
-        // Fliknavigering
-        const navLinks = document.querySelectorAll('nav a');
-        const sections = document.querySelectorAll('.section');
-        const confirmCheckbox = document.getElementById('confirm-checkbox');
-        const reexamButton = document.getElementById('reexam-button');
+        const CSV_URL = 'DIN_CSV_URL';  // ← Ersätt med din CSV-länk
+        let data = [];
+        let sections = {};
+
+        async function loadData() {
+            const response = await fetch(https://docs.google.com/spreadsheets/d/1cVdaItarMaK2NVzBKZCy-CuTGAnyW5BL4tyHCcW3oII/edit?gid=0#gid=0);
+            const text = await response.text();
+            // Enkel CSV-parser (radbrytning \n, komma som separator)
+            const rows = text.split('\n').filter(row => row.trim() !== '');
+            if (rows.length < 2) return;
+            // Hoppa över rubrikraden
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i].split(',');
+                if (cols.length >= 5) {
+                    data.push({
+                        moment: cols[0].trim(),
+                        vecka: cols[1].trim(),
+                        dag1: cols[2].trim(),
+                        dag2: cols[3].trim(),
+                        kommentar: cols.slice(4).join(',').trim() // Ifall kommentaren innehöll komma
+                    });
+                }
+            }
+            buildMenu();
+            buildSections();
+            // Hantera Omprov separat med checkbox
+            document.getElementById('reexam-checkbox').addEventListener('change', function() {
+                document.getElementById('reexam-button').disabled = !this.checked;
+            });
+        }
+
+        function buildMenu() {
+            const menu = document.getElementById('menu');
+            const moments = [...new Set(data.map(row => row.moment))];
+            moments.forEach(moment => {
+                if (moment === 'Omprov') return; // Hanteras separat
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.dataset.section = moment.toLowerCase().replace(/\s+/g, '-');
+                a.textContent = moment;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(a.dataset.section);
+                    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                    a.classList.add('active');
+                });
+                li.appendChild(a);
+                menu.appendChild(li);
+            });
+            // Lägg till Omprov i menyn (via separat länk finns redan, men vi kan även styra den)
+            const reexamLink = document.querySelector('.reexam-link');
+            reexamLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('reexam');
+                document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                reexamLink.classList.add('active');
+            });
+        }
+
+        function buildSections() {
+            const main = document.querySelector('main');
+            const moments = [...new Set(data.map(row => row.moment))];
+            moments.forEach(moment => {
+                if (moment === 'Omprov') {
+                    // Omprov-sektionen finns redan hårdkodad, så vi hoppar över
+                    return;
+                }
+                const section = document.createElement('div');
+                section.id = moment.toLowerCase().replace(/\s+/g, '-');
+                section.className = 'section';
+                const h1 = document.createElement('h1');
+                h1.textContent = moment;
+                section.appendChild(h1);
+                
+                const table = document.createElement('table');
+                table.innerHTML = `<tr><th>Vecka</th><th>Dag 1</th><th>Dag 2</th><th>Kommentar</th></tr>`;
+                const rows = data.filter(row => row.moment === moment);
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${row.vecka}</td><td>${row.dag1}</td><td>${row.dag2}</td><td>${row.kommentar}</td>`;
+                    table.appendChild(tr);
+                });
+                section.appendChild(table);
+                main.appendChild(section);
+            });
+        }
 
         function showSection(id) {
-            sections.forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if (window.innerWidth <= 768) {
-                document.querySelector('nav').classList.remove('open');
-            }
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            if (window.innerWidth <= 768) document.querySelector('nav').classList.remove('open');
         }
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                const sectionId = link.getAttribute('data-section');
-                showSection(sectionId);
-            });
-        });
-
-        // Aktivera/avaktivera knapp baserat på checkbox
-        if (confirmCheckbox) {
-            confirmCheckbox.addEventListener('change', function() {
-                reexamButton.disabled = !this.checked;
-            });
-        }
-
-        // Ladda introduktion som standard
-        window.addEventListener('load', () => {
-            navLinks.forEach(l => l.classList.remove('active'));
-            showSection('intro');
-        });
+        // Initiera
+        loadData();
     </script>
+
+    <!-- Hårdkodad Omprov-sektion (den påverkas inte av CSV) -->
+    <div id="reexam" class="section" style="display:none;">
+        <h1>Omprov</h1>
+        <div class="reexam-container">
+            <p><strong>Har du pratat med läraren om omprov?</strong></p>
+            <label>
+                <input type="checkbox" id="reexam-checkbox">
+                Ja, jag har pratat med läraren och fått klartecken för omprov.
+            </label>
+            <button id="reexam-button" disabled 
+                    onclick="window.location.href='https://script.google.com/macros/s/AKfycbzQ9bJkfGaGHQ4NLTvmVLqIRhE_-FykrklET4yMEtUbpLM2MxUy9wB9AkemcjrHDrku7w/exec'">
+                Gå till omprov
+            </button>
+        </div>
+    </div>
 </body>
 </html>
