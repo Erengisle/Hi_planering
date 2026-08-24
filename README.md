@@ -26,10 +26,25 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
    `hi1b/nya-klassen/index.html` för en ny klass i ett befintligt ämne.
 4. Ändra i den nya filen:
    - `<title>` och rubriken i `<h1>` i headern
-   - introtexten under "Välkommen!"
    - `SHEET_ID` och `GID` längst ner i `<script>`-blocket
-5. Committa och dela **bara** länken till den nya mappen med rätt klass,
+5. Skriv välkomsttexten direkt i arket (se "Ändra välkomsttexten" nedan) –
+   du behöver alltså inte röra HTML-filen för det.
+6. Committa och dela **bara** länken till den nya mappen med rätt klass,
    t.ex. `https://<ditt-github-pages-namn>/hi1b/nya-klassen/`.
+
+## Ändra välkomsttexten
+
+Texten under "Välkommen!" hämtas från samma flik som planeringen. Lägg
+till en rad i arket med:
+- kolumnen **Moment** = `Info`
+- kolumnen **Kommentar** = välkomsttexten
+
+Vill du ha flera stycken, gör en radbrytning i cellen (Alt+Enter i Google
+Sheets) mellan varje stycke. Raden visas aldrig i menyn eller planeringen
+(precis som en rad med `Omprov` i Moment-kolumnen filtreras bort), utan
+blir bara till välkomsttexten. Saknas en `Info`-rad visas texten som
+redan står i `index.html`-filen (under `<div class="intro-text">`) som
+standard.
 
 ## Om integritet mellan kurser
 
