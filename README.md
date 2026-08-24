@@ -46,6 +46,26 @@ blir bara till välkomsttexten. Saknas en `Info`-rad visas texten som
 redan står i `index.html`-filen (under `<div class="intro-text">`) som
 standard.
 
+## Veckor som delas mellan två moment
+
+Sidan grupperar rader strikt efter texten i kolumnen **Moment**, inte
+efter vecka. Har du en vecka där ett moment avslutas och nästa moment
+börjar, skriv **två rader** med samma veckonummer men olika Moment –
+t.ex.:
+
+| Moment | Vecka | Onsdag | Torsdag | Kommentar |
+|---|---|---|---|---|
+| 1. Första världskriget | 41 | | | |
+| 2. Mellankrigstiden | 41 | Introduktion... | | |
+
+Första raden hamnar sist i "Första världskrigets" tabell, andra raden
+först i "Mellankrigstidens" tabell.
+
+En rad tas alltid med så länge kolumnen **Moment** är ifylld – även om
+Onsdag, Torsdag och Kommentar är helt tomma visas veckonumret ändå i
+tabellen. Du behöver alltså inte skriva någon anteckning bara för att
+få med en vecka.
+
 ## Om integritet mellan kurser
 
 Rotsidan listar medvetet länkar till alla klasser (bedömt okej eftersom
