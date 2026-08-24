@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planering</title>
+    <title>Historia våren 2026 – Planering</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f9f9f9; }
@@ -64,10 +64,6 @@
             background: #fdecea; border: 1px solid #e74c3c; color: #c0392b;
             padding: 16px 20px; border-radius: 8px; line-height: 1.5;
         }
-        .course-switcher {
-            background: #34495e; color: white; border: 1px solid #566a80;
-            padding: 6px 10px; border-radius: 4px; font-size: 0.9em;
-        }
         @media (max-width: 768px) {
             .container { flex-direction: column; }
             nav { width: 100%; max-height: 0; overflow: hidden; padding: 0; }
@@ -81,8 +77,7 @@
 </head>
 <body>
     <header>
-        <h1 id="header-title">Planering</h1>
-        <select id="course-switcher" class="course-switcher" aria-label="Byt kurs"></select>
+        <h1>📖 Historia våren 2026</h1>
         <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
                 onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
     </header>
@@ -94,7 +89,10 @@
         <main>
             <div id="intro" class="section active">
                 <h1>Välkommen!</h1>
-                <div id="intro-text" class="intro-text"></div>
+                <div class="intro-text">
+                    <p>Det här är planeringen för vårterminens moment i Historia. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
+                    <p>Normalt läser vi sex moment, men i år har vi anpassat till fem för att ge mer tid åt varje område.</p>
+                </div>
                 <div id="load-status" class="loading">
                     <div class="spinner"></div>
                     <span>Hämtar planering…</span>
@@ -104,51 +102,14 @@
         </main>
     </div>
 
-    <script src="courses.js"></script>
     <script>
+        const SHEET_ID = '1g0LdKubDtT8Uz5KfTuf0J8Z7jFUSS6uf63rvCravqCo';
+        const GID = '0';
+        const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}`;
         const TIMEOUT_MS = 10000;
-
-        const params = new URLSearchParams(window.location.search);
-        const requestedCourse = params.get('kurs');
-        const courseKey = (requestedCourse && COURSES[requestedCourse]) ? requestedCourse : DEFAULT_COURSE;
-        const course = COURSES[courseKey];
 
         let data = [];
         let timeoutId = null;
-
-        function setupCourseSwitcher() {
-            const switcher = document.getElementById('course-switcher');
-            if (!switcher) return;
-            Object.keys(COURSES).forEach(key => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = COURSES[key].label;
-                if (key === courseKey) option.selected = true;
-                switcher.appendChild(option);
-            });
-            switcher.addEventListener('change', () => {
-                const url = new URL(window.location.href);
-                url.searchParams.set('kurs', switcher.value);
-                window.location.href = url.toString();
-            });
-        }
-
-        function applyCourseInfo() {
-            document.title = course.pageTitle;
-            document.getElementById('header-title').textContent = course.headerTitle;
-            const introEl = document.getElementById('intro-text');
-            introEl.innerHTML = '';
-            course.intro.forEach(text => {
-                const p = document.createElement('p');
-                p.textContent = text;
-                introEl.appendChild(p);
-            });
-        }
-
-        setupCourseSwitcher();
-        applyCourseInfo();
-
-        const JSONP_URL = `https://docs.google.com/spreadsheets/d/${course.sheetId}/gviz/tq?tqx=responseHandler:handleData&gid=${course.gid}`;
 
         function handleData(response) {
             clearTimeout(timeoutId);
