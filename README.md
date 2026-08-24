@@ -5,12 +5,12 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 
 ## Struktur
 
-- `index.html` – Historia vårterminen 2026 (kursens sida ligger på repots rot).
+- `index.html` – landningssida på repots rot med en lista med länkar till
+  alla klassers planeringssidor.
 - `<ämne>/<klass>/index.html` – varje ämne får en egen toppmapp, och varje
   klass/kurskod inom ämnet en egen undermapp med en egen, självständig
-  kopia av sidan. Ingen kod eller konfiguration delas mellan sidor vid
-  körning, så en elev som har länken till sin klass inte kan se eller
-  navigera till en annan klass eller ett annat ämne via sajten.
+  kopia av sidan. Ingen kod eller konfiguration delas mellan klasssidorna
+  vid körning – bara landningssidan på roten länkar samlat till dem.
 - Just nu: `hi1b/naa24`, `hi1b/nab24`, `hi1b/ek26` – tre klasser i Historia 1b,
   varsitt Google Sheet.
 
@@ -33,9 +33,10 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 
 ## Om integritet mellan kurser
 
-Sajten själv avslöjar aldrig andra kursers länkar eller Sheet-ID:n – varje
-kurssida är fristående. Observera dock att steg 2 ovan (delning av arket)
+Rotsidan listar medvetet länkar till alla klasser (bedömt okej eftersom
+det bara rör schema/planering, inga betyg eller personuppgifter). Varje
+klasssida i sig är dock fristående och avslöjar inte andra klassers
+Sheet-ID i sin källkod. Observera att steg 2 ovan (delning av arket)
 gör kalkylarket läsbart för vem som helst med den direkta Sheet-länken,
-oavsett vilken sida som länkar dit. Det är en rimlig nivå för schema och
-planering, men lägg inte in känsliga uppgifter om enskilda elever i
-arken.
+oavsett vilken sida som länkar dit – lägg därför inte in känsliga
+uppgifter om enskilda elever i arken.
