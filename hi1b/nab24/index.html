@@ -123,21 +123,28 @@
                 }
 
                 data = [];
+                let introText = null;
                 const rows = table.rows;
                 for (let i = 0; i < rows.length; i++) {
                     const cells = rows[i].c;
                     if (!cells || cells.length < 5) continue;
                     const moment = cells[0]?.v?.toString().trim() || '';
                     if (!moment) continue;
+                    const kommentar = cells[4]?.v?.toString().trim() || '';
+                    if (moment.toLowerCase() === 'info') {
+                        introText = kommentar;
+                        continue;
+                    }
                     data.push({
                         moment,
-                        vecka:     cells[1]?.v?.toString().trim() || '',
-                        dag1:      cells[2]?.v?.toString().trim() || '',
-                        dag2:      cells[3]?.v?.toString().trim() || '',
-                        kommentar: cells[4]?.v?.toString().trim() || ''
+                        vecka: cells[1]?.v?.toString().trim() || '',
+                        dag1:  cells[2]?.v?.toString().trim() || '',
+                        dag2:  cells[3]?.v?.toString().trim() || '',
+                        kommentar
                     });
                 }
 
+                if (introText) applyIntroText(introText);
                 buildMenu();
                 buildSections();
 
@@ -145,6 +152,17 @@
                 console.error('Fel vid tolkning av data:', error);
                 showError('Det gick inte att tolka data från kalkylbladet.');
             }
+        }
+
+        function applyIntroText(text) {
+            const container = document.querySelector('.intro-text');
+            if (!container) return;
+            container.innerHTML = '';
+            text.split(/\n+/).map(line => line.trim()).filter(Boolean).forEach(line => {
+                const p = document.createElement('p');
+                p.textContent = line;
+                container.appendChild(p);
+            });
         }
 
         function hideLoadStatus() {
