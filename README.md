@@ -17,7 +17,9 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
-   `Moment, Vecka, Onsdag, Torsdag, Kommentar`. Kolumnerna läses efter
+   `Moment, Vecka, <dag 1>, <dag 2>, Kommentar` – de två mittersta
+   kolumnerna behöver inte heta Onsdag/Torsdag, det är bara de faktiska
+   mötesdagarna för just den klassen. Kolumnerna läses efter
    **position**, inte namn, så ordningen måste stämma exakt.
 2. Dela fliken/arket som **"Alla med länken kan visa"** – sidan hämtar
    data anonymt via Google Sheets gviz-API, vilket kräver att arket är
@@ -31,6 +33,10 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
    - Texten i `<h2>` i sidomenyn (t.ex. "Moment" eller "Vecka") – rent
      kosmetiskt, styr bara rubriken ovanför menyn, ingen kodlogik bryr
      sig om vad den säger
+   - De två dagkolumnernas rubriker i `buildSections()`-funktionen
+     (`['Vecka', '<dag 1>', '<dag 2>', 'Kommentar']`) – sätt dem till
+     klassens faktiska mötesdagar och tider, t.ex.
+     `'Måndag 12.15 - 13.20 (60 min)'`
 5. Skriv välkomsttexten direkt i arket (se "Ändra välkomsttexten" nedan) –
    du behöver alltså inte röra HTML-filen för det.
 6. Committa och dela **bara** länken till den nya mappen med rätt klass,
