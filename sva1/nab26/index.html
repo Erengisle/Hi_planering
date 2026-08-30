@@ -83,7 +83,7 @@
     </header>
     <div class="container">
         <nav>
-            <h2>Veckor</h2>
+            <h2>Vecka</h2>
             <ul id="menu"></ul>
         </nav>
         <main>
@@ -116,7 +116,7 @@
 
             try {
                 const table = response.table;
-                if (!table || !table.rows || table.rows.length < 1) {
+                if (!table || !table.rows || table.rows.length < 2) {
                     showError('Kalkylbladet verkar tomt eller saknar rader.');
                     return;
                 }
@@ -127,17 +127,18 @@
                 for (let i = 0; i < rows.length; i++) {
                     const cells = rows[i].c;
                     if (!cells) continue;
-                    const vecka = cells[0]?.v?.toString().trim() || '';
-                    if (!vecka) continue;
-                    const kommentar = cells[3]?.v?.toString().trim() || '';
-                    if (vecka.toLowerCase() === 'info') {
+                    const moment = cells[0]?.v?.toString().trim() || '';
+                    if (!moment) continue;
+                    const kommentar = cells[4]?.v?.toString().trim() || '';
+                    if (moment.toLowerCase() === 'info') {
                         introText = kommentar;
                         continue;
                     }
                     data.push({
-                        vecka,
-                        mandag: cells[1]?.v?.toString().trim() || '',
-                        fredag: cells[2]?.v?.toString().trim() || '',
+                        moment,
+                        vecka: cells[1]?.v?.toString().trim() || '',
+                        dag1:  cells[2]?.v?.toString().trim() || '',
+                        dag2:  cells[3]?.v?.toString().trim() || '',
                         kommentar
                     });
                 }
@@ -183,13 +184,14 @@
             if (!menu) return;
             menu.innerHTML = '';
 
-            const weeks = [...new Set(data.map(row => row.vecka))];
-            weeks.forEach(vecka => {
+            const moments = [...new Set(data.map(row => row.moment))];
+            moments.forEach(moment => {
+                if (moment === 'Omprov') return;
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#';
-                a.dataset.section = slugify('vecka-' + vecka);
-                a.textContent = 'Vecka ' + vecka;
+                a.dataset.section = slugify(moment);
+                a.textContent = moment;
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
                     showSection(a.dataset.section);
@@ -207,20 +209,22 @@
 
             main.querySelectorAll('.section:not(#intro)').forEach(s => s.remove());
 
-            const weeks = [...new Set(data.map(row => row.vecka))];
-            weeks.forEach(vecka => {
+            const moments = [...new Set(data.map(row => row.moment))];
+            moments.forEach(moment => {
+                if (moment === 'Omprov') return;
+
                 const section = document.createElement('div');
-                section.id = slugify('vecka-' + vecka);
+                section.id = slugify(moment);
                 section.className = 'section';
 
                 const h1 = document.createElement('h1');
-                h1.textContent = 'Vecka ' + vecka;
+                h1.textContent = moment;
                 section.appendChild(h1);
 
                 const table = document.createElement('table');
                 const thead = document.createElement('thead');
                 const headerRow = document.createElement('tr');
-                ['Måndag 12.15 - 13.20 (60 min)', 'Fredag 08.20 - 09.20 (60 min)', 'Kommentar'].forEach(text => {
+                ['Vecka', 'Onsdag', 'Torsdag', 'Kommentar'].forEach(text => {
                     const th = document.createElement('th');
                     th.textContent = text;
                     headerRow.appendChild(th);
@@ -229,9 +233,9 @@
                 table.appendChild(thead);
 
                 const tbody = document.createElement('tbody');
-                data.filter(row => row.vecka === vecka).forEach(row => {
+                data.filter(row => row.moment === moment).forEach(row => {
                     const tr = document.createElement('tr');
-                    [row.mandag, row.fredag, row.kommentar].forEach(text => {
+                    [row.vecka, row.dag1, row.dag2, row.kommentar].forEach(text => {
                         const td = document.createElement('td');
                         td.textContent = text;
                         tr.appendChild(td);
