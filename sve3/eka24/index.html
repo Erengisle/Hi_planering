@@ -16,11 +16,8 @@
             display: none; background: none; border: 1px solid white; color: white;
             padding: 8px 16px; font-size: 1em; cursor: pointer; border-radius: 4px;
         }
-        .back-link {
-            display: inline-block; color: #bdc3c7; text-decoration: none;
-            font-size: 0.85em; margin-bottom: 4px;
-        }
-        .back-link:hover { color: white; text-decoration: underline; }
+        .home-link { cursor: pointer; }
+        .home-link:hover { opacity: 0.85; }
         .container { display: flex; min-height: 100vh; }
         nav {
             width: 260px; background: #34495e; color: white; padding: 20px 0;
@@ -82,10 +79,7 @@
 </head>
 <body>
     <header>
-        <div>
-            <a href="../../" class="back-link">← Alla kurser</a>
-            <h1>📖 SVE3 – EKA24</h1>
-        </div>
+        <h1 class="home-link" onclick="goHome()">📖 SVE3 – EKA24</h1>
         <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
                 onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
     </header>
@@ -269,6 +263,11 @@
             const target = document.getElementById(id);
             if (target) target.classList.add('active');
             if (window.innerWidth <= 768) document.querySelector('nav').classList.remove('open');
+        }
+
+        function goHome() {
+            showSection('intro');
+            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
         }
 
         function setActiveLink(link) {
