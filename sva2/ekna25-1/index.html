@@ -32,7 +32,7 @@
         main { flex: 1; padding: 30px; overflow-y: auto; }
         .section { display: none; }
         .section.active { display: block; }
-        .section h1 { margin-bottom: 15px; color: #2c3e50; }
+        .section h1 { margin-bottom: 15px; color: #2c3e50; font-size: 2.2em; }
         .intro-text {
             line-height: 1.6; margin-bottom: 20px; background: white; padding: 20px;
             border-radius: 8px;
@@ -83,14 +83,14 @@
     </header>
     <div class="container">
         <nav>
-            <h2>Moment</h2>
+            <h2>Veckor</h2>
             <ul id="menu"></ul>
         </nav>
         <main>
             <div id="intro" class="section active">
                 <h1>Välkommen!</h1>
                 <div class="intro-text">
-                    <p>Det här är planeringen för terminens moment i SVA2. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
+                    <p>Det här är planeringen för terminens veckor i SVA2. Klicka på en vecka i menyn för att se innehåll och uppgifter.</p>
                 </div>
                 <div id="load-status" class="loading">
                     <div class="spinner"></div>
@@ -116,7 +116,7 @@
 
             try {
                 const table = response.table;
-                if (!table || !table.rows || table.rows.length < 2) {
+                if (!table || !table.rows || table.rows.length < 1) {
                     showError('Kalkylbladet verkar tomt eller saknar rader.');
                     return;
                 }
@@ -127,18 +127,17 @@
                 for (let i = 0; i < rows.length; i++) {
                     const cells = rows[i].c;
                     if (!cells) continue;
-                    const moment = cells[0]?.v?.toString().trim() || '';
-                    if (!moment) continue;
-                    const kommentar = cells[4]?.v?.toString().trim() || '';
-                    if (moment.toLowerCase() === 'info') {
+                    const vecka = cells[0]?.v?.toString().trim() || '';
+                    if (!vecka) continue;
+                    const kommentar = cells[3]?.v?.toString().trim() || '';
+                    if (vecka.toLowerCase() === 'info') {
                         introText = kommentar;
                         continue;
                     }
                     data.push({
-                        moment,
-                        vecka: cells[1]?.v?.toString().trim() || '',
-                        dag1:  cells[2]?.v?.toString().trim() || '',
-                        dag2:  cells[3]?.v?.toString().trim() || '',
+                        vecka,
+                        mandag: cells[1]?.v?.toString().trim() || '',
+                        fredag: cells[2]?.v?.toString().trim() || '',
                         kommentar
                     });
                 }
@@ -184,14 +183,13 @@
             if (!menu) return;
             menu.innerHTML = '';
 
-            const moments = [...new Set(data.map(row => row.moment))];
-            moments.forEach(moment => {
-                if (moment === 'Omprov') return;
+            const weeks = [...new Set(data.map(row => row.vecka))];
+            weeks.forEach(vecka => {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#';
-                a.dataset.section = slugify(moment);
-                a.textContent = moment;
+                a.dataset.section = slugify('vecka-' + vecka);
+                a.textContent = 'Vecka ' + vecka;
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
                     showSection(a.dataset.section);
@@ -209,22 +207,20 @@
 
             main.querySelectorAll('.section:not(#intro)').forEach(s => s.remove());
 
-            const moments = [...new Set(data.map(row => row.moment))];
-            moments.forEach(moment => {
-                if (moment === 'Omprov') return;
-
+            const weeks = [...new Set(data.map(row => row.vecka))];
+            weeks.forEach(vecka => {
                 const section = document.createElement('div');
-                section.id = slugify(moment);
+                section.id = slugify('vecka-' + vecka);
                 section.className = 'section';
 
                 const h1 = document.createElement('h1');
-                h1.textContent = moment;
+                h1.textContent = 'Vecka ' + vecka;
                 section.appendChild(h1);
 
                 const table = document.createElement('table');
                 const thead = document.createElement('thead');
                 const headerRow = document.createElement('tr');
-                ['Vecka', 'Onsdag', 'Torsdag', 'Kommentar'].forEach(text => {
+                ['Måndag 12.15 - 13.20 (60 min)', 'Fredag 08.20 - 09.20 (60 min)', 'Kommentar'].forEach(text => {
                     const th = document.createElement('th');
                     th.textContent = text;
                     headerRow.appendChild(th);
@@ -233,9 +229,9 @@
                 table.appendChild(thead);
 
                 const tbody = document.createElement('tbody');
-                data.filter(row => row.moment === moment).forEach(row => {
+                data.filter(row => row.vecka === vecka).forEach(row => {
                     const tr = document.createElement('tr');
-                    [row.vecka, row.dag1, row.dag2, row.kommentar].forEach(text => {
+                    [row.mandag, row.fredag, row.kommentar].forEach(text => {
                         const td = document.createElement('td');
                         td.textContent = text;
                         tr.appendChild(td);
