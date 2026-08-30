@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVA1 NAB26 – Planering</title>
+    <title>SVE3 EKA24 – Planering</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f9f9f9; }
@@ -77,7 +77,7 @@
 </head>
 <body>
     <header>
-        <h1>📖 SVA1 – NAB26</h1>
+        <h1>📖 SVE3 – EKA24</h1>
         <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
                 onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
     </header>
@@ -90,7 +90,7 @@
             <div id="intro" class="section active">
                 <h1>Välkommen!</h1>
                 <div class="intro-text">
-                    <p>Det här är planeringen för terminens moment i SVA1. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
+                    <p>Det här är planeringen för terminens moment i SVE3. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
                 </div>
                 <div id="load-status" class="loading">
                     <div class="spinner"></div>
@@ -102,8 +102,8 @@
     </div>
 
     <script>
-        const SHEET_ID = '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4';
-        const GID = '1145608673';
+        const SHEET_ID = '1uTTYzZlI9dgUSHRAjo3ehFg5dMPYG8BfgMCwbi0xNnw';
+        const GID = '2000781014';
         const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}&headers=1`;
         const TIMEOUT_MS = 10000;
 
