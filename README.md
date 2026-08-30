@@ -11,13 +11,16 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
   klass/kurskod inom ämnet en egen undermapp med en egen, självständig
   kopia av sidan. Ingen kod eller konfiguration delas mellan klasssidorna
   vid körning – bara landningssidan på roten länkar samlat till dem.
-- Just nu: `hi1b/naa24`, `hi1b/nab24`, `hi1b/ek26` – tre klasser i Historia 1b,
-  varsitt Google Sheet.
+- Just nu: `hi1b/naa24`, `hi1b/nab24`, `hi1b/ek26`, `sva1/nab26`,
+  `sva2/ekna25-1`, `sve3/eka24` – sex klasser, varsitt Google Sheet.
 
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
-   `Moment, Vecka, Onsdag, Torsdag, Kommentar`.
+   `Moment, Vecka, <dag 1>, <dag 2>, Kommentar` – de två mittersta
+   kolumnerna behöver inte heta Onsdag/Torsdag, det är bara de faktiska
+   mötesdagarna för just den klassen. Kolumnerna läses efter
+   **position**, inte namn, så ordningen måste stämma exakt.
 2. Dela fliken/arket som **"Alla med länken kan visa"** – sidan hämtar
    data anonymt via Google Sheets gviz-API, vilket kräver att arket är
    öppet för läsning för den som har länken.
@@ -27,6 +30,13 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 4. Ändra i den nya filen:
    - `<title>` och rubriken i `<h1>` i headern
    - `SHEET_ID` och `GID` längst ner i `<script>`-blocket
+   - Texten i `<h2>` i sidomenyn (t.ex. "Moment" eller "Vecka") – rent
+     kosmetiskt, styr bara rubriken ovanför menyn, ingen kodlogik bryr
+     sig om vad den säger
+   - De två dagkolumnernas rubriker i `buildSections()`-funktionen
+     (`['Vecka', '<dag 1>', '<dag 2>', 'Kommentar']`) – sätt dem till
+     klassens faktiska mötesdagar och tider, t.ex.
+     `'Måndag 12.15 - 13.20 (60 min)'`
 5. Skriv välkomsttexten direkt i arket (se "Ändra välkomsttexten" nedan) –
    du behöver alltså inte röra HTML-filen för det.
 6. Committa och dela **bara** länken till den nya mappen med rätt klass,
@@ -45,6 +55,10 @@ Sheets) mellan varje stycke. Raden visas aldrig i menyn eller planeringen
 blir bara till välkomsttexten. Saknas en `Info`-rad visas texten som
 redan står i `index.html`-filen (under `<div class="intro-text">`) som
 standard.
+
+Har din klass inga riktiga "moment" (t.ex. SVA/SVE-klasserna)? Skriv
+bara veckonumret i Moment-kolumnen också – då blir veckonumret rubrik
+för varje sida i menyn istället för ett temanamn.
 
 ## Veckor som delas mellan två moment
 
@@ -65,6 +79,9 @@ En rad tas alltid med så länge kolumnen **Moment** är ifylld – även om
 Onsdag, Torsdag och Kommentar är helt tomma visas veckonumret ändå i
 tabellen. Du behöver alltså inte skriva någon anteckning bara för att
 få med en vecka.
+
+En rad med `Omprov` i Moment-kolumnen filtreras alltid bort, precis som
+`Info`-raden.
 
 ## Om integritet mellan kurser
 
