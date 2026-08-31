@@ -132,8 +132,14 @@
                     const cells = rows[i].c;
                     if (!cells) continue;
                     const moment = cells[0]?.v?.toString().trim() || '';
-                    if (!moment) continue;
                     const kommentar = cells[4]?.v?.toString().trim() || '';
+                    if (!moment) {
+                        // Google Sheets nollar textceller (t.ex. "Info") i kolumner
+                        // den tolkat som numeriska. En tom Moment-cell med text i
+                        // Kommentar-kolumnen räknas därför också som välkomstraden.
+                        if (kommentar) introText = kommentar;
+                        continue;
+                    }
                     if (moment.toLowerCase() === 'info') {
                         introText = kommentar;
                         continue;
