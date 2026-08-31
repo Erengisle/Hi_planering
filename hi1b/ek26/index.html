@@ -16,6 +16,8 @@
             display: none; background: none; border: 1px solid white; color: white;
             padding: 8px 16px; font-size: 1em; cursor: pointer; border-radius: 4px;
         }
+        .home-link { cursor: pointer; }
+        .home-link:hover { opacity: 0.85; }
         .container { display: flex; min-height: 100vh; }
         nav {
             width: 260px; background: #34495e; color: white; padding: 20px 0;
@@ -77,7 +79,7 @@
 </head>
 <body>
     <header>
-        <h1>📖 Historia 1b – EK26</h1>
+        <h1 class="home-link" onclick="goHome()">📖 Historia 1b – EK26</h1>
         <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
                 onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
     </header>
@@ -89,7 +91,7 @@
         <main>
             <div id="intro" class="section active">
                 <h1>Välkommen!</h1>
-                <div class="intro-text">
+                <div class="intro-text" style="display:none">
                     <p>Det här är planeringen för vårterminens moment i Historia. Klicka på ett moment i menyn för att se veckoplanering, sidor och uppgifter.</p>
                     <p>Normalt läser vi sex moment, men i år har vi anpassat till fem för att ge mer tid åt varje område.</p>
                 </div>
@@ -114,6 +116,7 @@
         function handleData(response) {
             clearTimeout(timeoutId);
             hideLoadStatus();
+            revealIntroText();
 
             try {
                 const table = response.table;
@@ -170,8 +173,14 @@
             if (el) el.remove();
         }
 
+        function revealIntroText() {
+            const el = document.querySelector('.intro-text');
+            if (el) el.style.display = '';
+        }
+
         function showError(msg) {
             hideLoadStatus();
+            revealIntroText();
             const el = document.getElementById('intro');
             if (!el) return;
             const div = document.createElement('div');
@@ -255,6 +264,11 @@
             const target = document.getElementById(id);
             if (target) target.classList.add('active');
             if (window.innerWidth <= 768) document.querySelector('nav').classList.remove('open');
+        }
+
+        function goHome() {
+            showSection('intro');
+            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
         }
 
         function setActiveLink(link) {
