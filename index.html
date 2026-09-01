@@ -4,57 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planering – kursval</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif; background: #f9f9f9;
-            display: flex; justify-content: center;
+            margin: 0; background: #F7F4EE; color: #0F1B2D;
+            font-family: 'Space Grotesk', sans-serif; -webkit-font-smoothing: antialiased;
         }
-        header {
-            background: #2c3e50; color: white; padding: 20px;
-            text-align: center;
+        a { color: #2355A0; text-decoration: none; }
+        a:hover { color: #D4880A; text-decoration: underline; }
+
+        .site-header {
+            display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;
+            padding: 16px 24px; background: #FFFFFF; border-bottom: 1px solid #DDD8D0;
+            position: sticky; top: 0; z-index: 20;
         }
-        main { max-width: 480px; width: 100%; padding: 30px 20px; }
-        h2 { color: #2c3e50; margin: 24px 0 12px; }
-        h2:first-child { margin-top: 0; }
-        .course-list { list-style: none; }
-        .course-list li { margin-bottom: 12px; }
-        .course-list a {
-            display: block; background: white; color: #2c3e50; text-decoration: none;
-            padding: 16px 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            font-size: 1.05em; transition: background 0.15s;
+        .subject-link {
+            font-family: 'Spectral', serif; font-size: 21px; font-weight: 600; letter-spacing: -0.01em;
+            color: #0F1B2D;
         }
-        .course-list a:hover { background: #eef3f7; }
+        .subject-link:hover { color: #D4880A; text-decoration: none; }
+        .meta-group { display: flex; align-items: center; gap: 12px; }
+        .header-meta { font-size: 13px; color: #96A3B0; }
+        .btn {
+            font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: #556070;
+            background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 4px; padding: 8px 14px;
+            cursor: pointer; min-height: 36px; display: inline-flex; align-items: center;
+            transition: border-color 150ms ease, color 150ms ease; text-decoration: none;
+        }
+        .btn:hover { border-color: #D4880A; color: #D4880A; text-decoration: none; }
+
+        main {
+            max-width: 760px; margin: 0 auto; padding: 48px 24px 96px;
+        }
+        .kicker {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em;
+            text-transform: uppercase; color: #96A3B0; margin: 0 0 12px;
+        }
+        h1 {
+            font-family: 'Spectral', serif; font-size: 38px; line-height: 1.1; font-weight: 600;
+            letter-spacing: -0.02em; margin: 0 0 14px;
+        }
+        .lead { font-size: 16px; line-height: 1.6; color: #556070; margin: 0 0 48px; max-width: 56ch; }
+
+        .subject-section { margin-bottom: 32px; }
+        .subject-section .section-head {
+            display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px;
+        }
+        .subject-section h2 { font-family: 'Spectral', serif; font-size: 19px; font-weight: 600; margin: 0; }
+        .subject-section .line { flex: 1 1 auto; height: 1px; background: #DDD8D0; }
+        .subject-section .count {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #96A3B0; white-space: nowrap;
+        }
+        .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px;
+        }
+        .class-card {
+            text-align: left; font-family: 'Space Grotesk', sans-serif; background: #FFFFFF;
+            border: 1px solid #DDD8D0; border-radius: 8px; box-shadow: 0 2px 8px rgba(15,27,45,0.06);
+            padding: 18px 20px; min-height: 44px; display: flex; flex-direction: column; gap: 5px;
+            transition: border-color 150ms ease; color: inherit;
+        }
+        .class-card:hover { border-color: #D4880A; text-decoration: none; }
+        .class-card .code {
+            font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700;
+            letter-spacing: 0.02em; color: #0F1B2D;
+        }
+        .class-card .days { font-size: 13px; color: #556070; }
     </style>
 </head>
 <body>
-    <div>
-        <header>
-            <h1>📖 Planering – kursval</h1>
-        </header>
-        <main>
-            <h2>Historia 1b</h2>
-            <ul class="course-list">
-                <li><a href="hi1b/naa24/">NAA24</a></li>
-                <li><a href="hi1b/nab24/">NAB24</a></li>
-                <li><a href="hi1b/ek26/">EK26</a></li>
-            </ul>
+    <header class="site-header">
+        <a class="subject-link" href="index.html">Planering</a>
+        <div class="meta-group">
+            <span class="header-meta">6 klasser · uppdateras löpande</span>
+            <a class="btn" href="index.html">Alla kurser</a>
+        </div>
+    </header>
 
-            <h2>SVA1</h2>
-            <ul class="course-list">
-                <li><a href="sva1/nab26/">NAB26</a></li>
-            </ul>
+    <main>
+        <p class="kicker">Läsåret 2025/26</p>
+        <h1>Planering — välj din klass</h1>
+        <p class="lead">Här ligger veckoplaneringen för mina kurser. Den uppdateras löpande under terminen — sidan hämtar alltid senaste versionen.</p>
 
-            <h2>SVA2</h2>
-            <ul class="course-list">
-                <li><a href="sva2/ekna25-1/">EKNA25:1</a></li>
-            </ul>
+        <section class="subject-section">
+            <div class="section-head">
+                <h2>Historia 1b</h2>
+                <span class="line"></span>
+                <span class="count">3 klasser</span>
+            </div>
+            <div class="card-grid">
+                <a class="class-card" href="hi1b/naa24/">
+                    <span class="code">NAA24</span>
+                    <span class="days">Onsdag · Torsdag</span>
+                </a>
+                <a class="class-card" href="hi1b/nab24/">
+                    <span class="code">NAB24</span>
+                    <span class="days">Onsdag · Torsdag</span>
+                </a>
+                <a class="class-card" href="hi1b/ek26/">
+                    <span class="code">EK26</span>
+                    <span class="days">Onsdag · Torsdag</span>
+                </a>
+            </div>
+        </section>
 
-            <h2>SVE3</h2>
-            <ul class="course-list">
-                <li><a href="sve3/eka24/">EKA24</a></li>
-            </ul>
-        </main>
-    </div>
+        <section class="subject-section">
+            <div class="section-head">
+                <h2>Svenska som andraspråk 1</h2>
+                <span class="line"></span>
+                <span class="count">1 klass</span>
+            </div>
+            <div class="card-grid">
+                <a class="class-card" href="sva1/nab26/">
+                    <span class="code">NAB26</span>
+                    <span class="days">Måndag · Fredag</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="subject-section">
+            <div class="section-head">
+                <h2>Svenska som andraspråk 2</h2>
+                <span class="line"></span>
+                <span class="count">1 klass</span>
+            </div>
+            <div class="card-grid">
+                <a class="class-card" href="sva2/ekna25-1/">
+                    <span class="code">EKNA25:1</span>
+                    <span class="days">Måndag · Fredag</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="subject-section">
+            <div class="section-head">
+                <h2>Svenska 3</h2>
+                <span class="line"></span>
+                <span class="count">1 klass</span>
+            </div>
+            <div class="card-grid">
+                <a class="class-card" href="sve3/eka24/">
+                    <span class="code">EKA24</span>
+                    <span class="days">Onsdag · Fredag</span>
+                </a>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
