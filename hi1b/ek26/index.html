@@ -154,7 +154,7 @@
             <span class="course-code">EK26</span>
         </div>
         <div class="meta-group">
-            <span class="header-meta">Onsdag · Torsdag</span>
+            <span class="header-meta">Tisdag · Onsdag</span>
             <button type="button" class="btn menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Meny</button>
         </div>
     </header>
@@ -188,8 +188,8 @@
         const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}&headers=1`;
         const TIMEOUT_MS = 10000;
         const UNIT_LABEL = 'Moment';
-        const DAY1_LABEL = 'Onsdag';
-        const DAY2_LABEL = 'Torsdag';
+        const DAY1_LABEL = 'Tisdag';
+        const DAY2_LABEL = 'Onsdag';
 
         let data = [];
         let timeoutId = null;
