@@ -4,102 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SVA2 EKNA25:1 – Planering</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f9f9f9; }
-        header {
-            background: #2c3e50; color: white; padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; background: #F7F4EE; color: #0F1B2D;
+            font-family: 'Space Grotesk', sans-serif; -webkit-font-smoothing: antialiased;
         }
-        header h1 { font-size: 1.5em; }
-        .menu-toggle {
-            display: none; background: none; border: 1px solid white; color: white;
-            padding: 8px 16px; font-size: 1em; cursor: pointer; border-radius: 4px;
-        }
-        .home-link { cursor: pointer; }
-        .home-link:hover { opacity: 0.85; }
-        .container { display: flex; min-height: 100vh; }
-        nav {
-            width: 260px; background: #34495e; color: white; padding: 20px 0;
-            flex-shrink: 0; transition: all 0.3s;
-        }
-        nav h2 { padding: 0 20px; margin-bottom: 20px; color: #ecf0f1; }
-        nav ul { list-style: none; }
-        nav li { margin-bottom: 5px; }
-        nav a {
-            display: block; color: #bdc3c7; text-decoration: none; padding: 10px 20px;
-            transition: background 0.2s;
-        }
-        nav a:hover, nav a.active { background: #2c3e50; color: white; }
-        main { flex: 1; padding: 30px; overflow-y: auto; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .section h1 { margin-bottom: 15px; color: #2c3e50; font-size: 2.2em; }
-        .intro-text {
-            line-height: 1.6; margin-bottom: 20px; background: white; padding: 20px;
-            border-radius: 8px;
-        }
-        .intro-text p + p { margin-top: 10px; }
-        table {
-            width: 100%; border-collapse: collapse; margin-top: 20px;
-            background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px;
-            overflow: hidden;
-        }
-        thead th {
-            background: #2980b9; color: white; padding: 12px; text-align: left;
-            font-weight: normal;
-        }
-        tbody td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: top; white-space: pre-line; }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:nth-child(even) td { background: #f8f8f8; }
-        .loading {
-            display: flex; align-items: center; gap: 12px; padding: 20px;
-            color: #7f8c8d; font-size: 1em;
-        }
-        .spinner {
-            width: 24px; height: 24px; border: 3px solid #ddd;
-            border-top-color: #2980b9; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+        a { color: #2355A0; text-decoration: none; }
+        a:hover { color: #D4880A; text-decoration: underline; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .error-msg {
-            background: #fdecea; border: 1px solid #e74c3c; color: #c0392b;
-            padding: 16px 20px; border-radius: 8px; line-height: 1.5;
+
+        .site-header {
+            display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;
+            padding: 16px 24px; background: #FFFFFF; border-bottom: 1px solid #DDD8D0;
+            position: sticky; top: 0; z-index: 20;
         }
+        .site-header .title-group { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+        .subject-link {
+            font-family: 'Spectral', serif; font-size: 21px; font-weight: 600; letter-spacing: -0.01em;
+            color: #0F1B2D; cursor: pointer; background: none; border: none; padding: 0; font: inherit;
+        }
+        .subject-link:hover { color: #D4880A; text-decoration: none; }
+        .course-code {
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+            letter-spacing: 0.04em; color: #D4880A;
+        }
+        .meta-group { display: flex; align-items: center; gap: 12px; }
+        .header-meta { font-size: 13px; color: #96A3B0; }
+        .btn {
+            font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: #556070;
+            background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 4px; padding: 8px 14px;
+            cursor: pointer; min-height: 36px; display: inline-flex; align-items: center;
+            transition: border-color 150ms ease, color 150ms ease; text-decoration: none;
+        }
+        .btn:hover { border-color: #D4880A; color: #D4880A; text-decoration: none; }
+        .menu-toggle { display: none; }
+
+        .course-layout { display: flex; flex-wrap: wrap; align-items: flex-start; max-width: 1360px; margin: 0 auto; }
+
+        .sidebar { flex: 1 1 260px; min-width: 250px; max-width: 320px; padding: 24px 16px 40px; position: sticky; top: 69px; }
+        .sidebar .label {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+            text-transform: uppercase; color: #96A3B0; margin: 0 0 12px; padding-left: 12px;
+        }
+        .moment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+        .moment-item button {
+            display: flex; gap: 11px; align-items: baseline; text-align: left; width: 100%;
+            font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; line-height: 1.4;
+            background: transparent; border: none; border-left: 3px solid transparent;
+            border-radius: 0 6px 6px 0; padding: 12px; cursor: pointer; min-height: 44px;
+            color: #556070; font-weight: 400; transition: background 150ms ease;
+        }
+        .moment-item button:hover { background: #EFEBE3; }
+        .moment-item button.active { background: #F1EADC; border-left-color: #D4880A; color: #0F1B2D; font-weight: 600; }
+        .moment-item .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #96A3B0; }
+        .moment-item button.active .num { color: #D4880A; }
+        .sidebar .stats {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.6; color: #96A3B0;
+            margin: 20px 0 0; padding: 14px 12px 0; border-top: 1px solid #DDD8D0;
+        }
+
+        .content { flex: 999 1 540px; min-width: 300px; padding: 28px 24px 96px; animation: fadeIn 200ms ease-out; }
+        .loading-row { display: flex; align-items: center; gap: 14px; padding: 24px 0; color: #96A3B0; font-size: 15px; }
+        .spinner {
+            width: 22px; height: 22px; border: 3px solid #DDD8D0; border-top-color: #D4880A;
+            border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; flex-shrink: 0;
+        }
+        .error-card {
+            background: #FFFFFF; border: 1px solid #DDD8D0; border-left: 3px solid #B52020;
+            border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 24px;
+        }
+        .error-card p { font-size: 14px; line-height: 1.6; color: #556070; margin: 0; }
+
+        .view { display: none; }
+        .view.active { display: block; }
+        .kicker {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em;
+            text-transform: uppercase; color: #D4880A; margin: 0 0 10px;
+        }
+        .view h1 {
+            font-family: 'Spectral', serif; font-size: 32px; line-height: 1.15; font-weight: 600;
+            letter-spacing: -0.02em; margin: 0 0 14px;
+        }
+        .intro-text {
+            font-size: 15.5px; line-height: 1.65; color: #556070; max-width: 64ch; margin: 0 0 8px;
+            white-space: pre-line;
+        }
+        .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; }
+        .chip {
+            font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #FFFFFF;
+            border: 1px solid #DDD8D0; border-radius: 4px; padding: 6px 10px; color: #556070;
+        }
+
+        .week-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+        .week-card {
+            background: #FFFFFF; border: 1px solid #DDD8D0; border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(15,27,45,0.06); overflow: hidden;
+        }
+        .week-card.prov { border-color: #EBD3A0; }
+        .week-card .top { display: flex; flex-wrap: wrap; }
+        .week-num-col { flex: 0 0 auto; width: 74px; padding: 16px 0 16px 18px; }
+        .week-num-col .num { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; line-height: 1; color: #96A3B0; }
+        .week-card.prov .week-num-col .num { color: #D4880A; }
+        .week-num-col .kind {
+            font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #96A3B0; margin: 4px 0 0;
+        }
+        .week-card.prov .week-num-col .kind { color: #D4880A; }
+        .day-grid {
+            flex: 1 1 300px; min-width: 200px; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px;
+            background: #EFEBE3; border-left: 1px solid #EFEBE3;
+        }
+        .day-cell { padding: 16px 18px; background: #FFFFFF; }
+        .day-cell .day-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #96A3B0; margin: 0 0 6px;
+        }
+        .day-cell .day-text { font-size: 14px; line-height: 1.6; color: #0F1B2D; margin: 0; white-space: pre-line; }
+        .day-cell .day-text.empty { color: #96A3B0; }
+        .day-cell .day-text.prov { font-weight: 600; }
+        .week-note { display: flex; gap: 12px; padding: 12px 18px; background: #FBF8F2; border-top: 1px solid #EFEBE3; }
+        .week-note .obs-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #D4880A; flex: 0 0 auto; padding-top: 3px;
+        }
+        .week-note p { font-size: 13.5px; line-height: 1.6; color: #556070; margin: 0; white-space: pre-line; }
+        .footnote { font-size: 12.5px; line-height: 1.6; color: #96A3B0; margin: 28px 0 0; max-width: 60ch; }
+
         @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            nav { width: 100%; max-height: 0; overflow: hidden; padding: 0; }
-            nav.open { max-height: 600px; padding: 20px 0; }
-            .menu-toggle { display: block; }
-            main { padding: 15px; }
-            table { font-size: 0.85em; }
-            thead th, tbody td { padding: 8px; }
+            .course-layout { flex-direction: column; }
+            .menu-toggle { display: inline-flex; }
+            .sidebar {
+                position: static; width: 100%; max-width: none; padding: 0 16px;
+                max-height: 0; overflow: hidden; transition: max-height 200ms ease;
+            }
+            .sidebar.open { max-height: 2000px; padding: 16px; }
+            .content { padding: 24px 16px 64px; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1 class="home-link" onclick="goHome()">📖 SVA2 – EKNA25:1</h1>
-        <button class="menu-toggle" aria-label="Öppna eller stäng menyn"
-                onclick="document.querySelector('nav').classList.toggle('open')">☰ Meny</button>
+    <header class="site-header">
+        <div class="title-group">
+            <button type="button" class="subject-link" onclick="goWelcome()">Svenska som andraspråk 2</button>
+            <span class="course-code">EKNA25:1</span>
+        </div>
+        <div class="meta-group">
+            <span class="header-meta">Måndag · Fredag</span>
+            <button type="button" class="btn menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Meny</button>
+        </div>
     </header>
-    <div class="container">
-        <nav>
-            <h2>Vecka</h2>
-            <ul id="menu"></ul>
+
+    <div class="course-layout">
+        <nav class="sidebar">
+            <p class="label">Vecka</p>
+            <ul class="moment-list" id="menu"></ul>
+            <p class="stats" id="stats"></p>
         </nav>
-        <main>
-            <div id="intro" class="section active">
-                <h1>Välkommen!</h1>
-                <div class="intro-text" style="display:none">
-                    <p>Det här är planeringen för terminens veckor i SVA2. Klicka på en vecka i menyn för att se innehåll och uppgifter.</p>
-                </div>
-                <div id="load-status" class="loading">
-                    <div class="spinner"></div>
-                    <span>Hämtar planering…</span>
-                </div>
+
+        <main class="content">
+            <div id="load-status" class="loading-row">
+                <span class="spinner"></span>
+                <span>Hämtar planering…</span>
             </div>
 
+            <div id="welcome" class="view active">
+                <p class="kicker">Läsåret 2025/26</p>
+                <h1>Välkommen!</h1>
+                <p class="intro-text" id="welcome-text">Det här är planeringen för terminens veckor i SVA2. Klicka på en vecka i menyn för att se innehåll och uppgifter.</p>
+            </div>
+
+            <div id="sections"></div>
         </main>
     </div>
 
@@ -108,6 +187,9 @@
         const GID = '1866411600';
         const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}&headers=1`;
         const TIMEOUT_MS = 10000;
+        const UNIT_LABEL = 'Vecka';
+        const DAY1_LABEL = 'Måndag 10.00 - 11.00 (60 min)';
+        const DAY2_LABEL = 'Fredag 12.10 - 13.15 (65 min)';
 
         let data = [];
         let timeoutId = null;
@@ -115,11 +197,10 @@
         function handleData(response) {
             clearTimeout(timeoutId);
             hideLoadStatus();
-            revealIntroText();
 
             try {
                 const table = response.table;
-                if (!table || !table.rows || table.rows.length < 2) {
+                if (!table || !table.rows || table.rows.length < 1) {
                     showError('Kalkylbladet verkar tomt eller saknar rader.');
                     return;
                 }
@@ -143,6 +224,7 @@
                         introText = kommentar;
                         continue;
                     }
+                    if (moment.toLowerCase() === 'omprov') continue;
                     data.push({
                         moment,
                         vecka: cells[1]?.v?.toString().trim() || '',
@@ -152,7 +234,7 @@
                     });
                 }
 
-                if (introText) applyIntroText(introText);
+                if (introText) applyWelcomeText(introText);
                 buildMenu();
                 buildSections();
 
@@ -162,15 +244,8 @@
             }
         }
 
-        function applyIntroText(text) {
-            const container = document.querySelector('.intro-text');
-            if (!container) return;
-            container.innerHTML = '';
-            text.split(/\n+/).map(line => line.trim()).filter(Boolean).forEach(line => {
-                const p = document.createElement('p');
-                p.textContent = line;
-                container.appendChild(p);
-            });
+        function applyWelcomeText(text) {
+            document.getElementById('welcome-text').textContent = text;
         }
 
         function hideLoadStatus() {
@@ -178,20 +253,31 @@
             if (el) el.remove();
         }
 
-        function revealIntroText() {
-            const el = document.querySelector('.intro-text');
-            if (el) el.style.display = '';
-        }
-
         function showError(msg) {
             hideLoadStatus();
-            revealIntroText();
-            const el = document.getElementById('intro');
-            if (!el) return;
+            const welcome = document.getElementById('welcome');
+            if (!welcome) return;
             const div = document.createElement('div');
-            div.className = 'error-msg';
-            div.textContent = 'Fel: ' + msg;
-            el.appendChild(div);
+            div.className = 'error-card';
+            const p = document.createElement('p');
+            p.textContent = 'Fel: ' + msg;
+            div.appendChild(p);
+            welcome.appendChild(div);
+        }
+
+        function leadNum(name) {
+            const m = /^\s*(\d+)\s*[.)\-–:]?\s+/.exec(name);
+            return m ? m[1] : null;
+        }
+        function stripNum(name) {
+            const stripped = name.replace(/^\s*\d+\s*[.)\-–:]?\s+/, '').trim();
+            return stripped || name.trim();
+        }
+        function isProv(text) {
+            return /prov/i.test(text || '');
+        }
+        function slugify(str) {
+            return str.toLowerCase().replace(/[^a-z0-9åäö]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
         }
 
         function buildMenu() {
@@ -199,93 +285,186 @@
             if (!menu) return;
             menu.innerHTML = '';
 
-            const moments = [...new Set(data.map(row => row.moment))];
-            moments.forEach(moment => {
-                if (moment === 'Omprov') return;
+            const momentNames = [];
+            data.forEach(row => { if (!momentNames.includes(row.moment)) momentNames.push(row.moment); });
+
+            momentNames.forEach((name, i) => {
                 const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = '#';
-                a.dataset.section = slugify(moment);
-                a.textContent = moment;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showSection(a.dataset.section);
-                    setActiveLink(a);
+                li.className = 'moment-item';
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                const slug = slugify(name) + '-' + i;
+                btn.dataset.section = slug;
+
+                const numSpan = document.createElement('span');
+                numSpan.className = 'num';
+                const titleSpan = document.createElement('span');
+
+                if (UNIT_LABEL === 'Vecka') {
+                    numSpan.textContent = String(i + 1).padStart(2, '0');
+                    titleSpan.textContent = 'Vecka ' + name;
+                } else {
+                    const own = leadNum(name);
+                    numSpan.textContent = (own != null ? own : String(i + 1)).padStart(2, '0');
+                    titleSpan.textContent = stripNum(name);
+                }
+
+                btn.appendChild(numSpan);
+                btn.appendChild(titleSpan);
+                btn.addEventListener('click', () => {
+                    showSection(slug);
+                    setActiveNav(btn);
                 });
-                li.appendChild(a);
+                li.appendChild(btn);
                 menu.appendChild(li);
             });
 
+            const weekCount = data.length;
+            const stats = document.getElementById('stats');
+            if (stats) {
+                stats.textContent = momentNames.length + (momentNames.length === 1 ? ' ' + (UNIT_LABEL === 'Vecka' ? 'vecka' : 'moment') : ' ' + (UNIT_LABEL === 'Vecka' ? 'veckor' : 'moment'))
+                    + (UNIT_LABEL === 'Vecka' ? '' : ' · ' + weekCount + (weekCount === 1 ? ' vecka' : ' veckor'));
+            }
         }
 
         function buildSections() {
-            const main = document.querySelector('main');
-            if (!main) return;
+            const container = document.getElementById('sections');
+            if (!container) return;
+            container.innerHTML = '';
 
-            main.querySelectorAll('.section:not(#intro)').forEach(s => s.remove());
+            const momentNames = [];
+            data.forEach(row => { if (!momentNames.includes(row.moment)) momentNames.push(row.moment); });
 
-            const moments = [...new Set(data.map(row => row.moment))];
-            moments.forEach(moment => {
-                if (moment === 'Omprov') return;
+            momentNames.forEach((name, i) => {
+                const rows = data.filter(row => row.moment === name);
+                const slug = slugify(name) + '-' + i;
 
-                const section = document.createElement('div');
-                section.id = slugify(moment);
-                section.className = 'section';
+                const view = document.createElement('div');
+                view.className = 'view';
+                view.id = slug;
 
+                const kicker = document.createElement('p');
+                kicker.className = 'kicker';
                 const h1 = document.createElement('h1');
-                h1.textContent = moment;
-                section.appendChild(h1);
 
-                const table = document.createElement('table');
-                const thead = document.createElement('thead');
-                const headerRow = document.createElement('tr');
-                ['Vecka', 'Måndag 10.00 - 11.00 (60 min)', 'Fredag 12.10 - 13.15 (65 min)', 'Kommentar'].forEach(text => {
-                    const th = document.createElement('th');
-                    th.textContent = text;
-                    headerRow.appendChild(th);
-                });
-                thead.appendChild(headerRow);
-                table.appendChild(thead);
+                if (UNIT_LABEL === 'Vecka') {
+                    kicker.textContent = 'Vecka';
+                    h1.textContent = 'Vecka ' + name;
+                } else {
+                    const own = leadNum(name);
+                    kicker.textContent = own != null ? ('Moment ' + own) : ('Moment ' + (i + 1) + ' av ' + momentNames.length);
+                    h1.textContent = stripNum(name);
+                }
+                view.appendChild(kicker);
+                view.appendChild(h1);
 
-                const tbody = document.createElement('tbody');
-                data.filter(row => row.moment === moment).forEach(row => {
-                    const tr = document.createElement('tr');
-                    [row.vecka, row.dag1, row.dag2, row.kommentar].forEach(text => {
-                        const td = document.createElement('td');
-                        td.textContent = text;
-                        tr.appendChild(td);
+                if (UNIT_LABEL === 'Moment') {
+                    const nums = rows.map(r => parseInt(r.vecka, 10)).filter(n => !isNaN(n));
+                    if (nums.length) {
+                        const chipRow = document.createElement('div');
+                        chipRow.className = 'chip-row';
+                        const span1 = document.createElement('span');
+                        span1.className = 'chip';
+                        span1.textContent = 'v.' + Math.min.apply(null, nums) + '–' + Math.max.apply(null, nums);
+                        const span2 = document.createElement('span');
+                        span2.className = 'chip';
+                        span2.textContent = rows.length + (rows.length === 1 ? ' vecka' : ' veckor');
+                        chipRow.appendChild(span1);
+                        chipRow.appendChild(span2);
+                        view.appendChild(chipRow);
+                    }
+                }
+
+                const list = document.createElement('ul');
+                list.className = 'week-list';
+                list.style.marginTop = UNIT_LABEL === 'Moment' ? '0' : '24px';
+
+                rows.forEach(row => {
+                    const prov = isProv(row.dag1) || isProv(row.dag2);
+                    const li = document.createElement('li');
+                    const card = document.createElement('article');
+                    card.className = 'week-card' + (prov ? ' prov' : '');
+
+                    const top = document.createElement('div');
+                    top.className = 'top';
+
+                    const numCol = document.createElement('div');
+                    numCol.className = 'week-num-col';
+                    const numEl = document.createElement('span');
+                    numEl.className = 'num';
+                    numEl.textContent = row.vecka || '–';
+                    const kindEl = document.createElement('p');
+                    kindEl.className = 'kind';
+                    kindEl.textContent = prov ? 'Prov' : 'Vecka';
+                    numCol.appendChild(numEl);
+                    numCol.appendChild(kindEl);
+
+                    const dayGrid = document.createElement('div');
+                    dayGrid.className = 'day-grid';
+                    [[DAY1_LABEL, row.dag1], [DAY2_LABEL, row.dag2]].forEach(([label, text]) => {
+                        const cell = document.createElement('div');
+                        cell.className = 'day-cell';
+                        const labelEl = document.createElement('p');
+                        labelEl.className = 'day-label';
+                        labelEl.textContent = label;
+                        const textEl = document.createElement('p');
+                        const hasText = !!text;
+                        textEl.className = 'day-text' + (!hasText ? ' empty' : '') + (hasText && isProv(text) ? ' prov' : '');
+                        textEl.textContent = hasText ? text : '—';
+                        cell.appendChild(labelEl);
+                        cell.appendChild(textEl);
+                        dayGrid.appendChild(cell);
                     });
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                section.appendChild(table);
 
-                main.appendChild(section);
+                    top.appendChild(numCol);
+                    top.appendChild(dayGrid);
+                    card.appendChild(top);
+
+                    if (row.kommentar) {
+                        const note = document.createElement('div');
+                        note.className = 'week-note';
+                        const obsLabel = document.createElement('span');
+                        obsLabel.className = 'obs-label';
+                        obsLabel.textContent = 'Obs';
+                        const noteText = document.createElement('p');
+                        noteText.textContent = row.kommentar;
+                        note.appendChild(obsLabel);
+                        note.appendChild(noteText);
+                        card.appendChild(note);
+                    }
+
+                    li.appendChild(card);
+                    list.appendChild(li);
+                });
+
+                view.appendChild(list);
+
+                const footnote = document.createElement('p');
+                footnote.className = 'footnote';
+                footnote.textContent = 'Planeringen kan ändras vid sjukdom eller liknande — provdatum ligger fast.';
+                view.appendChild(footnote);
+
+                container.appendChild(view);
             });
         }
 
         function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById(id);
             if (target) target.classList.add('active');
-            if (window.innerWidth <= 768) document.querySelector('nav').classList.remove('open');
+            if (window.innerWidth <= 768) document.querySelector('.sidebar').classList.remove('open');
         }
 
-        function goHome() {
-            showSection('intro');
-            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+        function setActiveNav(link) {
+            document.querySelectorAll('.moment-item button').forEach(b => b.classList.remove('active'));
+            if (link) link.classList.add('active');
         }
 
-        function setActiveLink(link) {
-            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+        function goWelcome() {
+            showSection('welcome');
+            setActiveNav(null);
         }
 
-        function slugify(str) {
-            return str.toLowerCase().replace(/\s+/g, '-');
-        }
-
-        // Timeout om JSONP aldrig svarar
         timeoutId = setTimeout(() => {
             showError('Kalkylbladet svarar inte. Kontrollera att det är publikt och att Sheet-ID är korrekt.');
         }, TIMEOUT_MS);
