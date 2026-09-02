@@ -14,6 +14,21 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 - Just nu: `hi1b/naa24`, `hi1b/nab24`, `hi1b/ek26`, `sva1/nab26`,
   `sva2/ekna25-1`, `sve3/eka24` – sex klasser, varsitt Google Sheet.
 
+## Länkar till klassernas sidor
+
+Kurssidorna länkar inte längre till varandra eller till rotsidan (se
+"Om integritet mellan kurser" nedan), så här är en samlad lista för eget
+bruk:
+
+| Kurs | Klass | URL |
+|---|---|---|
+| Historia 1b | NAA24 | https://erengisle.github.io/Hi_planering/hi1b/naa24/ |
+| Historia 1b | NAB24 | https://erengisle.github.io/Hi_planering/hi1b/nab24/ |
+| Historia 1b | EK26 | https://erengisle.github.io/Hi_planering/hi1b/ek26/ |
+| Svenska som andraspråk 1 | NAB26 | https://erengisle.github.io/Hi_planering/sva1/nab26/ |
+| Svenska som andraspråk 2 | EKNA25:1 | https://erengisle.github.io/Hi_planering/sva2/ekna25-1/ |
+| Svenska 3 | EKA24 | https://erengisle.github.io/Hi_planering/sve3/eka24/ |
+
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
