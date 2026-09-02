@@ -71,9 +71,11 @@ blir bara till välkomsttexten. Saknas en `Info`-rad visas texten som
 redan står i `index.html`-filen (under `<div class="intro-text">`) som
 standard.
 
-Har din klass inga riktiga "moment" (t.ex. SVA/SVE-klasserna)? Skriv
-bara veckonumret i Moment-kolumnen också – då blir veckonumret rubrik
-för varje sida i menyn istället för ett temanamn.
+Har en klass inga riktiga "moment"? Skriv bara veckonumret i
+Moment-kolumnen också – då blir veckonumret rubrik för varje sida i
+menyn istället för ett temanamn. (`UNIT_LABEL` i `<script>`-blocket
+styr detta – sätt den till `'Vecka'` istället för `'Moment'` för en
+sådan klass. Just nu använder alla sex klasser `'Moment'`.)
 
 ## Veckor som delas mellan två moment
 
