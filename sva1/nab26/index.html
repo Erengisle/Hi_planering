@@ -309,6 +309,7 @@
 
                 if (UNIT_LABEL === 'Vecka' || isPureNumber(name)) {
                     numSpan.textContent = String(i + 1).padStart(2, '0');
+                    numSpan.style.visibility = 'hidden';
                     titleSpan.textContent = 'Vecka ' + name;
                 } else {
                     const own = leadNum(name);
