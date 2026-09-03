@@ -211,12 +211,15 @@
                 for (let i = 0; i < rows.length; i++) {
                     const cells = rows[i].c;
                     if (!cells) continue;
-                    const moment = cells[0]?.v?.toString().trim() || '';
+                    let moment = cells[0]?.v?.toString().trim() || '';
+                    const vecka = cells[1]?.v?.toString().trim() || '';
                     const kommentar = cells[4]?.v?.toString().trim() || '';
-                    if (!moment) {
+                    if (!moment && !vecka) {
                         // Google Sheets nollar textceller (t.ex. "Info") i kolumner
-                        // den tolkat som numeriska. En tom Moment-cell med text i
-                        // Kommentar-kolumnen räknas därför också som välkomstraden.
+                        // den tolkat som numeriska. En rad helt utan Moment och Vecka
+                        // men med text i Kommentar-kolumnen räknas därför som
+                        // välkomstraden – till skillnad från en vanlig vecka utan
+                        // tema, som alltid har ett veckonummer.
                         if (kommentar) introText = kommentar;
                         continue;
                     }
@@ -225,9 +228,10 @@
                         continue;
                     }
                     if (moment.toLowerCase() === 'omprov') continue;
+                    if (!moment) moment = vecka;
                     data.push({
                         moment,
-                        vecka: cells[1]?.v?.toString().trim() || '',
+                        vecka,
                         dag1:  cells[2]?.v?.toString().trim() || '',
                         dag2:  cells[3]?.v?.toString().trim() || '',
                         kommentar
