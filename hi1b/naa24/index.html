@@ -276,6 +276,9 @@
         function isProv(text) {
             return /prov/i.test(text || '');
         }
+        function isPureNumber(str) {
+            return /^\d+$/.test(str.trim());
+        }
         function slugify(str) {
             return str.toLowerCase().replace(/[^a-z0-9åäö]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
         }
@@ -300,7 +303,7 @@
                 numSpan.className = 'num';
                 const titleSpan = document.createElement('span');
 
-                if (UNIT_LABEL === 'Vecka') {
+                if (UNIT_LABEL === 'Vecka' || isPureNumber(name)) {
                     numSpan.textContent = String(i + 1).padStart(2, '0');
                     titleSpan.textContent = 'Vecka ' + name;
                 } else {
@@ -347,7 +350,7 @@
                 kicker.className = 'kicker';
                 const h1 = document.createElement('h1');
 
-                if (UNIT_LABEL === 'Vecka') {
+                if (UNIT_LABEL === 'Vecka' || isPureNumber(name)) {
                     kicker.textContent = 'Vecka';
                     h1.textContent = 'Vecka ' + name;
                 } else {
@@ -358,7 +361,7 @@
                 view.appendChild(kicker);
                 view.appendChild(h1);
 
-                if (UNIT_LABEL === 'Moment') {
+                if (UNIT_LABEL === 'Moment' && !isPureNumber(name)) {
                     const nums = rows.map(r => parseInt(r.vecka, 10)).filter(n => !isNaN(n));
                     if (nums.length) {
                         const chipRow = document.createElement('div');
@@ -377,7 +380,7 @@
 
                 const list = document.createElement('ul');
                 list.className = 'week-list';
-                list.style.marginTop = UNIT_LABEL === 'Moment' ? '0' : '24px';
+                list.style.marginTop = (UNIT_LABEL === 'Moment' && !isPureNumber(name)) ? '0' : '24px';
 
                 rows.forEach(row => {
                     const prov = isProv(row.dag1) || isProv(row.dag2);
