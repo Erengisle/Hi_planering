@@ -35,7 +35,10 @@ bruk:
    `Moment, Vecka, <dag 1>, <dag 2>, Kommentar` – de två mittersta
    kolumnerna behöver inte heta Onsdag/Torsdag, det är bara de faktiska
    mötesdagarna för just den klassen. Kolumnerna läses efter
-   **position**, inte namn, så ordningen måste stämma exakt.
+   **position**, inte namn, så ordningen måste stämma exakt. Sidan
+   visar sista kolumnens text under etiketten **"Läxa"** i varje
+   veckokort, oavsett vad kolumnen faktiskt heter i arket (döp den
+   gärna till "Läxa" i arket också, för din egen skull).
 2. Dela fliken/arket som **"Alla med länken kan visa"** – sidan hämtar
    data anonymt via Google Sheets gviz-API, vilket kräver att arket är
    öppet för läsning för den som har länken.
