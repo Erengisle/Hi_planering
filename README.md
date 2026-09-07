@@ -32,13 +32,12 @@ bruk:
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
-   `Moment, Vecka, <dag 1>, <dag 2>, Kommentar` – de två mittersta
-   kolumnerna behöver inte heta Onsdag/Torsdag, det är bara de faktiska
-   mötesdagarna för just den klassen. Kolumnerna läses efter
+   `Moment, Vecka, <dag 1>, Läxa <dag 1>, <dag 2>, Läxa <dag 2>` – de
+   två dagkolumnerna behöver inte heta Onsdag/Torsdag, det är bara de
+   faktiska mötesdagarna för just den klassen. Kolumnerna läses efter
    **position**, inte namn, så ordningen måste stämma exakt. Sidan
-   visar sista kolumnens text under etiketten **"Läxa"** i varje
-   veckokort, oavsett vad kolumnen faktiskt heter i arket (döp den
-   gärna till "Läxa" i arket också, för din egen skull).
+   visar respektive läxkolumns text under etiketten **"Läxa"** direkt
+   i den dagens ruta i veckokortet, bara om cellen har innehåll.
 2. Dela fliken/arket som **"Alla med länken kan visa"** – sidan hämtar
    data anonymt via Google Sheets gviz-API, vilket kräver att arket är
    öppet för läsning för den som har länken.
@@ -51,10 +50,9 @@ bruk:
    - Texten i `<h2>` i sidomenyn (t.ex. "Moment" eller "Vecka") – rent
      kosmetiskt, styr bara rubriken ovanför menyn, ingen kodlogik bryr
      sig om vad den säger
-   - De två dagkolumnernas rubriker i `buildSections()`-funktionen
-     (`['Vecka', '<dag 1>', '<dag 2>', 'Kommentar']`) – sätt dem till
-     klassens faktiska mötesdagar och tider, t.ex.
-     `'Måndag 12.15 - 13.20 (60 min)'`
+   - De två dagkolumnernas rubriker, `DAY1_LABEL` och `DAY2_LABEL`
+     längst ner i `<script>`-blocket – sätt dem till klassens faktiska
+     mötesdagar och tider, t.ex. `'Måndag 12.15 - 13.20 (60 min)'`
 5. Skriv välkomsttexten direkt i arket (se "Ändra välkomsttexten" nedan) –
    du behöver alltså inte röra HTML-filen för det.
 6. Committa och dela **bara** länken till den nya mappen med rätt klass,
@@ -65,7 +63,7 @@ bruk:
 Texten under "Välkommen!" hämtas från samma flik som planeringen. Lägg
 till en rad i arket med:
 - kolumnen **Moment** = `Info`
-- kolumnen **Kommentar** = välkomsttexten
+- **sista kolumnen** (Läxa dag 2) = välkomsttexten
 
 Vill du ha flera stycken, gör en radbrytning i cellen (Alt+Enter i Google
 Sheets) mellan varje stycke. Raden visas aldrig i menyn eller planeringen
@@ -87,18 +85,18 @@ efter vecka. Har du en vecka där ett moment avslutas och nästa moment
 börjar, skriv **två rader** med samma veckonummer men olika Moment –
 t.ex.:
 
-| Moment | Vecka | Onsdag | Torsdag | Kommentar |
-|---|---|---|---|---|
-| 1. Första världskriget | 41 | | | |
-| 2. Mellankrigstiden | 41 | Introduktion... | | |
+| Moment | Vecka | Onsdag | Läxa (Onsdag) | Torsdag | Läxa (Torsdag) |
+|---|---|---|---|---|---|
+| 1. Första världskriget | 41 | | | | |
+| 2. Mellankrigstiden | 41 | Introduktion... | | | |
 
 Första raden hamnar sist i "Första världskrigets" tabell, andra raden
 först i "Mellankrigstidens" tabell.
 
 En rad tas alltid med så länge kolumnen **Moment** är ifylld – även om
-Onsdag, Torsdag och Kommentar är helt tomma visas veckonumret ändå i
-tabellen. Du behöver alltså inte skriva någon anteckning bara för att
-få med en vecka.
+alla övriga kolumner är helt tomma visas veckonumret ändå i tabellen.
+Du behöver alltså inte skriva någon anteckning bara för att få med en
+vecka.
 
 En rad med `Omprov` i Moment-kolumnen filtreras alltid bort, precis som
 `Info`-raden.

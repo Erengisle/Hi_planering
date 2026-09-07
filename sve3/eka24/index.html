@@ -127,12 +127,12 @@
         .day-cell .day-text { font-size: 14px; line-height: 1.6; color: #0F1B2D; margin: 0; white-space: pre-line; }
         .day-cell .day-text.empty { color: #96A3B0; }
         .day-cell .day-text.prov { font-weight: 600; }
-        .week-note { display: flex; gap: 12px; padding: 12px 18px; background: #FBF8F2; border-top: 1px solid #EFEBE3; }
-        .week-note .obs-label {
+        .day-hw { display: flex; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #EFEBE3; }
+        .day-hw .hw-label {
             font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
-            text-transform: uppercase; color: #D4880A; flex: 0 0 auto; padding-top: 3px;
+            text-transform: uppercase; color: #D4880A; flex: 0 0 auto; padding-top: 2px;
         }
-        .week-note p { font-size: 13.5px; line-height: 1.6; color: #556070; margin: 0; white-space: pre-line; }
+        .day-hw p { font-size: 13px; line-height: 1.55; color: #556070; margin: 0; white-space: pre-line; }
         .footnote { font-size: 12.5px; line-height: 1.6; color: #96A3B0; margin: 28px 0 0; max-width: 60ch; }
 
         @media (max-width: 768px) {
@@ -213,18 +213,21 @@
                     if (!cells) continue;
                     let moment = cells[0]?.v?.toString().trim() || '';
                     const vecka = cells[1]?.v?.toString().trim() || '';
-                    const kommentar = cells[4]?.v?.toString().trim() || '';
+                    const dag1  = cells[2]?.v?.toString().trim() || '';
+                    const laxa1 = cells[3]?.v?.toString().trim() || '';
+                    const dag2  = cells[4]?.v?.toString().trim() || '';
+                    const laxa2 = cells[5]?.v?.toString().trim() || '';
                     if (!moment && !vecka) {
                         // Google Sheets nollar textceller (t.ex. "Info") i kolumner
                         // den tolkat som numeriska. En rad helt utan Moment och Vecka
-                        // men med text i Kommentar-kolumnen räknas därför som
+                        // men med text i sista kolumnen (läxa dag 2) räknas därför som
                         // välkomstraden – till skillnad från en vanlig vecka utan
                         // tema, som alltid har ett veckonummer.
-                        if (kommentar) introText = kommentar;
+                        if (laxa2) introText = laxa2;
                         continue;
                     }
                     if (moment.toLowerCase() === 'info') {
-                        introText = kommentar;
+                        introText = laxa2;
                         continue;
                     }
                     if (moment.toLowerCase() === 'omprov') continue;
@@ -232,9 +235,10 @@
                     data.push({
                         moment,
                         vecka,
-                        dag1:  cells[2]?.v?.toString().trim() || '',
-                        dag2:  cells[3]?.v?.toString().trim() || '',
-                        kommentar
+                        dag1,
+                        laxa1,
+                        dag2,
+                        laxa2
                     });
                 }
 
@@ -409,7 +413,7 @@
 
                     const dayGrid = document.createElement('div');
                     dayGrid.className = 'day-grid';
-                    [[DAY1_LABEL, row.dag1], [DAY2_LABEL, row.dag2]].forEach(([label, text]) => {
+                    [[DAY1_LABEL, row.dag1, row.laxa1], [DAY2_LABEL, row.dag2, row.laxa2]].forEach(([label, text, laxa]) => {
                         const cell = document.createElement('div');
                         cell.className = 'day-cell';
                         const labelEl = document.createElement('p');
@@ -421,25 +425,24 @@
                         textEl.textContent = hasText ? text : '—';
                         cell.appendChild(labelEl);
                         cell.appendChild(textEl);
+                        if (laxa) {
+                            const hw = document.createElement('div');
+                            hw.className = 'day-hw';
+                            const hwLabel = document.createElement('span');
+                            hwLabel.className = 'hw-label';
+                            hwLabel.textContent = 'Läxa';
+                            const hwText = document.createElement('p');
+                            hwText.textContent = laxa;
+                            hw.appendChild(hwLabel);
+                            hw.appendChild(hwText);
+                            cell.appendChild(hw);
+                        }
                         dayGrid.appendChild(cell);
                     });
 
                     top.appendChild(numCol);
                     top.appendChild(dayGrid);
                     card.appendChild(top);
-
-                    if (row.kommentar) {
-                        const note = document.createElement('div');
-                        note.className = 'week-note';
-                        const obsLabel = document.createElement('span');
-                        obsLabel.className = 'obs-label';
-                        obsLabel.textContent = 'Läxa';
-                        const noteText = document.createElement('p');
-                        noteText.textContent = row.kommentar;
-                        note.appendChild(obsLabel);
-                        note.appendChild(noteText);
-                        card.appendChild(note);
-                    }
 
                     li.appendChild(card);
                     list.appendChild(li);
