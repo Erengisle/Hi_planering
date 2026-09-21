@@ -96,10 +96,27 @@ först i "Mellankrigstidens" tabell.
 En rad tas alltid med så länge kolumnen **Moment** är ifylld – även om
 alla övriga kolumner är helt tomma visas veckonumret ändå i tabellen.
 Du behöver alltså inte skriva någon anteckning bara för att få med en
-vecka.
+vecka. **Undantag:** är raden helt tom (varken dag- eller läxtext) och
+veckonumret även förekommer på en rad under ett *annat* moment (som i
+exemplet ovan), tolkas den som en ren gränsmarkering och visas inte
+som ett eget kort – den bidrar ändå till momentets veckospann i
+chipsen ("v.X–Y").
 
 En rad med `Omprov` i Moment-kolumnen filtreras alltid bort, precis som
 `Info`-raden.
+
+## Sammanfattning per moment
+
+Vill du skriva en sammanfattning för ett helt moment (t.ex. vilka
+sidor eller områden som gäller inför ett prov), lägg till en rad med
+**Moment** ifyllt men **Vecka lämnad tom**:
+
+| Moment | Vecka | Onsdag | Läxa (Onsdag) | Torsdag | Läxa (Torsdag) |
+|---|---|---|---|---|---|
+| 1. Första världskriget | | | | | Läs sid 26–31. Kunna: orsaker till kriget, viktiga årtal. |
+
+Sista kolumnens text visas då i en egen ruta överst i momentets vy,
+ovanför veckokorten, istället för att bli en egen (tom) vecka.
 
 ## Om integritet mellan kurser
 
