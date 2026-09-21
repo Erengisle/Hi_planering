@@ -331,7 +331,7 @@
                 menu.appendChild(li);
             });
 
-            const weekCount = data.length;
+            const weekCount = new Set(data.map(r => r.vecka).filter(v => v)).size;
             const stats = document.getElementById('stats');
             if (stats) {
                 stats.textContent = momentNames.length + (momentNames.length === 1 ? ' ' + (UNIT_LABEL === 'Vecka' ? 'vecka' : 'moment') : ' ' + (UNIT_LABEL === 'Vecka' ? 'veckor' : 'moment'))
@@ -392,6 +392,15 @@
                 list.style.marginTop = (UNIT_LABEL === 'Moment' && !isPureNumber(name)) ? '0' : '24px';
 
                 rows.forEach(row => {
+                    // En vecka som delas mellan två moment (se README) skrivs som två
+                    // rader med samma veckonummer. Den halva som saknar allt innehåll
+                    // är bara en gränsmarkering för momentbytet och ska inte visas som
+                    // ett eget, tomt veckokort – den riktiga informationen finns redan
+                    // på den andra radens kort.
+                    const isBoundaryOnly = !row.dag1 && !row.dag2 && !row.laxa1 && !row.laxa2 &&
+                        data.some(r => r.vecka === row.vecka && r.moment !== row.moment);
+                    if (isBoundaryOnly) return;
+
                     const prov = isProv(row.dag1) || isProv(row.dag2);
                     const li = document.createElement('li');
                     const card = document.createElement('article');
