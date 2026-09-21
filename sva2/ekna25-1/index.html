@@ -127,6 +127,12 @@
         .day-cell .day-text { font-size: 14px; line-height: 1.6; color: #0F1B2D; margin: 0; white-space: pre-line; }
         .day-cell .day-text.empty { color: #96A3B0; }
         .day-cell .day-text.prov { font-weight: 600; }
+        .moment-summary { margin: 0 0 24px; padding: 14px 18px; background: #FBF8F2; border: 1px solid #EFEBE3; border-radius: 8px; }
+        .moment-summary .summary-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
+            text-transform: uppercase; color: #D4880A; margin: 0 0 6px; display: block;
+        }
+        .moment-summary p { font-size: 14px; line-height: 1.6; color: #556070; margin: 0; white-space: pre-line; }
         .day-hw { display: flex; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #EFEBE3; }
         .day-hw .hw-label {
             font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em;
@@ -192,6 +198,7 @@
         const DAY2_LABEL = 'Fredag 12.10 - 13.15 (65 min)';
 
         let data = [];
+        let momentSummaries = {};
         let timeoutId = null;
 
         function handleData(response) {
@@ -206,6 +213,7 @@
                 }
 
                 data = [];
+                momentSummaries = {};
                 let introText = null;
                 const rows = table.rows;
                 for (let i = 0; i < rows.length; i++) {
@@ -231,6 +239,13 @@
                         continue;
                     }
                     if (moment.toLowerCase() === 'omprov') continue;
+                    if (moment && !vecka) {
+                        // En rad med Moment ifyllt men utan veckonummer är en
+                        // sammanfattning för hela momentet (t.ex. "sidor att
+                        // kunna till provet"), inte en egen vecka.
+                        if (laxa2) momentSummaries[moment] = laxa2;
+                        continue;
+                    }
                     if (!moment) moment = vecka;
                     data.push({
                         moment,
@@ -385,6 +400,19 @@
                         chipRow.appendChild(span2);
                         view.appendChild(chipRow);
                     }
+                }
+
+                if (momentSummaries[name]) {
+                    const summary = document.createElement('div');
+                    summary.className = 'moment-summary';
+                    const summaryLabel = document.createElement('span');
+                    summaryLabel.className = 'summary-label';
+                    summaryLabel.textContent = 'Sammanfattning';
+                    const summaryText = document.createElement('p');
+                    summaryText.textContent = momentSummaries[name];
+                    summary.appendChild(summaryLabel);
+                    summary.appendChild(summaryText);
+                    view.appendChild(summary);
                 }
 
                 const list = document.createElement('ul');
