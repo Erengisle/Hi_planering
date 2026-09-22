@@ -118,7 +118,20 @@ sidor eller områden som gäller inför ett prov), lägg till en rad med
 Sista kolumnens text visas då i en egen ruta överst i momentets vy,
 ovanför veckokorten, istället för att bli en egen (tom) vecka.
 
-## Om integritet mellan kurser
+## Nedräkning till provet
+
+På samma sammanfattningsrad (Moment ifyllt, Vecka tom) kan du också
+skriva provdatumet i **Läxa-kolumnen för dag 1**, i formatet
+`ÅÅÅÅ-MM-DD`:
+
+| Moment | Vecka | Onsdag | Läxa (Onsdag) | Torsdag | Läxa (Torsdag) |
+|---|---|---|---|---|---|
+| 1. Första världskriget | | | 2026-10-13 | | Läs sid 26–31. |
+
+Så länge datumet ligger i framtiden visas en nedräkning ("X dagar
+till provet") som en egen markerad ruta högst upp i momentets vy,
+bredvid veckospanns-chipsen. Är det prov samma dag visas "Prov idag!"
+istället. Har datumet redan passerat visas ingen nedräkning alls.
 
 Rotsidan listar medvetet länkar till alla klasser (bedömt okej eftersom
 det bara rör schema/planering, inga betyg eller personuppgifter). Varje

@@ -98,6 +98,9 @@
             font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #FFFFFF;
             border: 1px solid #DDD8D0; border-radius: 4px; padding: 6px 10px; color: #556070;
         }
+        .chip.chip-countdown {
+            background: #FBF0DC; border-color: #EBD3A0; color: #96590A; font-weight: 700;
+        }
 
         .week-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
         .week-card {
@@ -199,6 +202,7 @@
 
         let data = [];
         let momentSummaries = {};
+        let momentExamDates = {};
         let timeoutId = null;
 
         function handleData(response) {
@@ -214,6 +218,7 @@
 
                 data = [];
                 momentSummaries = {};
+                momentExamDates = {};
                 let introText = null;
                 const rows = table.rows;
                 for (let i = 0; i < rows.length; i++) {
@@ -242,8 +247,11 @@
                     if (moment && !vecka) {
                         // En rad med Moment ifyllt men utan veckonummer är en
                         // sammanfattning för hela momentet (t.ex. "sidor att
-                        // kunna till provet"), inte en egen vecka.
+                        // kunna till provet"), inte en egen vecka. Läxa (dag 1)
+                        // kan också innehålla provdatumet (ÅÅÅÅ-MM-DD) för en
+                        // nedräkning högst upp i momentets vy.
                         if (laxa2) momentSummaries[moment] = laxa2;
+                        if (laxa1) momentExamDates[moment] = laxa1;
                         continue;
                     }
                     if (!moment) moment = vecka;
@@ -301,6 +309,25 @@
         }
         function isPureNumber(str) {
             return /^\d+$/.test(str.trim());
+        }
+        function parseSheetDate(str) {
+            if (!str) return null;
+            const m = str.match(/^Date\((\d+),(\d+),(\d+)\)$/);
+            if (m) return new Date(parseInt(m[1], 10), parseInt(m[2], 10), parseInt(m[3], 10));
+            const d = new Date(str);
+            return isNaN(d.getTime()) ? null : d;
+        }
+        function countdownText(dateStr) {
+            const examDate = parseSheetDate(dateStr);
+            if (!examDate) return null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            examDate.setHours(0, 0, 0, 0);
+            const diffDays = Math.round((examDate - today) / 86400000);
+            if (diffDays > 1) return diffDays + ' dagar till provet';
+            if (diffDays === 1) return '1 dag till provet';
+            if (diffDays === 0) return 'Prov idag!';
+            return null;
         }
         function slugify(str) {
             return str.toLowerCase().replace(/[^a-z0-9åäö]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
@@ -387,17 +414,26 @@
 
                 if (UNIT_LABEL === 'Moment' && !isPureNumber(name)) {
                     const nums = rows.map(r => parseInt(r.vecka, 10)).filter(n => !isNaN(n));
-                    if (nums.length) {
+                    const countdown = momentExamDates[name] ? countdownText(momentExamDates[name]) : null;
+                    if (nums.length || countdown) {
                         const chipRow = document.createElement('div');
                         chipRow.className = 'chip-row';
-                        const span1 = document.createElement('span');
-                        span1.className = 'chip';
-                        span1.textContent = 'v.' + Math.min.apply(null, nums) + '–' + Math.max.apply(null, nums);
-                        const span2 = document.createElement('span');
-                        span2.className = 'chip';
-                        span2.textContent = rows.length + (rows.length === 1 ? ' vecka' : ' veckor');
-                        chipRow.appendChild(span1);
-                        chipRow.appendChild(span2);
+                        if (countdown) {
+                            const countChip = document.createElement('span');
+                            countChip.className = 'chip chip-countdown';
+                            countChip.textContent = countdown;
+                            chipRow.appendChild(countChip);
+                        }
+                        if (nums.length) {
+                            const span1 = document.createElement('span');
+                            span1.className = 'chip';
+                            span1.textContent = 'v.' + Math.min.apply(null, nums) + '–' + Math.max.apply(null, nums);
+                            const span2 = document.createElement('span');
+                            span2.className = 'chip';
+                            span2.textContent = rows.length + (rows.length === 1 ? ' vecka' : ' veckor');
+                            chipRow.appendChild(span1);
+                            chipRow.appendChild(span2);
+                        }
                         view.appendChild(chipRow);
                     }
                 }
