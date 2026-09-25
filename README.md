@@ -118,20 +118,31 @@ sidor eller områden som gäller inför ett prov), lägg till en rad med
 Sista kolumnens text visas då i en egen ruta överst i momentets vy,
 ovanför veckokorten, istället för att bli en egen (tom) vecka.
 
-## Nedräkning till provet
+## Prov och nedräkning
 
-På samma sammanfattningsrad (Moment ifyllt, Vecka tom) kan du också
-skriva provdatumet i **Läxa-kolumnen för dag 1**, i formatet
-`ÅÅÅÅ-MM-DD`:
+Ett prov hittas automatiskt: skriv ordet **prov** i dagkolumnen för den
+dag provet är (t.ex. "Prov på kap 5–6"). Utifrån veckonumret och
+veckodagen i kolumnrubriken (`DAY1_LABEL`/`DAY2_LABEL`, t.ex. "Tisdag")
+räknas datumet ut – du behöver alltså inte skriva något datum. Obs: allt
+som innehåller "prov" räknas, även t.ex. "Genomgång av provet".
+
+Vill du ange datumet själv (t.ex. om provet ligger en annan dag än
+lektionsdagarna) skriver du det på momentets sammanfattningsrad
+(Moment ifyllt, Vecka tom) i **Läxa-kolumnen för dag 1**, i formatet
+`ÅÅÅÅ-MM-DD`. Ett sådant datum går före det uträknade:
 
 | Moment | Vecka | Onsdag | Läxa (Onsdag) | Torsdag | Läxa (Torsdag) |
 |---|---|---|---|---|---|
 | 1. Första världskriget | | | 2026-10-13 | | Läs sid 26–31. |
 
-Så länge datumet ligger i framtiden visas en nedräkning ("X dagar
-till provet") som en egen markerad ruta högst upp i momentets vy,
-bredvid veckospanns-chipsen. Är det prov samma dag visas "Prov idag!"
-istället. Har datumet redan passerat visas ingen nedräkning alls.
+Proven visas på två ställen:
+
+- **Momentets vy:** en markerad provrad direkt under rubriken med
+  datum, vecka och nedräkning ("X dagar till provet", "Prov idag!"
+  eller "Genomfört" när datumet passerat).
+- **Startsidan:** listan "Prov i planeringen" med alla prov i
+  terminens planering – vecka, moment, datum och nedräkning. Klick på
+  ett prov öppnar momentet. Genomförda prov visas nedtonade.
 
 Rotsidan listar medvetet länkar till alla klasser (bedömt okej eftersom
 det bara rör schema/planering, inga betyg eller personuppgifter). Varje
