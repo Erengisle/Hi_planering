@@ -82,6 +82,12 @@ Special row conventions, all implemented in the parsing loop inside
   exam date (`YYYY-MM-DD`, also accepts Google's `Date(y,m,d)` gviz
   serialization) used to render a "N dagar till provet" chip
   (`momentExamDates[moment]`, parsed by `parseSheetDate`/`countdownText`).
+- **Exams**: `collectExams(moment)` finds exams from day cells matching
+  `isProv()` (date derived from `Vecka` + weekday in `DAY1_LABEL`/`DAY2_LABEL`
+  via `dateFromWeek`, year = the one nearest today) plus the explicit
+  `momentExamDates` entry, which overrides the derived date. Rendered as an
+  `.exam-banner` under each moment's heading and as the "Prov i
+  planeringen" list on the welcome view (`buildExamOverview()`).
 - **Boundary marker for a week split between two moments**: when a moment
   ends and the next begins mid-week, the sheet has *two rows* with the same
   `Vecka` but different `Moment` (never two moment names in one cell — that
