@@ -348,8 +348,13 @@
             const stripped = name.replace(/^\s*\d+\s*[.)\-–:]?\s+/, '').trim();
             return stripped || name.trim();
         }
+        // Ord som markerar ett prov i arket. Lägg till fler här vid behov.
+        const EXAM_WORDS = /prov|litteratursamtal/i;
+        // Står provet som kommentar i sista kolumnen (Läxa dag 2) ligger det
+        // alltid på den här veckodagen.
+        const COMMENT_EXAM_DAY = 'Tisdag';
         function isProv(text) {
-            return /prov/i.test(text || '');
+            return EXAM_WORDS.test(text || '');
         }
         function isPureNumber(str) {
             return /^\d+$/.test(str.trim());
@@ -421,9 +426,15 @@
             // som räknas ut från veckonummer + veckodag.
             const exams = [];
             data.filter(r => r.moment === name).forEach(r => {
+                const before = exams.length;
                 [[DAY1_LABEL, r.dag1], [DAY2_LABEL, r.dag2]].forEach(([label, text]) => {
                     if (isProv(text)) exams.push({ moment: name, vecka: r.vecka, day: dayName(label), text, date: dateFromWeek(r.vecka, label) });
                 });
+                // Prov som bara står som kommentar i sista kolumnen, t.ex. när
+                // provet ligger en annan dag än lektionsdagarna.
+                if (exams.length === before && isProv(r.laxa2)) {
+                    exams.push({ moment: name, vecka: r.vecka, day: dayName(COMMENT_EXAM_DAY), text: r.laxa2, date: dateFromWeek(r.vecka, COMMENT_EXAM_DAY) });
+                }
             });
             const explicit = parseSheetDate(momentExamDates[name]);
             if (explicit) {
@@ -599,7 +610,7 @@
                         data.some(r => r.vecka === row.vecka && r.moment !== row.moment);
                     if (isBoundaryOnly) return;
 
-                    const prov = isProv(row.dag1) || isProv(row.dag2);
+                    const prov = isProv(row.dag1) || isProv(row.dag2) || isProv(row.laxa2);
                     const li = document.createElement('li');
                     const card = document.createElement('article');
                     card.className = 'week-card' + (prov ? ' prov' : '');

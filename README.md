@@ -121,11 +121,21 @@ ovanför veckokorten, istället för att bli en egen (tom) vecka.
 
 ## Prov och nedräkning
 
-Ett prov hittas automatiskt: skriv ordet **prov** i dagkolumnen för den
-dag provet är (t.ex. "Prov på kap 5–6"). Utifrån veckonumret och
-veckodagen i kolumnrubriken (`DAY1_LABEL`/`DAY2_LABEL`, t.ex. "Tisdag")
-räknas datumet ut – du behöver alltså inte skriva något datum. Obs: allt
-som innehåller "prov" räknas, även t.ex. "Genomgång av provet".
+Ett prov hittas automatiskt när en cell innehåller något av orden
+**prov** eller **litteratursamtal** (stora/små bokstäver spelar ingen
+roll). Du behöver inte skriva något datum – det räknas ut från
+veckonumret och veckodagen:
+
+- **I en dagkolumn** (t.ex. "Prov på kap 5–6"): provet ligger den dagen,
+  enligt veckodagen i kolumnrubriken (`DAY1_LABEL`/`DAY2_LABEL`).
+- **Som kommentar i sista kolumnen** (Läxa dag 2, kolumn F), när provet
+  ligger en annan dag än lektionsdagarna: provet räknas då alltid som
+  **tisdagen** den veckan (`COMMENT_EXAM_DAY` i koden). Står provet redan
+  i en dagkolumn på samma rad räknas kommentaren inte en gång till.
+
+Obs: allt som innehåller orden räknas, även t.ex. "Plugga inför provet".
+Använd därför "prov"/"litteratursamtal" bara när det faktiskt är ett
+prov. Fler ord kan läggas till i `EXAM_WORDS` i koden.
 
 Vill du ange datumet själv (t.ex. om provet ligger en annan dag än
 lektionsdagarna) skriver du det på momentets sammanfattningsrad
