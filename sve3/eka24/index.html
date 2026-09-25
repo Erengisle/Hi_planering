@@ -101,6 +101,48 @@
         .chip.chip-countdown {
             background: #FBF0DC; border-color: #EBD3A0; color: #96590A; font-weight: 700;
         }
+        .exam-banner {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; max-width: 720px;
+            margin: 4px 0 8px; padding: 12px 16px; background: #FBF0DC; border: 1px solid #EBD3A0; border-radius: 8px;
+        }
+        .exam-banner .exam-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+            text-transform: uppercase; color: #96590A;
+        }
+        .exam-banner .exam-when { font-size: 15px; font-weight: 600; color: #0F1B2D; }
+        .exam-banner .exam-what { font-size: 14px; color: #556070; }
+        .exam-banner .exam-count {
+            margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #96590A;
+        }
+        .exam-banner.past { background: #FFFFFF; border-color: #DDD8D0; }
+        .exam-banner.past .exam-label, .exam-banner.past .exam-count { color: #96A3B0; }
+
+        .exam-overview { margin: 32px 0 0; max-width: 720px; }
+        .exam-overview .label {
+            font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em;
+            text-transform: uppercase; color: #D4880A; margin: 0 0 12px;
+        }
+        .exam-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+        .exam-item button {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; width: 100%; text-align: left; min-height: 44px;
+            font-family: 'Space Grotesk', sans-serif; color: #0F1B2D; cursor: pointer;
+            background: #FFFFFF; border: 1px solid #DDD8D0; border-left: 3px solid #D4880A;
+            border-radius: 0 8px 8px 0; padding: 12px 16px; transition: border-color 150ms ease;
+        }
+        .exam-item button:hover { border-color: #D4880A; }
+        .exam-item .exam-week {
+            flex: 0 0 48px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #D4880A;
+        }
+        .exam-item .exam-body { flex: 1 1 160px; min-width: 0; }
+        .exam-item .exam-title { display: block; font-size: 15px; font-weight: 600; line-height: 1.35; }
+        .exam-item .exam-meta { display: block; font-size: 13px; line-height: 1.5; color: #556070; margin-top: 2px; }
+        .exam-item .exam-count {
+            flex: 0 0 auto; margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; white-space: nowrap;
+            color: #96590A; background: #FBF0DC; border: 1px solid #EBD3A0; border-radius: 4px; padding: 4px 8px;
+        }
+        .exam-item.past button { border-left-color: #DDD8D0; opacity: 0.6; }
+        .exam-item.past .exam-week { color: #96A3B0; }
+        .exam-item.past .exam-count { color: #96A3B0; background: #F7F4EE; border-color: #DDD8D0; }
 
         .week-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
         .week-card {
@@ -185,6 +227,7 @@
                 <p class="kicker">Läsåret 2025/26</p>
                 <h1>Välkommen!</h1>
                 <p class="intro-text" id="welcome-text">Det här är planeringen för terminens veckor i SVE3. Klicka på en vecka i menyn för att se innehåll och uppgifter.</p>
+                <div id="exam-overview"></div>
             </div>
 
             <div id="sections"></div>
@@ -268,6 +311,7 @@
                 if (introText) applyWelcomeText(introText);
                 buildMenu();
                 buildSections();
+                buildExamOverview();
 
             } catch (error) {
                 console.error('Fel vid tolkning av data:', error);
@@ -304,8 +348,13 @@
             const stripped = name.replace(/^\s*\d+\s*[.)\-–:]?\s+/, '').trim();
             return stripped || name.trim();
         }
+        // Ord som markerar ett prov i arket. Lägg till fler här vid behov.
+        const EXAM_WORDS = /prov|litteratursamtal/i;
+        // Står provet som kommentar i sista kolumnen (Läxa dag 2) ligger det
+        // alltid på den här veckodagen.
+        const COMMENT_EXAM_DAY = 'Tisdag';
         function isProv(text) {
-            return /prov/i.test(text || '');
+            return EXAM_WORDS.test(text || '');
         }
         function isPureNumber(str) {
             return /^\d+$/.test(str.trim());
@@ -317,17 +366,96 @@
             const d = new Date(str);
             return isNaN(d.getTime()) ? null : d;
         }
-        function countdownText(dateStr) {
-            const examDate = parseSheetDate(dateStr);
-            if (!examDate) return null;
+        function startOfToday() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            examDate.setHours(0, 0, 0, 0);
-            const diffDays = Math.round((examDate - today) / 86400000);
+            return today;
+        }
+        function countdownText(examDate) {
+            if (!examDate) return null;
+            const diffDays = Math.round((examDate - startOfToday()) / 86400000);
             if (diffDays > 1) return diffDays + ' dagar till provet';
             if (diffDays === 1) return '1 dag till provet';
             if (diffDays === 0) return 'Prov idag!';
-            return null;
+            return 'Genomfört';
+        }
+        const WEEKDAYS = ['måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag'];
+        function dayName(label) {
+            return (label || '').trim().split(/\s+/)[0].toLowerCase();
+        }
+        function isoWeek(date) {
+            // Torsdagen i samma vecka avgör vilket år veckan hör till (ISO 8601).
+            const thu = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 3 - ((date.getDay() + 6) % 7));
+            const jan1 = new Date(thu.getFullYear(), 0, 1);
+            return 1 + Math.floor(Math.round((thu - jan1) / 86400000) / 7);
+        }
+        function dateFromWeek(vecka, dayLabel) {
+            // Räknar ut datumet för en viss veckodag i en viss vecka. Arket anger
+            // inget år, så det år väljs som ger datumet närmast idag – det
+            // fungerar för en planering som sträcker sig högst ett halvår bakåt
+            // eller framåt.
+            const week = parseInt(vecka, 10);
+            const dayIdx = WEEKDAYS.indexOf(dayName(dayLabel));
+            if (isNaN(week) || week < 1 || week > 53 || dayIdx < 0) return null;
+            const today = startOfToday();
+            let best = null;
+            [-1, 0, 1].forEach(offset => {
+                const year = today.getFullYear() + offset;
+                const jan4 = new Date(year, 0, 4);
+                const d = new Date(year, 0, 4 - ((jan4.getDay() + 6) % 7) + (week - 1) * 7 + dayIdx);
+                if (isoWeek(d) !== week) return;
+                if (!best || Math.abs(d - today) < Math.abs(best - today)) best = d;
+            });
+            return best;
+        }
+        function formatDate(date) {
+            return date.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });
+        }
+        function momentLabel(name) {
+            return (UNIT_LABEL === 'Vecka' || isPureNumber(name)) ? 'Vecka ' + name : stripNum(name);
+        }
+        function getMomentNames() {
+            const names = [];
+            data.forEach(row => { if (!names.includes(row.moment)) names.push(row.moment); });
+            return names;
+        }
+        function collectExams(name) {
+            // Prov hittas på två sätt: dagceller som innehåller ordet "prov"
+            // (samma regel som markerar provveckor i korten) och ett provdatum
+            // från momentets sammanfattningsrad. Ett datum i arket går före det
+            // som räknas ut från veckonummer + veckodag.
+            const exams = [];
+            data.filter(r => r.moment === name).forEach(r => {
+                const before = exams.length;
+                [[DAY1_LABEL, r.dag1], [DAY2_LABEL, r.dag2]].forEach(([label, text]) => {
+                    if (isProv(text)) exams.push({ moment: name, vecka: r.vecka, day: dayName(label), text, date: dateFromWeek(r.vecka, label) });
+                });
+                // Prov som bara står som kommentar i sista kolumnen, t.ex. när
+                // provet ligger en annan dag än lektionsdagarna.
+                if (exams.length === before && isProv(r.laxa2)) {
+                    exams.push({ moment: name, vecka: r.vecka, day: dayName(COMMENT_EXAM_DAY), text: r.laxa2, date: dateFromWeek(r.vecka, COMMENT_EXAM_DAY) });
+                }
+            });
+            const explicit = parseSheetDate(momentExamDates[name]);
+            if (explicit) {
+                explicit.setHours(0, 0, 0, 0);
+                const week = String(isoWeek(explicit));
+                const match = exams.length === 1 ? exams[0] : exams.find(e => e.vecka === week);
+                if (match) match.date = explicit;
+                else exams.push({ moment: name, vecka: week, day: null, text: '', date: explicit });
+            }
+            return exams;
+        }
+        function examWhen(exam) {
+            if (exam.date) return formatDate(exam.date) + (exam.vecka ? ' · v.' + exam.vecka : '');
+            return (exam.day ? exam.day + ' ' : '') + 'vecka ' + exam.vecka;
+        }
+        function examWhat(exam) {
+            const text = (exam.text || '').trim();
+            return text && text.toLowerCase() !== 'prov' ? text : '';
+        }
+        function isPast(exam) {
+            return !!exam.date && exam.date < startOfToday();
         }
         function slugify(str) {
             return str.toLowerCase().replace(/[^a-z0-9åäö]+/g, '-').replace(/^-+|-+$/g, '') || 'x';
@@ -412,28 +540,45 @@
                 view.appendChild(kicker);
                 view.appendChild(h1);
 
+                collectExams(name).forEach(exam => {
+                    const banner = document.createElement('div');
+                    banner.className = 'exam-banner' + (isPast(exam) ? ' past' : '');
+                    const label = document.createElement('span');
+                    label.className = 'exam-label';
+                    label.textContent = 'Prov';
+                    const when = document.createElement('span');
+                    when.className = 'exam-when';
+                    when.textContent = examWhen(exam);
+                    banner.appendChild(label);
+                    banner.appendChild(when);
+                    if (examWhat(exam)) {
+                        const what = document.createElement('span');
+                        what.className = 'exam-what';
+                        what.textContent = examWhat(exam);
+                        banner.appendChild(what);
+                    }
+                    if (exam.date) {
+                        const count = document.createElement('span');
+                        count.className = 'exam-count';
+                        count.textContent = countdownText(exam.date);
+                        banner.appendChild(count);
+                    }
+                    view.appendChild(banner);
+                });
+
                 if (UNIT_LABEL === 'Moment' && !isPureNumber(name)) {
                     const nums = rows.map(r => parseInt(r.vecka, 10)).filter(n => !isNaN(n));
-                    const countdown = momentExamDates[name] ? countdownText(momentExamDates[name]) : null;
-                    if (nums.length || countdown) {
+                    if (nums.length) {
                         const chipRow = document.createElement('div');
                         chipRow.className = 'chip-row';
-                        if (countdown) {
-                            const countChip = document.createElement('span');
-                            countChip.className = 'chip chip-countdown';
-                            countChip.textContent = countdown;
-                            chipRow.appendChild(countChip);
-                        }
-                        if (nums.length) {
-                            const span1 = document.createElement('span');
-                            span1.className = 'chip';
-                            span1.textContent = 'v.' + Math.min.apply(null, nums) + '–' + Math.max.apply(null, nums);
-                            const span2 = document.createElement('span');
-                            span2.className = 'chip';
-                            span2.textContent = rows.length + (rows.length === 1 ? ' vecka' : ' veckor');
-                            chipRow.appendChild(span1);
-                            chipRow.appendChild(span2);
-                        }
+                        const span1 = document.createElement('span');
+                        span1.className = 'chip';
+                        span1.textContent = 'v.' + Math.min.apply(null, nums) + '–' + Math.max.apply(null, nums);
+                        const span2 = document.createElement('span');
+                        span2.className = 'chip';
+                        span2.textContent = rows.length + (rows.length === 1 ? ' vecka' : ' veckor');
+                        chipRow.appendChild(span1);
+                        chipRow.appendChild(span2);
                         view.appendChild(chipRow);
                     }
                 }
@@ -465,7 +610,7 @@
                         data.some(r => r.vecka === row.vecka && r.moment !== row.moment);
                     if (isBoundaryOnly) return;
 
-                    const prov = isProv(row.dag1) || isProv(row.dag2);
+                    const prov = isProv(row.dag1) || isProv(row.dag2) || isProv(row.laxa2);
                     const li = document.createElement('li');
                     const card = document.createElement('article');
                     card.className = 'week-card' + (prov ? ' prov' : '');
@@ -530,6 +675,69 @@
 
                 container.appendChild(view);
             });
+        }
+
+        function buildExamOverview() {
+            const container = document.getElementById('exam-overview');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const momentNames = getMomentNames();
+            const exams = [];
+            momentNames.forEach((name, i) => {
+                collectExams(name).forEach(exam => exams.push(Object.assign({ slug: slugify(name) + '-' + i }, exam)));
+            });
+            if (!exams.length) return;
+
+            const wrap = document.createElement('section');
+            wrap.className = 'exam-overview';
+            const label = document.createElement('p');
+            label.className = 'label';
+            label.textContent = 'Prov i planeringen';
+            const list = document.createElement('ul');
+            list.className = 'exam-list';
+
+            exams.forEach(exam => {
+                const li = document.createElement('li');
+                li.className = 'exam-item' + (isPast(exam) ? ' past' : '');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+
+                const week = document.createElement('span');
+                week.className = 'exam-week';
+                week.textContent = exam.vecka ? 'v.' + exam.vecka : '–';
+                const body = document.createElement('span');
+                body.className = 'exam-body';
+                const title = document.createElement('span');
+                title.className = 'exam-title';
+                title.textContent = momentLabel(exam.moment);
+                const meta = document.createElement('span');
+                meta.className = 'exam-meta';
+                const when = exam.date ? formatDate(exam.date) : (exam.day || '');
+                meta.textContent = [when, examWhat(exam)].filter(Boolean).join(' · ');
+                body.appendChild(title);
+                if (meta.textContent) body.appendChild(meta);
+
+                btn.appendChild(week);
+                btn.appendChild(body);
+                if (exam.date) {
+                    const count = document.createElement('span');
+                    count.className = 'exam-count';
+                    count.textContent = countdownText(exam.date);
+                    btn.appendChild(count);
+                }
+                btn.addEventListener('click', () => {
+                    showSection(exam.slug);
+                    setActiveNav(document.querySelector('.moment-item button[data-section="' + exam.slug + '"]'));
+                    window.scrollTo(0, 0);
+                });
+                li.appendChild(btn);
+                list.appendChild(li);
+            });
+
+            wrap.appendChild(label);
+            wrap.appendChild(list);
+            container.appendChild(wrap);
         }
 
         function showSection(id) {

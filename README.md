@@ -5,18 +5,19 @@ Statiska planeringssidor som hämtar veckoplanering live från Google Sheets
 
 ## Struktur
 
-- `index.html` – landningssida på repots rot med en lista med länkar till
-  alla klassers planeringssidor.
+- `index.html` – neutral sida på repots rot. Den länkar **inte** till
+  någon klass, så ingen kan bläddra sig fram till andra klassers
+  planering därifrån.
 - `<ämne>/<klass>/index.html` – varje ämne får en egen toppmapp, och varje
   klass/kurskod inom ämnet en egen undermapp med en egen, självständig
   kopia av sidan. Ingen kod eller konfiguration delas mellan klasssidorna
-  vid körning – bara landningssidan på roten länkar samlat till dem.
+  vid körning.
 - Just nu: `hi1b/naa24`, `hi1b/nab24`, `hi1b/ek26`, `sva1/nab26`,
   `sva2/ekna25-1`, `sve3/eka24` – sex klasser, varsitt Google Sheet.
 
 ## Länkar till klassernas sidor
 
-Kurssidorna länkar inte längre till varandra eller till rotsidan (se
+Varken rotsidan eller kurssidorna länkar till andra klasser (se
 "Om integritet mellan kurser" nedan), så här är en samlad lista för eget
 bruk:
 
@@ -118,25 +119,50 @@ sidor eller områden som gäller inför ett prov), lägg till en rad med
 Sista kolumnens text visas då i en egen ruta överst i momentets vy,
 ovanför veckokorten, istället för att bli en egen (tom) vecka.
 
-## Nedräkning till provet
+## Prov och nedräkning
 
-På samma sammanfattningsrad (Moment ifyllt, Vecka tom) kan du också
-skriva provdatumet i **Läxa-kolumnen för dag 1**, i formatet
-`ÅÅÅÅ-MM-DD`:
+Ett prov hittas automatiskt när en cell innehåller något av orden
+**prov** eller **litteratursamtal** (stora/små bokstäver spelar ingen
+roll). Du behöver inte skriva något datum – det räknas ut från
+veckonumret och veckodagen:
+
+- **I en dagkolumn** (t.ex. "Prov på kap 5–6"): provet ligger den dagen,
+  enligt veckodagen i kolumnrubriken (`DAY1_LABEL`/`DAY2_LABEL`).
+- **Som kommentar i sista kolumnen** (Läxa dag 2, kolumn F), när provet
+  ligger en annan dag än lektionsdagarna: provet räknas då alltid som
+  **tisdagen** den veckan (`COMMENT_EXAM_DAY` i koden). Står provet redan
+  i en dagkolumn på samma rad räknas kommentaren inte en gång till.
+
+Obs: allt som innehåller orden räknas, även t.ex. "Plugga inför provet".
+Använd därför "prov"/"litteratursamtal" bara när det faktiskt är ett
+prov. Fler ord kan läggas till i `EXAM_WORDS` i koden.
+
+Vill du ange datumet själv (t.ex. om provet ligger en annan dag än
+lektionsdagarna) skriver du det på momentets sammanfattningsrad
+(Moment ifyllt, Vecka tom) i **Läxa-kolumnen för dag 1**, i formatet
+`ÅÅÅÅ-MM-DD`. Ett sådant datum går före det uträknade:
 
 | Moment | Vecka | Onsdag | Läxa (Onsdag) | Torsdag | Läxa (Torsdag) |
 |---|---|---|---|---|---|
 | 1. Första världskriget | | | 2026-10-13 | | Läs sid 26–31. |
 
-Så länge datumet ligger i framtiden visas en nedräkning ("X dagar
-till provet") som en egen markerad ruta högst upp i momentets vy,
-bredvid veckospanns-chipsen. Är det prov samma dag visas "Prov idag!"
-istället. Har datumet redan passerat visas ingen nedräkning alls.
+Proven visas på två ställen:
 
-Rotsidan listar medvetet länkar till alla klasser (bedömt okej eftersom
-det bara rör schema/planering, inga betyg eller personuppgifter). Varje
-klasssida i sig är dock fristående och avslöjar inte andra klassers
-Sheet-ID i sin källkod. Observera att steg 2 ovan (delning av arket)
+- **Momentets vy:** en markerad provrad direkt under rubriken med
+  datum, vecka och nedräkning ("X dagar till provet", "Prov idag!"
+  eller "Genomfört" när datumet passerat).
+- **Startsidan:** listan "Prov i planeringen" med alla prov i
+  terminens planering – vecka, moment, datum och nedräkning. Klick på
+  ett prov öppnar momentet. Genomförda prov visas nedtonade.
+
+## Om integritet mellan kurser
+
+Varje klass nås bara via sin egen adress – rotsidan visar ingen lista
+över klasserna och kurssidorna länkar inte till varandra. Varje
+klasssida är fristående och avslöjar inte andra klassers Sheet-ID i sin
+källkod. Obs: om repot är publikt på GitHub kan den som letar i koden
+ändå hitta mapparna – det här skyddar mot att man råkar bläddra dit,
+inte mot den som aktivt söker. Observera att steg 2 ovan (delning av arket)
 gör kalkylarket läsbart för vem som helst med den direkta Sheet-länken,
 oavsett vilken sida som länkar dit – lägg därför inte in känsliga
 uppgifter om enskilda elever i arken.
