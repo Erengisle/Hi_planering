@@ -353,8 +353,10 @@
         // Står provet som kommentar i sista kolumnen (Läxa dag 2) ligger det
         // alltid på den här veckodagen.
         const COMMENT_EXAM_DAY = 'Tisdag';
+        // "Inför provet", "Inför kursprov" osv. är förberedelser, inte själva provet.
+        const NOT_EXAM = /inför\s+\S*prov/i;
         function isProv(text) {
-            return EXAM_WORDS.test(text || '');
+            return EXAM_WORDS.test(text || '') && !NOT_EXAM.test(text || '');
         }
         function isPureNumber(str) {
             return /^\d+$/.test(str.trim());
@@ -391,22 +393,17 @@
         }
         function dateFromWeek(vecka, dayLabel) {
             // Räknar ut datumet för en viss veckodag i en viss vecka. Arket anger
-            // inget år, så det år väljs som ger datumet närmast idag – det
-            // fungerar för en planering som sträcker sig högst ett halvår bakåt
-            // eller framåt.
+            // inget år, så året tas från läsåret: vecka 27–53 hör till hösten och
+            // vecka 1–26 till våren därpå. Läsåret börjar i juli.
             const week = parseInt(vecka, 10);
             const dayIdx = WEEKDAYS.indexOf(dayName(dayLabel));
             if (isNaN(week) || week < 1 || week > 53 || dayIdx < 0) return null;
             const today = startOfToday();
-            let best = null;
-            [-1, 0, 1].forEach(offset => {
-                const year = today.getFullYear() + offset;
-                const jan4 = new Date(year, 0, 4);
-                const d = new Date(year, 0, 4 - ((jan4.getDay() + 6) % 7) + (week - 1) * 7 + dayIdx);
-                if (isoWeek(d) !== week) return;
-                if (!best || Math.abs(d - today) < Math.abs(best - today)) best = d;
-            });
-            return best;
+            const autumnYear = today.getMonth() >= 6 ? today.getFullYear() : today.getFullYear() - 1;
+            const year = week >= 27 ? autumnYear : autumnYear + 1;
+            const jan4 = new Date(year, 0, 4);
+            const d = new Date(year, 0, 4 - ((jan4.getDay() + 6) % 7) + (week - 1) * 7 + dayIdx);
+            return isoWeek(d) === week ? d : null;
         }
         function formatDate(date) {
             return date.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });

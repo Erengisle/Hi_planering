@@ -84,9 +84,11 @@ Special row conventions, all implemented in the parsing loop inside
   serialization) used to render a "N dagar till provet" chip
   (`momentExamDates[moment]`, parsed by `parseSheetDate`/`countdownText`).
 - **Exams**: `collectExams(moment)` finds exams from day cells matching
-  `isProv()` (regex `EXAM_WORDS`: "prov", "litteratursamtal"; date derived
-  from `Vecka` + weekday in `DAY1_LABEL`/`DAY2_LABEL` via `dateFromWeek`,
-  year = the one nearest today). If neither day cell matches but the last
+  `isProv()` (regex `EXAM_WORDS`: "prov", "litteratursamtal", minus
+  `NOT_EXAM` "inför …prov"; date derived from `Vecka` + weekday in
+  `DAY1_LABEL`/`DAY2_LABEL` via `dateFromWeek`, year from the school year:
+  weeks 27–53 = autumn, 1–26 = the following spring; the sheets span a whole
+  school year, so "nearest to today" would misplace spring exams). If neither day cell matches but the last
   column (`Läxa <dag2>`, used by the teacher as a comment field) does, the
   exam is placed on `COMMENT_EXAM_DAY` ('Tisdag') that week. Plus the explicit
   `momentExamDates` entry, which overrides the derived date. Rendered as an

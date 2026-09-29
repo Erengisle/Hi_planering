@@ -133,9 +133,14 @@ veckonumret och veckodagen:
   **tisdagen** den veckan (`COMMENT_EXAM_DAY` i koden). Står provet redan
   i en dagkolumn på samma rad räknas kommentaren inte en gång till.
 
-Obs: allt som innehåller orden räknas, även t.ex. "Plugga inför provet".
-Använd därför "prov"/"litteratursamtal" bara när det faktiskt är ett
-prov. Fler ord kan läggas till i `EXAM_WORDS` i koden.
+Året räknas ut från läsåret: vecka 27–53 hör till hösten och vecka 1–26
+till våren därpå.
+
+Obs: nästan allt som innehåller orden räknas, t.ex. "Vi avslutade provet
+idag". Undantaget är "inför …prov" ("Inför kursprov", "Plugga inför
+provet"), som inte räknas. Använd därför "prov"/"litteratursamtal" bara
+när det faktiskt är ett prov. Fler ord kan läggas till i `EXAM_WORDS` i
+koden.
 
 Vill du ange datumet själv (t.ex. om provet ligger en annan dag än
 lektionsdagarna) skriver du det på momentets sammanfattningsrad
