@@ -96,6 +96,7 @@ const TYPES = [
   ['textbegrepp',     'Textens delar',               'two',   true ],
   ['uttryck',         'Ord och uttryck',             'three', false],
   ['instruktionsord', 'Instruktionsord i uppgifter', 'two',   true ],
+  ['lässtrategi',     'Lässtrategier',               'two',   true ],
   ['författare',      'Författare och verk',         'two',   true ],
   ['språkexempel',    'Språkexempel',                'two',   true ],
   // historia
@@ -155,7 +156,8 @@ function sections(terms) {
       const g = ts.filter(t => t.Typ.toLowerCase() === typ && !t.År);
       if (g.length) s += `<div class="grp"><h4>${rub}</h4><ul class="${cols}">${g.map(t => li(t, show)).join('')}</ul></div>`;
     }
-    const dated = ts.filter(t => t.År).sort((x, y) => x.År.localeCompare(y.År, 'sv', { numeric: true }));
+    const yearOf = s => +(s.match(/-?\d{3,4}/) || [0])[0];   // "ca 1820" → 1820
+    const dated = ts.filter(t => t.År).sort((x, y) => yearOf(x.År) - yearOf(y.År));
     if (dated.length) s += `<div class="grp"><h4>${TIDSLINJE}</h4><ul class="tl">${dated.map(t => li(t, true, t.År)).join('')}</ul></div>`;
     return s + '</section>';
   }).join('');

@@ -49,7 +49,7 @@ länkas inte från någon klasssida.
     planeringsarket. Tom Provtext = prov hittas automatiskt i planeringen.
   - fliken **Begrepp**: `Kurs, Moment, Avsnitt, Typ, Ord, Förklaring, År, Granskad`.
     Typ är `begrepp`, `textbegrepp`, `uttryck`, `instruktionsord`,
-    `författare`, `språkexempel` (för historia även `person`, `händelse`).
+    `lässtrategi`, `författare`, `språkexempel`, `händelse` (för historia även `person`).
     Ord med ett År hamnar i en tidslinje. Samma flik är tänkt som källa för quizet.
 - Ny klass: lägg till den i `CLASSES` i `utskrift/index.html`.
 
