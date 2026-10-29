@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Utskrift per moment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@600&display=swap" rel="stylesheet">
+<style>
+/* ---------- utskrift (samma mall som historieutskriften) ---------- */
+@page { size: A4; margin: 18mm 15mm 16mm;
+  @top-right { content: "Namn: ________________________________"; font: 600 9pt Inter, sans-serif; color:#1f2328; vertical-align: bottom; padding-bottom: 2mm; }
+  @bottom-right { content: "Sida " counter(page) " av " counter(pages); font: 8pt Inter, sans-serif; color:#8a8378; } }
+:root{--ink:#1f2328;--mut:#625c52;--rule:#d9d3c7;--acc:#7a3b2e;--tint:#f6f2ea;}
+.doc{font-family:Inter,sans-serif;font-size:9.4pt;line-height:1.38;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.doc header{border-bottom:2px solid var(--ink);padding-bottom:5mm;margin-bottom:5mm}
+.kicker{font-size:8.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.doc h1{font-family:Lora,serif;font-size:23pt;margin:2mm 0 0;font-weight:600;line-height:1.1}
+.doc h1 .num{color:var(--acc);margin-right:2mm}
+.summary{background:var(--tint);border-left:3px solid var(--acc);padding:3.5mm 5mm;margin-bottom:5mm}
+.summary h2,.h2{font-family:Lora,serif;font-size:12.5pt;margin:0 0 2mm;font-weight:600}
+.h2{margin:0 0 3mm}
+.summary p{margin:0;font-size:9.6pt;line-height:1.5}
+.doc table{width:100%;border-collapse:collapse;table-layout:fixed}
+.doc th,.doc td{border-bottom:.6pt solid var(--rule);text-align:left;vertical-align:top;padding:1.7mm 2.5mm}
+.doc thead th{font-size:7.5pt;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);border-bottom:1.2pt solid var(--ink)}
+.doc tr{break-inside:avoid}
+th.v{width:15mm;font-weight:600;white-space:nowrap}
+tbody th.v{font-family:Lora,serif;font-size:10.5pt}
+td.off .les{color:var(--mut);font-style:italic}
+td.prov .les{font-weight:700;color:var(--acc)}
+.lx{margin-top:1.5mm;font-size:8.6pt;color:var(--mut)}
+.lx span{display:inline-block;font-size:6.8pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--ink);color:#fff;padding:.3mm 1.4mm;border-radius:1mm;margin-right:1.5mm}
+.provnote{margin:3mm 0 0;font-weight:600;font-size:9pt}
+.legend{color:var(--mut);margin:-1mm 0 4mm;font-size:8.8pt;break-after:avoid}
+.vb{margin-top:7mm;break-after:avoid}
+.sec{margin-bottom:4mm}
+.grp{break-inside:avoid}
+.grp+.grp{margin-top:2.5mm}
+.doc h3{font-family:Lora,serif;font-size:12pt;margin:0 0 2mm;padding-bottom:1mm;border-bottom:1.2pt solid var(--ink);break-after:avoid}
+.doc h4{break-after:avoid;font-size:7.5pt;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:0 0 1.5mm;font-weight:700}
+.doc ul{list-style:none;margin:0;padding:0}
+ul.two,ul.tl{columns:2;column-gap:6mm}ul.three{columns:3;column-gap:5mm}
+.doc li{display:block;position:relative;padding-left:4.4mm;break-inside:avoid;margin-bottom:.7mm;font-size:8.6pt;line-height:1.28}
+.box{position:absolute;left:0;top:.2mm;width:2.6mm;height:2.6mm;border:.7pt solid #6b6458;border-radius:.4mm;margin-top:.5mm}
+.hint{color:var(--mut)}
+ul.tl li{padding-left:16mm}
+ul.tl .yr{position:absolute;left:4.4mm;top:0;font-family:Lora,serif;font-weight:600;color:var(--acc);font-size:8.8pt}
+
+/* ---------- skärm ---------- */
+@media screen{
+  body{margin:0;background:#e9e5dd;font-family:Inter,sans-serif;color:#1f2328}
+  .bar{position:sticky;top:0;z-index:2;background:#1f2328;color:#fff;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:14px}
+  .bar label{display:flex;gap:6px;align-items:center}
+  .bar select{font:inherit;padding:4px 6px;border-radius:4px;border:0;max-width:70vw}
+  .bar button{font:inherit;font-weight:600;padding:6px 14px;border:0;border-radius:4px;background:#f6f2ea;color:#1f2328;cursor:pointer}
+  .bar .status{opacity:.75;font-size:13px}
+  .page{background:#fff;width:210mm;max-width:calc(100vw - 32px);box-sizing:border-box;margin:20px auto 40px;padding:18mm 15mm 16mm;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  .page .namn{text-align:right;font:600 9pt Inter,sans-serif;margin:-10mm 0 4mm}
+  .msg{padding:40px;text-align:center;color:#625c52}
+}
+@media print{
+  .bar,.namn{display:none}
+  body{margin:0}
+  .page{padding:0;box-shadow:none;width:auto}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <label>Klass <select id="klass"></select></label>
+  <label>Moment <select id="moment"></select></label>
+  <button id="print" type="button">Skriv ut / spara som PDF</button>
+  <span class="status" id="status">Hämtar …</span>
+</div>
+<div class="page"><div class="namn">Namn: ________________________________</div><div class="doc" id="doc"><p class="msg">Hämtar …</p></div></div>
+
+<script>
+/* ===================== inställningar ===================== */
+// Begreppsarket: flikarna "Moment" och "Begrepp" (delat "Alla med länken kan visa")
+const BEGREPP_SHEET = '1jI98Sxp56jPd6BsLERaKNwjSZ68Sxf3Guh_qjdit0K4';
+const LASAR = 'Läsåret 2026/27';
+const LX1 = 'Läxa', LX2 = 'Obs';   // etiketter för kolumn D och F i planeringsarket
+
+// Klasserna: samma ark som planeringssidorna läser
+const CLASSES = {
+  NAB26:  { kurs: 'SVA1', kursnamn: 'Svenska som andraspråk 1', sheet: '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4', gid: '1145608673' },
+  EKNA25: { kurs: 'SVA2', kursnamn: 'Svenska som andraspråk 2', sheet: '1dhJDfcmmj1DIn60gbp8YrelxnfF2nFQgNm1oomucW80', gid: '1866411600' },
+  EKA24:  { kurs: 'SVE3', kursnamn: 'Svenska 3',                sheet: '1uTTYzZlI9dgUSHRAjo3ehFg5dMPYG8BfgMCwbi0xNnw', gid: '920723534' },
+};
+
+// Typer i begreppsarket → rubrik, antal spalter, om förklaringen skrivs ut
+const TYPES = [
+  ['begrepp',         'Begrepp',                     'three', false],
+  ['textbegrepp',     'Textens delar',               'two',   true ],
+  ['uttryck',         'Ord och uttryck',             'three', false],
+  ['instruktionsord', 'Instruktionsord i uppgifter', 'two',   true ],
+  ['författare',      'Författare och verk',         'two',   true ],
+  ['språkexempel',    'Språkexempel',                'two',   true ],
+  // historia
+  ['person',          'Personer',                    'two',   true ],
+  ['händelse',        'Händelser och processer',     'two',   true ],
+];
+const TIDSLINJE = 'Tidslinje';   // ord med ett årtal samlas här, sorterade
+
+const OFF = /^(höstlov|jullov|sportlov|påsklov|studiedag|programdag|julavslutning|skolavslutning|långfredag|klämdag|utvecklingssamtal|lov)\b/i;
+const EXAM = /prov|litteratursamtal/i, NOT_EXAM = /inför\s+\S*prov/i;
+
+/* ===================== hämtning (gviz JSONP) ===================== */
+let jsonpN = 0;
+function gviz(sheetId, opts) {
+  return new Promise((resolve, reject) => {
+    const cb = '__gv' + (++jsonpN);
+    const s = document.createElement('script');
+    const t = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, 15000);
+    function cleanup() { clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = r => { cleanup(); r.status === 'error' ? reject(new Error(r.errors?.[0]?.detailed_message || 'fel')) : resolve(r.table); };
+    const q = opts.gid ? `gid=${opts.gid}` : `sheet=${encodeURIComponent(opts.sheet)}`;
+    s.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=responseHandler:${cb}&${q}&headers=1&_=${Date.now()}`;
+    s.onerror = () => { cleanup(); reject(new Error('nätverksfel')); };
+    document.head.appendChild(s);
+  });
+}
+const cellText = c => (c == null ? '' : (c.v == null ? (c.f ?? '') : (typeof c.v === 'number' && c.f ? c.f : c.v))).toString();
+function rows(table, n) {
+  return (table.rows || []).map(r => { const a = []; for (let i = 0; i < n; i++) a.push(cellText(r.c?.[i]).trim()); return a; });
+}
+function objects(table) {
+  const head = table.cols.map(c => (c.label || '').trim());
+  return rows(table, head.length).map(r => Object.fromEntries(head.map((h, i) => [h, r[i]])));
+}
+
+/* ===================== hjälpfunktioner ===================== */
+const E = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const br = t => t.split('\n').map(E).join('<br>');
+const norm = s => s.replace(/^\d+\s*/, '').replace(/\s+/g, ' ').trim().toLowerCase();
+const vecka = v => (v.match(/^\s*(\d+(?:-\d+)?)/) || [, v])[1];
+const isExam = t => EXAM.test(t) && !NOT_EXAM.test(t);
+
+function cell(les, lx, label) {
+  const cls = OFF.test(les) ? 'off' : (isExam(les) ? 'prov' : '');
+  return `<td class="${cls}"><div class="les">${br(les)}</div>${lx ? `<div class="lx"><span>${label}</span>${br(lx)}</div>` : ''}</td>`;
+}
+function li(t, show, yr) {
+  let txt = show && t.Förklaring ? `<b>${E(t.Ord)}</b> <span class="hint">– ${E(t.Förklaring)}</span>` : E(t.Ord);
+  return `<li><i class="box"></i>${yr ? `<span class="yr">${E(yr)}</span>` : ''}<span>${txt}</span></li>`;
+}
+function sections(terms) {
+  const avsnitt = [...new Set(terms.map(t => t.Avsnitt))];
+  return avsnitt.map(a => {
+    const ts = terms.filter(t => t.Avsnitt === a);
+    let s = `<section class="sec"><h3>${E(a)}</h3>`;
+    for (const [typ, rub, cols, show] of TYPES) {
+      const g = ts.filter(t => t.Typ.toLowerCase() === typ && !t.År);
+      if (g.length) s += `<div class="grp"><h4>${rub}</h4><ul class="${cols}">${g.map(t => li(t, show)).join('')}</ul></div>`;
+    }
+    const dated = ts.filter(t => t.År).sort((x, y) => x.År.localeCompare(y.År, 'sv', { numeric: true }));
+    if (dated.length) s += `<div class="grp"><h4>${TIDSLINJE}</h4><ul class="tl">${dated.map(t => li(t, true, t.År)).join('')}</ul></div>`;
+    return s + '</section>';
+  }).join('');
+}
+
+/* ===================== bygg sidan ===================== */
+let MOMENT = [], TERMS = [];
+const planCache = {};
+const $ = id => document.getElementById(id);
+const status = t => $('status').textContent = t;
+
+async function plan(klass) {
+  if (!planCache[klass]) { const c = CLASSES[klass]; planCache[klass] = gviz(c.sheet, { gid: c.gid }); }
+  return planCache[klass];
+}
+
+function fillMoments() {
+  const k = $('klass').value;
+  const list = MOMENT.filter(m => m.Klass.toUpperCase() === k);
+  $('moment').innerHTML = list.map(m => `<option>${E(m.Moment)}</option>`).join('') || '<option value="">(inga moment i begreppsarket)</option>';
+  const want = new URLSearchParams(location.search).get('moment');
+  if (want && list.some(m => m.Moment === want)) $('moment').value = want;
+}
+
+async function render() {
+  const k = $('klass').value, mName = $('moment').value, c = CLASSES[k];
+  const m = MOMENT.find(x => x.Klass.toUpperCase() === k && x.Moment === mName);
+  history.replaceState(null, '', `?klass=${k.toLowerCase()}${mName ? '&moment=' + encodeURIComponent(mName) : ''}`);
+  if (!m) { $('doc').innerHTML = '<p class="msg">Lägg till momentet på fliken Moment i begreppsarket.</p>'; return; }
+  status('Hämtar planeringen …');
+  let table;
+  try { table = await plan(k); } catch (e) { status('Kunde inte läsa planeringsarket: ' + e.message); return; }
+  const head = table.cols.map(x => x.label || '');
+  const all = rows(table, 6).filter(r => r[1] && !/^(info|omprov)$/i.test(r[0]));
+  const target = norm(m['Planeringens moment'] || m.Moment);
+  const hit = all.map((r, i) => norm(r[0]) === target ? i : -1).filter(i => i >= 0);
+  const weeks = hit.length ? all.slice(hit[0], hit[hit.length - 1] + 1) : [];
+  const trs = weeks.map(r => `<tr><th class="v">v. ${E(vecka(r[1]))}</th>${cell(r[2], r[3], LX1)}${cell(r[4], r[5], LX2)}</tr>`).join('');
+  let prov = m.Provtext;
+  if (!prov) {
+    const h = [];
+    for (const r of weeks) for (const t of [r[2], r[4], r[5]]) if (t && isExam(t)) h.push(`v. ${vecka(r[1])}: ${t.replace(/\s+/g, ' ')}`);
+    prov = h.length ? 'Prov i momentet – ' + h.join('; ') : '';
+  }
+  const terms = TERMS.filter(t => t.Kurs === c.kurs && t.Moment === m.Moment && t.Ord);
+  $('doc').innerHTML = `
+    <header><div class="kicker">${E(c.kursnamn)} · ${E(k)} · ${LASAR}</div>
+    <h1>${m.Nr ? `<span class="num">${E(m.Nr)}</span> ` : ''}${E(m.Rubrik || m.Moment)}</h1></header>
+    ${m.Sammanfattning ? `<div class="summary"><h2>Sammanfattning av momentet</h2><p>${br(m.Sammanfattning)}</p></div>` : ''}
+    <h2 class="h2">Planering</h2>
+    ${weeks.length ? `<table><thead><tr><th class="v">Vecka</th><th>${E(head[2] || 'Dag 1')}</th><th>${E(head[4] || 'Dag 2')}</th></tr></thead><tbody>${trs}</tbody></table>`
+                   : `<p class="hint">Hittade inga veckor med momentet "${E(m['Planeringens moment'] || m.Moment)}" i planeringsarket.</p>`}
+    ${prov ? `<p class="provnote">${E(prov)}</p>` : ''}
+    ${terms.length ? `<h2 class="h2 vb">Viktiga begrepp</h2><p class="legend">Bocka av det du kan förklara.</p>${sections(terms)}` : ''}`;
+  document.title = `${c.kurs} ${k} – ${m.Rubrik || m.Moment}`;
+  status(`${weeks.length} veckor · ${terms.length} begrepp`);
+}
+
+async function init() {
+  $('klass').innerHTML = Object.keys(CLASSES).map(k => `<option>${k}</option>`).join('');
+  const want = (new URLSearchParams(location.search).get('klass') || '').toUpperCase();
+  if (CLASSES[want]) $('klass').value = want;
+  try {
+    const [mt, bt] = await Promise.all([gviz(BEGREPP_SHEET, { sheet: 'Moment' }), gviz(BEGREPP_SHEET, { sheet: 'Begrepp' })]);
+    MOMENT = objects(mt).filter(m => m.Klass && m.Moment);
+    TERMS = objects(bt);
+  } catch (e) {
+    status('Kunde inte läsa begreppsarket');
+    $('doc').innerHTML = `<p class="msg">Kunde inte läsa begreppsarket (${E(e.message)}). Kontrollera att det är delat "Alla med länken kan visa".</p>`;
+    return;
+  }
+  fillMoments();
+  $('klass').onchange = () => { fillMoments(); render(); };
+  $('moment').onchange = render;
+  $('print').onclick = () => window.print();
+  render();
+}
+window.handleData = () => {};   // ifall en planeringssida-URL råkar användas
+init();
+</script>
+</body>
+</html>

@@ -30,6 +30,29 @@ bruk:
 | Svenska som andraspråk 2 | EKNA25:1 | https://erengisle.github.io/Hi_planering/sva2/ekna25-1/ |
 | Svenska 3 | EKA24 | https://erengisle.github.io/Hi_planering/sve3/eka24/ |
 
+## Utskrift per moment (för läraren)
+
+`utskrift/` är en sida för att skriva ut ett elevblad per moment: kort
+sammanfattning, veckoplanering och en begreppslista att bocka av. Sidan
+länkas inte från någon klasssida.
+
+- Adress: https://erengisle.github.io/Hi_planering/utskrift/?klass=nab26
+- Välj klass och moment i fältet överst och tryck **Skriv ut / spara som PDF**
+  (bäst i Chrome; välj A4 och stäng av "Sidhuvud och sidfot").
+- Planeringen läses från klassens vanliga planeringsark (samma som
+  planeringssidan). Momentet matchas mot kolumn A, och lov o.d. mellan
+  momentets första och sista vecka kommer med.
+- Allt annat läses från begreppsarket ("Begrepp svenska (planering och
+  quiz)", id i `BEGREPP_SHEET`), som måste vara delat "Alla med länken kan visa":
+  - fliken **Moment**: `Kurs, Klass, Moment, Nr, Rubrik, Planeringens moment,
+    Sammanfattning, Provtext`. "Planeringens moment" är texten i kolumn A i
+    planeringsarket. Tom Provtext = prov hittas automatiskt i planeringen.
+  - fliken **Begrepp**: `Kurs, Moment, Avsnitt, Typ, Ord, Förklaring, År, Granskad`.
+    Typ är `begrepp`, `textbegrepp`, `uttryck`, `instruktionsord`,
+    `författare`, `språkexempel` (för historia även `person`, `händelse`).
+    Ord med ett År hamnar i en tidslinje. Samma flik är tänkt som källa för quizet.
+- Ny klass: lägg till den i `CLASSES` i `utskrift/index.html`.
+
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
