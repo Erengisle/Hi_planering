@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia 1b – Begreppsträning</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F7F4EE; --card: #FFFFFF; --ink: #0F1B2D; --muted: #556070; --faint: #96A3B0;
+            --line: #DDD8D0; --soft: #EFEBE3; --accent: #D4880A; --accent-ink: #96590A; --accent-soft: #FBF0DC;
+            --ok: #2E7D4F; --ok-soft: #E3F2E8; --bad: #B52020; --bad-soft: #F8E3E1; --link: #2355A0;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; background: var(--bg); color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif; -webkit-font-smoothing: antialiased;
+        }
+        button { font: inherit; color: inherit; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 64px; }
+
+        header {
+            display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: baseline;
+            padding: 16px 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 24px;
+        }
+        header h1 { margin: 0; font-family: 'Spectral', serif; font-size: 22px; font-weight: 600; }
+        header .meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+
+        .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 6px; }
+        h2 { font-family: 'Spectral', serif; font-size: 30px; line-height: 1.15; font-weight: 600; margin: 0 0 6px; }
+        .lead { color: var(--muted); margin: 0 0 22px; max-width: 60ch; line-height: 1.5; }
+        .label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 22px 0 8px; }
+
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            padding: 8px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--card);
+            cursor: pointer; font-size: 14.5px;
+        }
+        .chip:hover { border-color: var(--accent); }
+        .chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .chip .n { font-family: 'JetBrains Mono', monospace; font-size: 11px; opacity: .65; margin-left: 4px; }
+
+        .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 8px; }
+        .mode {
+            text-align: left; padding: 16px 16px 14px; background: var(--card); border: 1px solid var(--line);
+            border-top: 4px solid var(--accent); border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+            transition: transform .08s, box-shadow .08s;
+        }
+        .mode:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(15,27,45,.10); }
+        .mode:disabled { opacity: .5; cursor: not-allowed; }
+        .mode strong { font-family: 'Spectral', serif; font-size: 20px; font-weight: 600; }
+        .mode span { color: var(--muted); font-size: 14px; line-height: 1.4; }
+        .mode .rec { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--accent-ink); margin-top: 4px; }
+
+        .bar { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .stats { display: flex; gap: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+        .stats b { color: var(--ink); font-size: 15px; }
+        .stats .streak b { color: var(--accent-ink); }
+        .ghost { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; font-size: 14px; }
+        .ghost:hover { border-color: var(--accent); }
+        .progress { height: 6px; background: var(--soft); border-radius: 99px; overflow: hidden; margin-bottom: 20px; }
+        .progress i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .25s; }
+
+        .qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 20px; }
+        .qtype { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+        .prompt { font-size: 19px; line-height: 1.45; margin: 8px 0 18px; }
+        .prompt.word { font-family: 'Spectral', serif; font-size: 28px; font-weight: 600; }
+        .options { display: grid; gap: 10px; }
+        .opt {
+            text-align: left; padding: 13px 15px; background: var(--bg); border: 1.5px solid var(--line); border-radius: 9px;
+            cursor: pointer; font-size: 16px; line-height: 1.4;
+        }
+        .opt:hover:not(:disabled) { border-color: var(--accent); background: #fff; }
+        .opt:disabled { cursor: default; }
+        .opt.ok { background: var(--ok-soft); border-color: var(--ok); }
+        .opt.bad { background: var(--bad-soft); border-color: var(--bad); }
+        .feedback { margin-top: 16px; padding: 12px 14px; border-radius: 9px; font-size: 15px; line-height: 1.45; display: none; }
+        .feedback.show { display: block; }
+        .feedback.ok { background: var(--ok-soft); }
+        .feedback.bad { background: var(--bad-soft); }
+        .next { margin-top: 16px; }
+        .btn {
+            background: var(--ink); color: #fff; border: none; border-radius: 9px; padding: 11px 18px;
+            cursor: pointer; font-size: 15px; font-weight: 600;
+        }
+        .btn:hover { background: #1f3352; }
+        .btn.alt { background: var(--accent); }
+        .btn.alt:hover { background: var(--accent-ink); }
+
+        .pairs { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 10px 14px; }
+        .col { display: flex; flex-direction: column; gap: 10px; }
+        .tile {
+            text-align: left; padding: 12px 13px; min-height: 52px; background: var(--card); border: 1.5px solid var(--line);
+            border-radius: 9px; cursor: pointer; font-size: 15px; line-height: 1.35;
+        }
+        .tile.word { font-weight: 600; }
+        .tile:hover:not(:disabled) { border-color: var(--accent); }
+        .tile.sel { border-color: var(--ink); background: var(--accent-soft); }
+        .tile.done { background: var(--ok-soft); border-color: var(--ok); color: var(--muted); cursor: default; }
+        .tile.wrong { animation: shake .3s; border-color: var(--bad); background: var(--bad-soft); }
+        @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+        .tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+        .tl li {
+            display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; background: var(--card);
+            border: 1.5px solid var(--line); border-radius: 9px;
+        }
+        .tl .pos { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--faint); width: 18px; }
+        .tl .txt { flex: 1; font-size: 16px; line-height: 1.35; }
+        .tl .yr { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; display: none; }
+        .tl.checked .yr { display: inline; }
+        .tl li.ok { border-color: var(--ok); background: var(--ok-soft); }
+        .tl li.bad { border-color: var(--bad); background: var(--bad-soft); }
+        .tl .mv { display: flex; flex-direction: column; gap: 4px; }
+        .tl .mv button {
+            width: 34px; height: 26px; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; cursor: pointer;
+            font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1;
+        }
+        .tl .mv button:hover:not(:disabled) { border-color: var(--accent); }
+        .tl .mv button:disabled { opacity: .3; cursor: default; }
+        .tl.checked .mv { visibility: hidden; }
+        .axis { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--faint); letter-spacing: .1em; text-transform: uppercase; margin: 0 4px 8px; }
+
+        .result { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px 20px; }
+        .big { font-family: 'Spectral', serif; font-size: 52px; font-weight: 600; line-height: 1; }
+        .big small { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+        .newrec { display: inline-block; margin-top: 10px; padding: 4px 10px; border-radius: 99px; background: var(--accent-soft); color: var(--accent-ink); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+        .missed { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+        .missed dl { margin: 0; display: grid; gap: 10px; }
+        .missed dt { font-weight: 700; }
+        .missed dd { margin: 2px 0 0; color: var(--muted); line-height: 1.45; }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+        .status { padding: 40px 0; color: var(--muted); }
+        .status.err { color: var(--bad); }
+        .hidden { display: none !important; }
+
+        @media (max-width: 560px) {
+            h2 { font-size: 25px; }
+            .prompt.word { font-size: 24px; }
+            .pairs { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <h1>Historia 1b – Begreppsträning</h1>
+        <div class="meta" id="meta"></div>
+    </header>
+
+    <div id="status" class="status">Hämtar begreppen …</div>
+
+    <!-- Välj klass (bara om ?klass= saknas) -->
+    <section id="pickClass" class="hidden">
+        <p class="kicker">Börja här</p>
+        <h2>Vilken klass går du i?</h2>
+        <div class="chips" id="classChips"></div>
+    </section>
+
+    <!-- Startvy -->
+    <section id="home" class="hidden">
+        <p class="kicker" id="momentLabel"></p>
+        <h2>Träna på begreppen</h2>
+        <p class="lead">Välj ett avsnitt, eller hela momentet, och ett sätt att träna. Ditt bästa resultat sparas i den här webbläsaren.</p>
+
+        <div id="momentBox" class="hidden">
+            <div class="label">Moment</div>
+            <div class="chips" id="momentChips"></div>
+        </div>
+
+        <div class="label">Avsnitt</div>
+        <div class="chips" id="sectionChips"></div>
+
+        <div class="label">Vad vill du träna på?</div>
+        <div class="chips" id="typeChips"></div>
+
+        <div class="label">Sätt att träna</div>
+        <div class="modes">
+            <button class="mode" data-mode="flerval"><strong>Flerval</strong><span>Tio frågor. Välj rätt ord eller rätt förklaring bland fyra.</span><span class="rec" data-rec="flerval"></span></button>
+            <button class="mode" data-mode="para"><strong>Para ihop</strong><span>Tre omgångar med fem par. Klicka på ett ord och sedan på förklaringen.</span><span class="rec" data-rec="para"></span></button>
+            <button class="mode" data-mode="tidslinje"><strong>Tidslinje</strong><span>Tre omgångar. Sätt händelserna i rätt ordning, från tidigast till senast.</span><span class="rec" data-rec="tidslinje"></span></button>
+        </div>
+    </section>
+
+    <!-- Spelvy -->
+    <section id="game" class="hidden">
+        <div class="bar">
+            <div class="stats">
+                <span>Poäng <b id="score">0</b></span>
+                <span class="streak">I rad <b id="streak">0</b></span>
+                <span id="clockWrap" class="hidden">Tid <b id="clock">0:00</b></span>
+            </div>
+            <button class="ghost" id="quit">Avsluta</button>
+        </div>
+        <div class="progress"><i id="prog"></i></div>
+        <div id="stage"></div>
+    </section>
+
+    <!-- Resultat -->
+    <section id="result" class="hidden"></section>
+</div>
+
+<script>
+    const SHEET_ID = '14Pjc227HJDuFwOSrZZdR8mLGGNcK9TjfIUfBylbDQbQ';
+    const GID = '0';
+    const JSONP_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:handleData&gid=${GID}&headers=1&_=${Date.now()}`;
+    const CLASSES = ['NAA24', 'NAB24', 'EK26'];
+    const TYPES = [
+        { key: 'alla', label: 'Allt' },
+        { key: 'begrepp', label: 'Begrepp' },
+        { key: 'person', label: 'Personer' },
+        { key: 'händelse', label: 'Händelser' }
+    ];
+    const ALL = '__alla__';
+
+    let rows = [];             // alla rader för vald klass
+    let klass = null;
+    const state = { moment: null, section: ALL, type: 'alla' };
+    let game = null;
+    let clockTimer = null;
+
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const show = id => ['status', 'pickClass', 'home', 'game', 'result'].forEach(s => $(s).classList.toggle('hidden', s !== id));
+
+    // ---------- lagring (per webbläsare; får gärna misslyckas) ----------
+    const recKey = mode => `begrepp:${klass}:${state.moment}:${state.section}:${state.type}:${mode}`;
+    function getRec(mode) { try { return parseInt(localStorage.getItem(recKey(mode)) || '0', 10) || 0; } catch (e) { return 0; } }
+    function setRec(mode, v) { try { localStorage.setItem(recKey(mode), String(v)); } catch (e) {} }
+
+    // ---------- data ----------
+    function readClass() {
+        const p = new URLSearchParams(location.search).get('klass');
+        if (!p) return null;
+        const k = p.trim().toUpperCase();
+        return CLASSES.includes(k) ? k : null;
+    }
+
+    function handleData(response) {
+        try {
+            const table = response && response.table;
+            if (!table || !table.rows) throw new Error('tomt svar');
+            const all = [];
+            for (const r of table.rows) {
+                const c = r.c || [];
+                const val = i => (c[i] && c[i].v != null) ? String(c[i].v).trim() : '';
+                const ord = val(3), forklaring = val(4);
+                if (!ord || !forklaring) continue;
+                const yr = c[5] && c[5].v != null ? parseInt(c[5].v, 10) : NaN;
+                all.push({
+                    moment: val(0), avsnitt: val(1) || 'Övrigt', typ: (val(2) || 'begrepp').toLowerCase(),
+                    ord, forklaring, ar: isNaN(yr) ? null : yr,
+                    klasser: (val(7) || 'alla').toUpperCase()
+                });
+            }
+            window.__allRows = all;
+            if (!all.length) throw new Error('inga rader');
+            start(all);
+        } catch (e) {
+            fail('Begreppen gick inte att läsa. Ladda om sidan, eller säg till din lärare.');
+        }
+    }
+    window.handleData = handleData;
+
+    function fail(msg) { show('status'); $('status').textContent = msg; $('status').classList.add('err'); }
+
+    function load() {
+        const s = document.createElement('script');
+        s.src = JSONP_URL;
+        s.onerror = () => fail('Begreppen gick inte att hämta. Kontrollera internetanslutningen och ladda om sidan.');
+        document.body.appendChild(s);
+        setTimeout(() => { if (!window.__allRows) fail('Det tar för lång tid att hämta begreppen. Ladda om sidan.'); }, 12000);
+    }
+
+    function start(all) {
+        klass = readClass();
+        if (!klass) {
+            show('pickClass');
+            $('classChips').innerHTML = CLASSES.map(k => `<button class="chip" data-k="${k}">${k}</button>`).join('');
+            $('classChips').onclick = e => {
+                const b = e.target.closest('[data-k]'); if (!b) return;
+                const u = new URL(location.href); u.searchParams.set('klass', b.dataset.k.toLowerCase());
+                history.replaceState(null, '', u); start(all);
+            };
+            return;
+        }
+        rows = all.filter(r => r.klasser === 'ALLA' || r.klasser.split(/[,\s]+/).includes(klass));
+        $('meta').textContent = klass;
+        const moments = [...new Set(rows.map(r => r.moment))];
+        if (!state.moment || !moments.includes(state.moment)) state.moment = moments[moments.length - 1];
+        $('momentBox').classList.toggle('hidden', moments.length < 2);
+        $('momentChips').innerHTML = moments.map(m => `<button class="chip" data-m="${esc(m)}">${esc(m)}</button>`).join('');
+        $('momentChips').onclick = e => { const b = e.target.closest('[data-m]'); if (!b) return; state.moment = b.dataset.m; state.section = ALL; renderHome(); };
+        renderHome();
+    }
+
+    const inMoment = () => rows.filter(r => r.moment === state.moment);
+    function pool() {
+        return inMoment().filter(r => (state.section === ALL || r.avsnitt === state.section) && (state.type === 'alla' || r.typ === state.type));
+    }
+    const timelinePool = () => inMoment().filter(r => (state.section === ALL || r.avsnitt === state.section) && r.ar != null);
+
+    function renderHome() {
+        show('home');
+        $('momentLabel').textContent = /^\d+\s/.test(state.moment) ? state.moment.replace(/^(\d+)\s+/, 'Moment $1 · ') : state.moment;
+        [...$('momentChips').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.moment));
+
+        const m = inMoment();
+        const sections = [...new Set(m.map(r => r.avsnitt))];
+        $('sectionChips').innerHTML = [`<button class="chip" data-s="${ALL}">Hela momentet<span class="n">${m.length}</span></button>`]
+            .concat(sections.map(s => `<button class="chip" data-s="${esc(s)}">${esc(s)}<span class="n">${m.filter(r => r.avsnitt === s).length}</span></button>`)).join('');
+        [...$('sectionChips').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.s === state.section));
+        $('sectionChips').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; state.section = b.dataset.s; renderHome(); };
+
+        $('typeChips').innerHTML = TYPES.map(t => `<button class="chip" data-t="${t.key}" aria-pressed="${t.key === state.type}">${t.label}</button>`).join('');
+        $('typeChips').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; state.type = b.dataset.t; renderHome(); };
+
+        const p = pool(), tp = timelinePool();
+        const enable = { flerval: p.length >= 4, para: p.length >= 5, tidslinje: new Set(tp.map(r => r.ar)).size >= 4 };
+        document.querySelectorAll('.mode').forEach(b => { b.disabled = !enable[b.dataset.mode]; });
+        document.querySelectorAll('[data-rec]').forEach(el => {
+            const mode = el.dataset.rec, r = getRec(mode);
+            if (!enable[mode]) el.textContent = mode === 'tidslinje' ? 'För få händelser med årtal här' : 'För få ord med det här valet';
+            else el.textContent = r ? `Ditt rekord: ${r} poäng` : 'Inget rekord än';
+        });
+    }
+
+    document.querySelectorAll('.mode').forEach(b => b.addEventListener('click', () => {
+        if (b.disabled) return;
+        ({ flerval: startFlerval, para: startPara, tidslinje: startTidslinje })[b.dataset.mode]();
+    }));
+    $('quit').onclick = () => { stopClock(); renderHome(); };
+
+    // ---------- gemensamt för spelen ----------
+    function newGame(mode, total) {
+        game = { mode, total, done: 0, score: 0, streak: 0, best: 0, right: 0, answered: 0, missed: new Map() };
+        $('score').textContent = '0'; $('streak').textContent = '0'; setProg();
+        show('game');
+    }
+    function setProg() { $('prog').style.width = (game ? Math.round(100 * game.done / game.total) : 0) + '%'; }
+    function hit(points) {
+        game.streak++; game.best = Math.max(game.best, game.streak); game.right++; game.answered++;
+        game.score += points + Math.min(game.streak - 1, 5) * 2;
+        $('score').textContent = game.score; $('streak').textContent = game.streak;
+    }
+    function miss(row) {
+        game.streak = 0; game.answered++;
+        if (row) game.missed.set(row.ord, row);
+        $('streak').textContent = '0';
+    }
+    function startClock() {
+        stopClock(); game.t0 = Date.now(); $('clockWrap').classList.remove('hidden');
+        const tick = () => { const s = Math.floor((Date.now() - game.t0) / 1000); $('clock').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+        tick(); clockTimer = setInterval(tick, 500);
+    }
+    function stopClock() { if (clockTimer) clearInterval(clockTimer); clockTimer = null; $('clockWrap').classList.add('hidden'); }
+    function maskWord(text, word) {
+        // Döljer själva ordet om det råkar stå i förklaringen.
+        const parts = word.split(/[\/()]/).map(s => s.trim()).filter(s => s.length >= 4);
+        let out = text;
+        for (const p of parts) out = out.replace(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '…');
+        return out;
+    }
+
+    function finish(extraLine) {
+        stopClock();
+        const mode = game.mode, prev = getRec(mode), isRec = game.score > prev;
+        if (isRec) setRec(mode, game.score);
+        const names = { flerval: 'Flerval', para: 'Para ihop', tidslinje: 'Tidslinje' };
+        const missed = [...game.missed.values()];
+        $('result').innerHTML = `
+            <div class="result">
+                <p class="kicker">${names[mode]} · ${esc(state.section === ALL ? 'Hela momentet' : state.section)}</p>
+                <div class="big">${game.score}<small>poäng</small></div>
+                ${isRec ? `<div class="newrec">Nytt rekord${prev ? ` (förut ${prev})` : ''}</div>` : `<p class="lead" style="margin:10px 0 0">Ditt rekord: ${prev} poäng</p>`}
+                <p class="lead" style="margin:14px 0 0">${extraLine}${game.best > 1 ? ` Längsta raden med rätt svar: ${game.best}.` : ''}</p>
+                ${missed.length ? `<div class="missed"><div class="label" style="margin-top:0">Det här kan du öva mer på</div><dl>${missed.map(r =>
+                    `<div><dt>${esc(r.ord)}${r.ar ? ` <span class="mono" style="color:var(--accent-ink)">${r.ar}</span>` : ''}</dt><dd>${esc(r.forklaring)}</dd></div>`).join('')}</dl></div>` : ''}
+                <div class="actions">
+                    <button class="btn alt" id="again">Spela igen</button>
+                    ${missed.length && mode !== 'tidslinje' ? `<button class="btn" id="retry">Öva på de missade</button>` : ''}
+                    <button class="ghost" id="home2">Till start</button>
+                </div>
+            </div>`;
+        show('result');
+        $('again').onclick = () => ({ flerval: startFlerval, para: startPara, tidslinje: startTidslinje })[mode]();
+        $('home2').onclick = renderHome;
+        if ($('retry')) $('retry').onclick = () => (mode === 'flerval' ? startFlerval : startPara)(missed);
+    }
+
+    // ---------- Flerval ----------
+    function startFlerval(only) {
+        const p = pool();
+        const qs = shuffle(only && only.length ? only : p).slice(0, 10);
+        newGame('flerval', qs.length);
+        game.qs = qs; game.i = 0;
+        askFlerval();
+    }
+    function distractors(row, n) {
+        const p = pool(), base = inMoment();
+        // Felaktiga svar hämtas helst från samma avsnitt och samma typ, så att de blir rimliga.
+        const same = p.filter(r => r !== row && r.typ === row.typ && r.avsnitt === row.avsnitt);
+        const rest = base.filter(r => r !== row && r.typ === row.typ && !same.includes(r));
+        const other = base.filter(r => r !== row && r.typ !== row.typ);
+        const picked = [], seen = new Set([row.ord.toLowerCase(), row.forklaring]);
+        for (const r of [...shuffle(same), ...shuffle(rest), ...shuffle(other)]) {
+            if (seen.has(r.ord.toLowerCase()) || seen.has(r.forklaring)) continue;
+            seen.add(r.ord.toLowerCase()); seen.add(r.forklaring); picked.push(r);
+            if (picked.length === n) break;
+        }
+        return picked;
+    }
+    function askFlerval() {
+        const row = game.qs[game.i];
+        const toWord = Math.random() < 0.5;   // visa förklaring, välj ord
+        const opts = shuffle([row, ...distractors(row, 3)]);
+        const typLabel = { begrepp: 'Begrepp', person: 'Person', 'händelse': 'Händelse' }[row.typ] || 'Begrepp';
+        $('stage').innerHTML = `
+            <div class="qcard">
+                <div class="qtype">${typLabel} · fråga ${game.i + 1} av ${game.qs.length}</div>
+                ${toWord
+                    ? `<p class="prompt">${esc(maskWord(row.forklaring, row.ord))}</p><div class="label" style="margin-top:0">Vilket ${row.typ === 'person' ? 'namn' : 'ord'} passar?</div>`
+                    : `<p class="prompt word">${esc(row.ord)}</p><div class="label" style="margin-top:0">Vilken förklaring stämmer?</div>`}
+                <div class="options">${opts.map((o, k) => `<button class="opt" data-k="${k}">${esc(toWord ? o.ord : maskWord(o.forklaring, o.ord))}</button>`).join('')}</div>
+                <div class="feedback" id="fb"></div>
+                <div class="next hidden" id="nextWrap"><button class="btn" id="next">${game.i + 1 < game.qs.length ? 'Nästa fråga' : 'Se resultat'}</button></div>
+            </div>`;
+        const btns = [...document.querySelectorAll('.opt')];
+        btns.forEach(b => b.onclick = () => {
+            const chosen = opts[+b.dataset.k], ok = chosen === row;
+            btns.forEach(x => { x.disabled = true; if (opts[+x.dataset.k] === row) x.classList.add('ok'); });
+            const fb = $('fb');
+            if (ok) { hit(10); fb.className = 'feedback show ok'; fb.innerHTML = `<b>Rätt!</b> ${toWord ? esc(row.forklaring) : ''}`; }
+            else {
+                b.classList.add('bad'); miss(row);
+                fb.className = 'feedback show bad';
+                fb.innerHTML = `<b>Inte riktigt.</b> ${esc(row.ord)}: ${esc(row.forklaring)}`;
+            }
+            game.done++; setProg();
+            $('nextWrap').classList.remove('hidden'); $('next').focus();
+        });
+        $('next').onclick = () => { game.i++; if (game.i < game.qs.length) askFlerval(); else finish(`Du hade ${game.right} rätt av ${game.qs.length}.`); };
+    }
+
+    // ---------- Para ihop ----------
+    function startPara(only) {
+        const src = shuffle(only && only.length ? only : pool());
+        // unika ord och förklaringar
+        const uniq = [], seen = new Set();
+        for (const r of src) { const k = r.ord.toLowerCase(); if (seen.has(k) || seen.has(r.forklaring)) continue; seen.add(k); seen.add(r.forklaring); uniq.push(r); }
+        const rounds = [];
+        for (let i = 0; i < 3 && i * 5 + 5 <= uniq.length; i++) rounds.push(uniq.slice(i * 5, i * 5 + 5));
+        if (!rounds.length) rounds.push(uniq.slice(0, 5));
+        newGame('para', rounds.reduce((n, r) => n + r.length, 0));
+        game.rounds = rounds; game.r = 0; game.misses = 0;
+        startClock();
+        roundPara();
+    }
+    function roundPara() {
+        const set = game.rounds[game.r];
+        const left = shuffle(set), right = shuffle(set);
+        $('stage').innerHTML = `
+            <div class="qcard">
+                <div class="qtype">Omgång ${game.r + 1} av ${game.rounds.length}</div>
+                <p class="prompt" style="font-size:16px;color:var(--muted)">Klicka på ett ord och sedan på förklaringen som hör ihop med det.</p>
+                <div class="pairs">
+                    <div class="col">${left.map((r, i) => `<button class="tile word" data-side="L" data-i="${i}">${esc(r.ord)}</button>`).join('')}</div>
+                    <div class="col">${right.map((r, i) => `<button class="tile" data-side="R" data-i="${i}">${esc(maskWord(r.forklaring, r.ord))}</button>`).join('')}</div>
+                </div>
+            </div>`;
+        let sel = null, matched = 0, roundMiss = new Set();
+        document.querySelectorAll('.tile').forEach(t => t.onclick = () => {
+            if (t.classList.contains('done')) return;
+            if (!sel || sel.dataset.side === t.dataset.side) {
+                if (sel) sel.classList.remove('sel');
+                sel = (sel === t) ? null : t; if (sel) sel.classList.add('sel');
+                return;
+            }
+            const a = sel.dataset.side === 'L' ? sel : t, b = sel.dataset.side === 'L' ? t : sel;
+            const ra = left[+a.dataset.i], rb = right[+b.dataset.i];
+            sel.classList.remove('sel'); sel = null;
+            if (ra === rb) {
+                [a, b].forEach(x => { x.classList.add('done'); x.disabled = true; });
+                matched++; game.done++; setProg();
+                if (roundMiss.has(ra)) { game.streak = 0; game.answered++; $('streak').textContent = '0'; } else hit(10);
+                if (matched === set.length) setTimeout(() => {
+                    game.r++;
+                    if (game.r < game.rounds.length) roundPara();
+                    else {
+                        const secs = Math.round((Date.now() - game.t0) / 1000);
+                        const bonus = Math.max(0, game.total * 6 - secs);
+                        game.score += bonus;
+                        finish(`Du parade ihop ${game.total} par på ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')} med ${game.misses} fel. Tidsbonus: ${bonus} poäng.`);
+                    }
+                }, 450);
+            } else {
+                game.misses++; game.score = Math.max(0, game.score - 3); $('score').textContent = game.score;
+                roundMiss.add(ra); roundMiss.add(rb); miss(ra); game.answered--; game.missed.set(rb.ord, rb);
+                [a, b].forEach(x => { x.classList.remove('wrong'); void x.offsetWidth; x.classList.add('wrong'); setTimeout(() => x.classList.remove('wrong'), 350); });
+            }
+        });
+    }
+
+    // ---------- Tidslinje ----------
+    function startTidslinje() {
+        const src = shuffle(timelinePool());
+        const rounds = [];
+        let rest = src.slice();
+        for (let i = 0; i < 3; i++) {
+            const pick = [], years = new Set();
+            for (const r of rest) { if (years.has(r.ar)) continue; years.add(r.ar); pick.push(r); if (pick.length === 5) break; }
+            if (pick.length < 4) break;
+            rounds.push(pick); rest = rest.filter(r => !pick.includes(r));
+            if (rest.length < 4) rest = shuffle(src.filter(r => !rounds.flat().includes(r))).concat(shuffle(src));
+        }
+        newGame('tidslinje', rounds.reduce((n, r) => n + r.length, 0));
+        game.rounds = rounds; game.r = 0;
+        roundTl();
+    }
+    function roundTl() {
+        let order = shuffle(game.rounds[game.r]);
+        const sorted = game.rounds[game.r].slice().sort((a, b) => a.ar - b.ar);
+        if (order.every((r, i) => r === sorted[i])) order = order.slice().reverse();
+        const draw = (checked) => {
+            $('stage').innerHTML = `
+                <div class="qcard">
+                    <div class="qtype">Omgång ${game.r + 1} av ${game.rounds.length}</div>
+                    <p class="prompt" style="font-size:16px;color:var(--muted)">Flytta händelserna med pilarna så att den tidigaste hamnar överst.</p>
+                    <div class="axis"><span>Tidigast</span></div>
+                    <ol class="tl ${checked ? 'checked' : ''}">${order.map((r, i) => `
+                        <li class="${checked ? (r.ar === sorted[i].ar ? 'ok' : 'bad') : ''}">
+                            <span class="pos">${i + 1}</span>
+                            <span class="txt">${esc(r.ord)}</span>
+                            <span class="yr">${r.ar}</span>
+                            <span class="mv"><button data-up="${i}" aria-label="Flytta upp" ${i === 0 ? 'disabled' : ''}>▲</button><button data-down="${i}" aria-label="Flytta ned" ${i === order.length - 1 ? 'disabled' : ''}>▼</button></span>
+                        </li>`).join('')}</ol>
+                    <div class="axis" style="margin-top:8px"><span>Senast</span></div>
+                    <div class="feedback" id="fb"></div>
+                    <div class="next"><button class="btn ${checked ? '' : 'alt'}" id="tlBtn">${checked ? (game.r + 1 < game.rounds.length ? 'Nästa omgång' : 'Se resultat') : 'Kontrollera'}</button></div>
+                </div>`;
+            document.querySelectorAll('[data-up]').forEach(b => b.onclick = () => { const i = +b.dataset.up; [order[i - 1], order[i]] = [order[i], order[i - 1]]; draw(false); });
+            document.querySelectorAll('[data-down]').forEach(b => b.onclick = () => { const i = +b.dataset.down; [order[i + 1], order[i]] = [order[i], order[i + 1]]; draw(false); });
+            $('tlBtn').onclick = () => {
+                if (!checked) {
+                    let right = 0;
+                    order.forEach((r, i) => { if (r.ar === sorted[i].ar) { right++; hit(10); } else miss(r); });
+                    if (right === order.length) game.score += 10;
+                    $('score').textContent = game.score;
+                    game.done += order.length; setProg();
+                    draw(true);
+                    const fb = $('fb');
+                    fb.className = 'feedback show ' + (right === order.length ? 'ok' : 'bad');
+                    fb.innerHTML = right === order.length ? '<b>Helt rätt!</b> 10 poäng extra.' : `<b>${right} av ${order.length} på rätt plats.</b> Årtalen står nu ut till höger.`;
+                } else {
+                    game.r++;
+                    if (game.r < game.rounds.length) roundTl(); else finish(`Du placerade ${game.right} av ${game.total} händelser rätt.`);
+                }
+            };
+        };
+        draw(false);
+    }
+
+    load();
+</script>
+</body>
+</html>

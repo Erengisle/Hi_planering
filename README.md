@@ -53,6 +53,28 @@ länkas inte från någon klasssida.
     Ord med ett År hamnar i en tidslinje. Samma flik är tänkt som källa för quizet.
 - Ny klass: lägg till den i `CLASSES` i `utskrift/index.html`.
 
+## Begreppsträning, Historia 1b (`hi1b/begrepp/`)
+
+Quiz på begrepp, personer och händelser per moment. En sida för alla tre
+historieklasserna; klassen väljs med `?klass=`:
+
+- https://erengisle.github.io/Hi_planering/hi1b/begrepp/?klass=naa24
+- https://erengisle.github.io/Hi_planering/hi1b/begrepp/?klass=nab24
+- https://erengisle.github.io/Hi_planering/hi1b/begrepp/?klass=ek26
+
+Utan `?klass=` får eleven välja klass själv (bara klasskoderna visas, inget
+annat om klasserna). Lägen: **Flerval** (10 frågor), **Para ihop** (3 × 5 par,
+med tid) och **Tidslinje** (3 omgångar, händelser med årtal). Rekord sparas
+bara i elevens egen webbläsare.
+
+Data läses från arket "Begrepp – Det moderna Sveriges framväxt" (id i
+`SHEET_ID`, fliken Begrepp, gid 0), som måste vara delat "Alla med länken kan
+visa". Kolumnerna läses efter position: `Moment, Avsnitt, Typ, Ord,
+Förklaring, År, Granskad, Klasser`. Typ är `begrepp`, `person` eller
+`händelse`. Klasser är `alla` eller klasskoder åtskilda med komma
+(t.ex. `NAA24, NAB24`). Nya moment läggs till som nya rader med ett annat
+värde i kolumn A; sidan visar då ett val av moment, och det sista momentet i arket är förvalt.
+
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna
