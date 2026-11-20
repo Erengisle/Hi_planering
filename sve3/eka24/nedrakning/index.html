@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EKA24 – Nedräkning till talen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; }
+        body {
+            background: #0F1B2D; color: #FFFFFF; font-family: 'Space Grotesk', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 4vh 4vw;
+        }
+        .label {
+            font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 0.18em;
+            text-transform: uppercase; color: #F2B24C; font-size: clamp(14px, 2.2vw, 28px); margin: 0 0 2vh;
+        }
+        .clock { display: flex; align-items: flex-start; justify-content: center; gap: 1.5vw; }
+        .unit { display: flex; flex-direction: column; align-items: center; }
+        .num {
+            font-family: 'JetBrains Mono', monospace; font-weight: 700; line-height: 1;
+            font-size: clamp(64px, 16vw, 260px); font-variant-numeric: tabular-nums;
+        }
+        .sep { font-family: 'JetBrains Mono', monospace; font-weight: 700; line-height: 1; font-size: clamp(64px, 16vw, 260px); color: #4A5B72; }
+        .cap {
+            font-family: 'JetBrains Mono', monospace; font-size: clamp(11px, 1.4vw, 18px); letter-spacing: 0.16em;
+            text-transform: uppercase; color: #96A3B0; margin-top: 1vh;
+        }
+        body.paused .num { color: #C9D2DC; }
+        .status { font-size: clamp(16px, 2.4vw, 32px); margin: 4vh 0 1vh; min-height: 1.3em; }
+        .status .live { color: #F2B24C; font-weight: 600; }
+        .goal { color: #96A3B0; font-size: clamp(14px, 1.8vw, 22px); margin: 0; }
+        .bar { width: min(900px, 80vw); height: 10px; background: #2A3A50; border-radius: 5px; overflow: hidden; margin: 4vh 0 0; }
+        .bar span { display: block; height: 100%; width: 0; background: #F2B24C; border-radius: 5px; transition: width 1s linear; }
+        body.done .clock, body.done .bar { display: none; }
+        .big-done { display: none; font-weight: 600; font-size: clamp(48px, 9vw, 140px); }
+        body.done .big-done { display: block; }
+    </style>
+</head>
+<body>
+    <p class="label">Lektionstid kvar till talen</p>
+
+    <div class="clock" aria-live="off">
+        <div class="unit"><span class="num" id="h">0</span><span class="cap">timmar</span></div>
+        <span class="sep">:</span>
+        <div class="unit"><span class="num" id="m">00</span><span class="cap">minuter</span></div>
+        <span class="sep">:</span>
+        <div class="unit"><span class="num" id="s">00</span><span class="cap">sekunder</span></div>
+    </div>
+    <div class="big-done">Dags för talen!</div>
+
+    <p class="status" id="status"></p>
+    <p class="goal">Talen börjar fredag 11 december kl. 10.10</p>
+    <div class="bar"><span id="bar"></span></div>
+
+    <script>
+        // Nedräkningen startar fredag 20/11 kl. 10.57 och tickar bara under
+        // lektionspassen nedan. Mellan passen står klockan still.
+        // Ändra/lägg till pass här om planeringen ändras.
+        const PASS = [
+            { datum: '2026-11-20', start: '10:57', slut: '11:15' },
+            { datum: '2026-11-25', start: '09:50', slut: '10:50' },
+            { datum: '2026-12-01', start: '14:30', slut: '16:30', vad: 'ämnesfördjupningen' },
+            { datum: '2026-12-02', start: '09:50', slut: '10:50' },
+            { datum: '2026-12-09', start: '09:50', slut: '10:50' }
+        ];
+        const DAGAR = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
+
+        function at(datum, tid) {
+            const [y, mo, d] = datum.split('-').map(Number);
+            const [h, mi] = tid.split(':').map(Number);
+            return new Date(y, mo - 1, d, h, mi);
+        }
+        const pass = PASS.map(p => ({ a: at(p.datum, p.start), b: at(p.datum, p.slut), vad: p.vad }));
+        const total = pass.reduce((t, p) => t + (p.b - p.a), 0);
+        const pad = n => String(n).padStart(2, '0');
+
+        function tick() {
+            const now = Date.now();
+            let left = 0, live = null, next = null;
+            pass.forEach(p => {
+                if (now >= p.b) return;
+                if (now >= p.a) { live = p; left += p.b - now; }
+                else { left += p.b - p.a; if (!next) next = p; }
+            });
+            const sec = Math.ceil(left / 1000);
+            document.getElementById('h').textContent = Math.floor(sec / 3600);
+            document.getElementById('m').textContent = pad(Math.floor(sec % 3600 / 60));
+            document.getElementById('s').textContent = pad(sec % 60);
+            document.getElementById('bar').style.width = (100 * (total - left) / total) + '%';
+
+            document.body.classList.toggle('done', sec <= 0);
+            document.body.classList.toggle('paused', !live && sec > 0);
+            const st = document.getElementById('status');
+            if (sec <= 0) st.textContent = '';
+            else if (live) st.innerHTML = '<span class="live">Lektionen pågår – tiden tickar!</span>';
+            else if (next) {
+                const d = next.a;
+                st.textContent = 'Pausad. Klockan startar igen ' + DAGAR[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) +
+                    ' kl. ' + pad(d.getHours()) + '.' + pad(d.getMinutes()) + (next.vad ? ' (' + next.vad + ')' : '') + '.';
+            }
+        }
+        tick();
+        setInterval(tick, 250);
+    </script>
+</body>
+</html>
