@@ -117,6 +117,30 @@
         .exam-banner.past { background: #FFFFFF; border-color: #DDD8D0; }
         .exam-banner.past .exam-label, .exam-banner.past .exam-count { color: #96A3B0; }
 
+        /* Nedräkning i lektionstid (LESSON_COUNTDOWNS) */
+        .lesson-countdown {
+            max-width: 720px; margin: 4px 0 12px; padding: 16px 18px; background: #0F1B2D; color: #FFFFFF;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(15,27,45,0.12);
+        }
+        .lesson-countdown .lc-label {
+            font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+            text-transform: uppercase; color: #F2B24C;
+        }
+        .lesson-countdown .lc-time {
+            display: block; font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; line-height: 1.15; margin: 6px 0 2px;
+        }
+        .lesson-countdown .lc-sub { display: block; font-size: 14px; color: #C9D2DC; }
+        .lesson-countdown .lc-now { color: #F2B24C; font-weight: 700; }
+        .lesson-countdown .lc-bar { height: 8px; background: #2A3A50; border-radius: 4px; overflow: hidden; margin: 12px 0 10px; }
+        .lesson-countdown .lc-bar span { display: block; height: 100%; background: #F2B24C; border-radius: 4px; transition: width 400ms ease; }
+        .lesson-countdown .lc-list { list-style: none; margin: 0; padding: 0; font-size: 13px; color: #C9D2DC; }
+        .lesson-countdown .lc-list li { display: flex; gap: 10px; padding: 3px 0; }
+        .lesson-countdown .lc-list .lc-d { flex: 0 0 150px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #FFFFFF; }
+        .lesson-countdown .lc-list li.done { opacity: 0.4; text-decoration: line-through; }
+        .lesson-countdown .lc-list li.live .lc-d { color: #F2B24C; }
+        .lesson-countdown.finished { background: #FFFFFF; color: #0F1B2D; border: 1px solid #DDD8D0; box-shadow: none; }
+        .lesson-countdown.finished .lc-sub { color: #556070; }
+
         .exam-overview { margin: 32px 0 0; max-width: 720px; }
         .exam-overview .label {
             font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em;
@@ -227,6 +251,7 @@
                 <p class="kicker">Läsåret 2026/27</p>
                 <h1>Välkommen!</h1>
                 <p class="intro-text" id="welcome-text">Det här är planeringen för terminens veckor i SVE3. Klicka på en vecka i menyn för att se innehåll och uppgifter.</p>
+                <div id="lesson-countdowns"></div>
                 <div id="exam-overview"></div>
             </div>
 
@@ -312,6 +337,7 @@
                 buildMenu();
                 buildSections();
                 buildExamOverview();
+                buildLessonCountdowns();
 
             } catch (error) {
                 console.error('Fel vid tolkning av data:', error);
@@ -353,6 +379,98 @@
         // Står provet som kommentar i sista kolumnen (Läxa dag 2) ligger det
         // alltid på den här veckodagen.
         const COMMENT_EXAM_DAY = 'Tisdag';
+
+        // Nedräkning i LEKTIONSTID (inte kalenderdagar) fram till ett tillfälle.
+        // Räknar bara minuter inom de lektionspass som står i "pass" – tiden
+        // står still mellan lektionerna och tickar ner under lektionerna.
+        // Lägg till/ta bort/ändra pass här om planeringen ändras.
+        // moment: visas i momentet vars namn innehåller texten (och på startvyn
+        // tills nedräkningen är slut).
+        const LESSON_COUNTDOWNS = [
+            {
+                moment: 'Retorik',
+                rubrik: 'Lektionstid kvar till talen',
+                mal: 'Talen börjar fredag 11 december',
+                pass: [
+                    { datum: '2026-11-20', start: '10:10', slut: '11:15', vad: 'Introducera ämne och texter' },
+                    { datum: '2026-11-25', start: '09:50', slut: '10:50', vad: 'Arbeta med källtexter' },
+                    { datum: '2026-12-01', start: '14:30', slut: '16:30', vad: 'Ämnesfördjupning: talmanus' },
+                    { datum: '2026-12-02', start: '09:50', slut: '10:50', vad: 'Förbereda talen' },
+                    { datum: '2026-12-09', start: '09:50', slut: '10:50', vad: 'Förbereda talen' }
+                ]
+            }
+        ];
+
+        function lcDate(datum, tid) {
+            const [y, m, d] = datum.split('-').map(Number);
+            const [h, min] = tid.split(':').map(Number);
+            return new Date(y, m - 1, d, h, min);
+        }
+        function lcFormat(min) {
+            const h = Math.floor(min / 60), m = min % 60;
+            if (h && m) return h + ' tim ' + m + ' min';
+            if (h) return h + ' tim';
+            return m + ' min';
+        }
+        function lcState(cd) {
+            const now = new Date();
+            let total = 0, left = 0, live = null;
+            const pass = cd.pass.map(p => {
+                const a = lcDate(p.datum, p.start), b = lcDate(p.datum, p.slut);
+                const len = Math.round((b - a) / 60000);
+                const rest = now >= b ? 0 : now <= a ? len : Math.ceil((b - now) / 60000);
+                total += len; left += rest;
+                const st = now >= b ? 'done' : now >= a ? 'live' : 'next';
+                if (st === 'live') live = p;
+                return Object.assign({ st }, p, { a });
+            });
+            return { total, left, live, pass };
+        }
+        function lcRender(el, cd) {
+            const s = lcState(cd);
+            el.className = 'lesson-countdown' + (s.left === 0 ? ' finished' : '');
+            el.innerHTML = '';
+            const add = (tag, cls, txt, parent) => {
+                const n = document.createElement(tag);
+                if (cls) n.className = cls;
+                if (txt != null) n.textContent = txt;
+                (parent || el).appendChild(n);
+                return n;
+            };
+            add('span', 'lc-label', cd.rubrik);
+            add('span', 'lc-time', s.left === 0 ? 'Dags för talen!' : lcFormat(s.left));
+            const sub = add('span', 'lc-sub', null);
+            if (s.live) add('span', 'lc-now', 'Lektionen pågår – tiden tickar! ', sub);
+            sub.appendChild(document.createTextNode(cd.mal + '.'));
+            if (s.left === 0) return;
+            const bar = add('div', 'lc-bar', null);
+            add('span', null, null, bar).style.width = Math.round(100 * (s.total - s.left) / s.total) + '%';
+            const ul = add('ul', 'lc-list', null);
+            s.pass.forEach(p => {
+                const li = add('li', p.st, null, ul);
+                const wd = WEEKDAYS[(p.a.getDay() + 6) % 7];
+                add('span', 'lc-d', wd + ' ' + p.a.getDate() + '/' + (p.a.getMonth() + 1) + ' ' + p.start, li);
+                add('span', null, p.vad + ' (' + lcFormat(Math.round((lcDate(p.datum, p.slut) - p.a) / 60000)) + ')', li);
+            });
+        }
+        function lcBox(cd) {
+            const el = document.createElement('div');
+            el.dataset.lc = LESSON_COUNTDOWNS.indexOf(cd);
+            lcRender(el, cd);
+            return el;
+        }
+        function lcFor(name) {
+            return LESSON_COUNTDOWNS.filter(cd => name.toLowerCase().includes(cd.moment.toLowerCase()));
+        }
+        function buildLessonCountdowns() {
+            const box = document.getElementById('lesson-countdowns');
+            if (!box) return;
+            box.innerHTML = '';
+            LESSON_COUNTDOWNS.forEach(cd => { if (lcState(cd).left > 0) box.appendChild(lcBox(cd)); });
+        }
+        setInterval(() => {
+            document.querySelectorAll('[data-lc]').forEach(el => lcRender(el, LESSON_COUNTDOWNS[+el.dataset.lc]));
+        }, 20000);
         // "Inför provet", "Inför kursprov" osv. är förberedelser, inte själva provet.
         const NOT_EXAM = /inför\s+\S*prov/i;
         function isProv(text) {
@@ -562,6 +680,7 @@
                     }
                     view.appendChild(banner);
                 });
+                lcFor(name).forEach(cd => view.appendChild(lcBox(cd)));
 
                 if (UNIT_LABEL === 'Moment' && !isPureNumber(name)) {
                     const nums = rows.map(r => parseInt(r.vecka, 10)).filter(n => !isNaN(n));
