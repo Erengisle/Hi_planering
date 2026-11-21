@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lektionstid kvar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: #0F1B2D; color: #FFFFFF; font-family: 'Space Grotesk', system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+  }
+  main { width: 100%; max-width: 1100px; padding: 4vh 24px 32px; flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+  /* Val av klass */
+  .pick { margin-top: 18vh; text-align: center; }
+  .pick h1 { font-size: 28px; margin: 0 0 18px; font-weight: 700; }
+  .pick form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .pick input {
+    font: 700 24px 'JetBrains Mono', monospace; text-transform: uppercase; width: 220px; padding: 10px 14px;
+    border-radius: 8px; border: 1px solid #2A3A50; background: #13233A; color: #FFFFFF; text-align: center;
+  }
+  button {
+    font: 600 16px 'Space Grotesk', sans-serif; padding: 10px 18px; border-radius: 8px; cursor: pointer;
+    border: 1px solid #F2B24C; background: #F2B24C; color: #0F1B2D;
+  }
+  button.ghost { background: transparent; color: #C9D2DC; border-color: #2A3A50; }
+  button.ghost:hover { border-color: #F2B24C; color: #FFFFFF; }
+  .msg { margin-top: 18px; color: #F2B24C; min-height: 1.4em; }
+
+  /* Nedräkning */
+  .top { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .klass { font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: #F2B24C; font-weight: 700; }
+  .tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  select {
+    font: 500 15px 'Space Grotesk', sans-serif; padding: 9px 10px; border-radius: 8px; background: #13233A; color: #FFFFFF; border: 1px solid #2A3A50;
+  }
+  .goal { margin: 7vh 0 0; text-align: center; font-size: clamp(20px, 3vw, 34px); font-weight: 600; }
+  .goal small { display: block; font-size: .55em; color: #C9D2DC; font-weight: 400; margin-top: 4px; }
+  .clock {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700; line-height: 1; margin: 4vh 0 1vh;
+    font-size: clamp(64px, 15vw, 210px); font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+  }
+  .clock .t { color: #F2B24C; font-size: .55em; }
+  .units { display: flex; gap: 2.2em; color: #8796A8; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .state { margin-top: 4vh; font-size: clamp(16px, 2vw, 22px); color: #C9D2DC; text-align: center; }
+  .state b { color: #F2B24C; }
+  .dot { display: inline-block; width: .7em; height: .7em; border-radius: 50%; background: #5A6B80; margin-right: .5em; vertical-align: .05em; }
+  body.live .dot { background: #4CD08A; box-shadow: 0 0 0 0 rgba(76,208,138,.6); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 12px rgba(76,208,138,0); } 100% { box-shadow: 0 0 0 0 rgba(76,208,138,0); } }
+  .bar { width: min(720px, 100%); height: 8px; background: #2A3A50; border-radius: 4px; overflow: hidden; margin-top: 3vh; }
+  .bar span { display: block; height: 100%; background: #F2B24C; transition: width .4s; }
+  details { width: min(720px, 100%); margin-top: 4vh; color: #C9D2DC; font-size: 14px; }
+  summary { cursor: pointer; color: #8796A8; }
+  ul.passes { list-style: none; padding: 0; margin: 10px 0 0; }
+  ul.passes li { display: flex; gap: 12px; padding: 4px 0; border-bottom: 1px solid #1B2C44; }
+  ul.passes .d { flex: 0 0 190px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #FFFFFF; }
+  ul.passes .m { flex: 0 0 70px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+  ul.passes li.live .d { color: #4CD08A; }
+  ul.passes li.af .d::after { content: ' ÄF'; color: #F2B24C; }
+  .notes { margin-top: 8px; color: #8796A8; font-size: 13px; }
+  body.done .clock { color: #4CD08A; }
+  body.fs .top, body.fs details { display: none; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) { ul.passes .d { flex-basis: 140px; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="pick" id="pick">
+    <h1>Lektionstid kvar till provet</h1>
+    <form id="form">
+      <input id="klassInput" placeholder="Klass" autocomplete="off" spellcheck="false" aria-label="Klassnamn">
+      <button type="submit">Visa</button>
+    </form>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <section id="view" class="hidden" style="width:100%;display:flex;flex-direction:column;align-items:center">
+    <div class="top">
+      <span class="klass" id="klassName"></span>
+      <div class="tools">
+        <select id="examSelect" aria-label="Välj prov"></select>
+        <button class="ghost" id="fsBtn" title="Helskärm (F)">Helskärm</button>
+        <button class="ghost" id="changeBtn">Byt klass</button>
+      </div>
+    </div>
+    <div class="goal" id="goal"></div>
+    <div class="clock" id="clock">0:00<span class="t">.0</span></div>
+    <div class="units"><span>minuter</span><span>sekunder</span><span>tiondelar</span></div>
+    <div class="state" id="state"></div>
+    <div class="bar"><span id="bar" style="width:0%"></span></div>
+    <details id="details">
+      <summary id="passSummary">Lektioner kvar</summary>
+      <ul class="passes" id="passes"></ul>
+      <div class="notes" id="notes"></div>
+    </details>
+  </section>
+</main>
+
+<script>
+/* ============================================================
+   Nedräkning i LEKTIONSTID fram till nästa prov.
+   Läser klassens planeringsark (samma ark som planeringssidan).
+   - Lektionstiderna tas från rubrikraden, t.ex. "Måndag 13:45 - 14:45".
+   - Bara veckor som finns i arket räknas. En cell med t.ex. lov,
+     studiedag, programdag eller "ingen lektion" ger ingen lektion.
+   - "Ämnesfördjupning tisdag 1/12 kl. 14.30" var som helst på en
+     veckorad ger 2 timmar extra från den tiden. Står "prov" i samma
+     cell ligger provet på ämnesfördjupningen.
+   - Målet är början på lektionen där det står "Prov".
+   Ny klass: lägg till en rad i CLASSES (samma SHEET_ID och GID som
+   klassens planeringssida).
+   ============================================================ */
+const CLASSES = {
+  'NAA24':    { namn: 'Historia 1b · NAA24', sheet: '1BssPFF8XO6OPxPiXObq72E54ORc96oyN1NFLBFJbrGU', gid: '759481449' },
+  'NAB24':    { namn: 'Historia 1b · NAB24', sheet: '15lq61sadNIsOX3i8ti7WOr8kP-9wk_HwwFoENid2gpM', gid: '759481449' },
+  'EK26':     { namn: 'Historia 1b · EK26',  sheet: '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y', gid: '1800788346' },
+  'EKA24':    { namn: 'Svenska 3 · EKA24',   sheet: '1uTTYzZlI9dgUSHRAjo3ehFg5dMPYG8BfgMCwbi0xNnw', gid: '920723534' },
+  'NAB26':    { namn: 'SVA 1 · NAB26',       sheet: '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4', gid: '1145608673' },
+  'EKNA25-1': { namn: 'SVA 2 · EKNA25:1',    sheet: '1dhJDfcmmj1DIn60gbp8YrelxnfF2nFQgNm1oomucW80', gid: '1866411600' }
+};
+const ALIASES = { 'EKNA25': 'EKNA25-1', 'EKNA251': 'EKNA25-1' };
+const AF_MINUTES = 120;
+
+const EXAM_WORDS = /prov|litteratursamtal/i;
+const NOT_EXAM = /inför\s+\S*prov|omprov/i;
+const NO_LESSON = /lov\b|studiedag|programdag|friluftsdag|utvecklingssamtal|\bnp\b|ingen lektion|julavslutning|skolavslutning|klämdag|långfredag|mässa|kick-off|studenten|temadag|prao/i;
+const WEEKDAYS = ['måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag', 'söndag'];
+
+const $ = id => document.getElementById(id);
+let events = [], exams = [], target = null, notes = [], raf = 0, timer = 0, klassKey = null, loadTimeout = 0;
+
+/* ---------- Hjälpfunktioner ---------- */
+function norm(s) { return (s || '').toUpperCase().replace(/\s+/g, '').replace(':', '-'); }
+function findClass(s) { const k = norm(s); return CLASSES[k] ? k : (ALIASES[k.replace('-', '')] || ALIASES[k] || null); }
+function isProv(t) { return EXAM_WORDS.test(t || '') && !NOT_EXAM.test(t || ''); }
+function cellText(c) { return c && c.v != null ? String(c.v).trim() : ''; }
+function isoWeek(date) {
+  const thu = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 3 - ((date.getDay() + 6) % 7));
+  const jan1 = new Date(thu.getFullYear(), 0, 1);
+  return 1 + Math.floor(Math.round((thu - jan1) / 86400000) / 7);
+}
+function autumnYear() { const t = new Date(); return t.getMonth() >= 6 ? t.getFullYear() : t.getFullYear() - 1; }
+function dateFromWeek(week, dayIdx) {
+  const year = week >= 27 ? autumnYear() : autumnYear() + 1;
+  const jan4 = new Date(year, 0, 4);
+  const d = new Date(year, 0, 4 - ((jan4.getDay() + 6) % 7) + (week - 1) * 7 + dayIdx);
+  return isoWeek(d) === week ? d : null;
+}
+function at(day, h, m) { return new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m); }
+function parseDayLabel(label) {
+  const m = (label || '').match(/(måndag|tisdag|onsdag|torsdag|fredag)\D*?(\d{1,2})[.:](\d{2})\s*[-–]\s*(\d{1,2})[.:](\d{2})/i);
+  if (!m) return null;
+  return { idx: WEEKDAYS.indexOf(m[1].toLowerCase()), name: m[1].toLowerCase(), sh: +m[2], sm: +m[3], eh: +m[4], em: +m[5] };
+}
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25),
+    g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4,
+    l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451), mo = Math.floor((h + l - 7 * m + 114) / 31);
+  return new Date(y, mo - 1, ((h + l - 7 * m + 114) % 31) + 1);
+}
+function isRedDay(d) {
+  const md = (d.getMonth() + 1) + '-' + d.getDate();
+  if (['1-1', '1-6', '5-1', '6-6', '12-24', '12-25', '12-26', '12-31'].includes(md)) return true;
+  const e = easter(d.getFullYear()), diff = Math.round((at(d, 0, 0) - e) / 86400000);
+  if ([-2, 1, 39].includes(diff)) return true;
+  if (d.getMonth() === 5 && d.getDay() === 5 && d.getDate() >= 19 && d.getDate() <= 25) return true;
+  return false;
+}
+function firstLine(t) { return (t || '').split('\n').map(s => s.trim()).filter(Boolean)[0] || ''; }
+function examName(t) {
+  const line = (t || '').split('\n').map(s => s.trim()).find(s => isProv(s)) || firstLine(t);
+  return line.length > 60 ? line.slice(0, 57) + '…' : line;
+}
+function fmtDay(d) { return d.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' }); }
+function fmtShort(d) { return d.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'numeric' }); }
+function hm(d) { return d.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }); }
+function minText(min) { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? h + ' tim' + (m ? ' ' + m + ' min' : '') : m + ' min'; }
+
+/* ---------- Läsa arket ---------- */
+function load(key) {
+  klassKey = key;
+  const c = CLASSES[key];
+  $('msg').textContent = 'Hämtar planeringen …';
+  clearTimeout(loadTimeout);
+  loadTimeout = setTimeout(() => { $('msg').textContent = 'Planeringen kunde inte hämtas. Kontrollera internetanslutningen och försök igen.'; showPick(); }, 12000);
+  const s = document.createElement('script');
+  s.src = `https://docs.google.com/spreadsheets/d/${c.sheet}/gviz/tq?tqx=responseHandler:handleCountdownData&gid=${c.gid}&headers=1&_=${Date.now()}`;
+  s.onerror = () => { clearTimeout(loadTimeout); $('msg').textContent = 'Planeringen kunde inte hämtas.'; showPick(); };
+  document.head.appendChild(s);
+}
+
+function handleCountdownData(resp) {
+  clearTimeout(loadTimeout);
+  try { build(resp.table); }
+  catch (e) { console.error(e); $('msg').textContent = 'Något gick fel när planeringen lästes: ' + e.message; showPick(); return; }
+  if (!exams.length) { $('msg').textContent = 'Hittade inget kommande prov i planeringen för ' + CLASSES[klassKey].namn + '.'; showPick(); return; }
+  showView();
+}
+window.handleCountdownData = handleCountdownData;
+
+function build(table) {
+  events = []; exams = []; notes = [];
+  const cols = table.cols || [];
+  let rows = table.rows || [];
+  let days = [parseDayLabel(cols[2] && cols[2].label), parseDayLabel(cols[4] && cols[4].label)];
+  if ((!days[0] || !days[1]) && rows[0] && /moment/i.test(cellText(rows[0].c && rows[0].c[0]))) {
+    days = [parseDayLabel(cellText(rows[0].c[2])), parseDayLabel(cellText(rows[0].c[4]))];
+    rows = rows.slice(1);
+  }
+  if (!days[0] || !days[1]) throw new Error('lektionstiderna saknas i rubrikraden (t.ex. "Måndag 13:45 - 14:45").');
+
+  const weeks = new Map();       // vecka -> {d: ['', ''], cells: []}
+  const explicit = [];           // datum från momentets sammanfattningsrad
+  rows.forEach(r => {
+    const c = r.c || [];
+    const moment = cellText(c[0]);
+    const vecka = parseInt(cellText(c[1]), 10);
+    if (/^(info|omprov)$/i.test(moment)) return;
+    if (isNaN(vecka)) {
+      if (moment && c[3] && c[3].v != null) {
+        const v = String(c[3].v), m1 = v.match(/^Date\((\d+),(\d+),(\d+)/), m2 = v.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        const d = m1 ? new Date(+m1[1], +m1[2], +m1[3]) : m2 ? new Date(+m2[1], +m2[2] - 1, +m2[3]) : null;
+        if (d) explicit.push({ date: d, name: 'Prov – ' + moment.replace(/^\d+\s*/, '') });
+      }
+      return;
+    }
+    if (vecka < 1 || vecka > 53) return;
+    if (!weeks.has(vecka)) weeks.set(vecka, { d: ['', ''], cells: [] });
+    const w = weeks.get(vecka);
+    w.d[0] += (w.d[0] && cellText(c[2]) ? '\n' : '') + cellText(c[2]);
+    w.d[1] += (w.d[1] && cellText(c[4]) ? '\n' : '') + cellText(c[4]);
+    [2, 3, 4, 5].forEach(i => { const t = cellText(c[i]); if (t) w.cells.push(t); });
+  });
+
+  const seen = new Set();
+  weeks.forEach((w, vecka) => {
+    days.forEach((day, i) => {
+      const date = dateFromWeek(vecka, day.idx);
+      if (!date) return;
+      const text = w.d[i];
+      const start = at(date, day.sh, day.sm), end = at(date, day.eh, day.em);
+      if (isProv(text)) { events.push({ start, end, exam: true, name: examName(text) }); return; }
+      if (NO_LESSON.test(text) || isRedDay(date)) return;
+      events.push({ start, end, text: firstLine(text) });
+    });
+    // Ämnesfördjupning med datum och tid
+    w.cells.forEach(t => {
+      const re = /ämnesfördjupning[^\n\d]*?(\d{1,2})\/(\d{1,2})[^\n\d]*?(\d{1,2})[.:](\d{2})/gi;
+      let m;
+      while ((m = re.exec(t))) {
+        const mon = +m[2] - 1, year = mon >= 6 ? autumnYear() : autumnYear() + 1;
+        const start = new Date(year, mon, +m[1], +m[3], +m[4]);
+        const key = start.getTime();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const end = new Date(key + AF_MINUTES * 60000);
+        if (isProv(t)) events.push({ start, end, exam: true, af: true, name: examName(t) });
+        else events.push({ start, end, af: true, text: 'Ämnesfördjupning' });
+      }
+      if (/ämnesfördjupning/i.test(t) && !/ämnesfördjupning[^\n\d]*?\d{1,2}\/\d{1,2}/i.test(t) && /\d{1,2}\/\d{1,2}|kl\./i.test(t))
+        notes.push('Vecka ' + vecka + ': ämnesfördjupning utan läsbart datum och tid räknas inte.');
+    });
+  });
+  explicit.forEach(x => {
+    const same = events.find(e => e.start.toDateString() === x.date.toDateString() && !e.af);
+    if (same) { same.exam = true; same.name = same.name || x.name; }
+    else events.push({ start: at(x.date, 0, 0), end: at(x.date, 0, 0), exam: true, name: x.name });
+  });
+
+  events.sort((a, b) => a.start - b.start);
+  const now = new Date();
+  exams = events.filter(e => e.exam && e.start > now);
+}
+
+/* ---------- Räkna ---------- */
+// Tidigare prov räknas inte som förberedelsetid.
+function lessonsBefore(t) { return events.filter(e => e.start < t && !e.exam); }
+function remainingMs(now) {
+  let ms = 0;
+  lessonsBefore(target.start).forEach(e => {
+    const s = Math.max(e.start, now), en = Math.min(e.end, target.start);
+    if (en > s) ms += en - s;
+  });
+  return ms;
+}
+// Stapeln visar hur stor del av lektionstiden sedan förra provet som har gått.
+function totalMs() {
+  const prev = events.filter(e => e.exam && e.start < target.start).pop();
+  return lessonsBefore(target.start).filter(e => !prev || e.start >= prev.start)
+    .reduce((a, e) => a + (Math.min(e.end, target.start) - e.start), 0);
+}
+function liveLesson(now) { return lessonsBefore(target.start).find(e => e.start <= now && now < e.end) || null; }
+function nextLesson(now) { return lessonsBefore(target.start).find(e => e.start > now) || null; }
+
+function render() {
+  const now = new Date();
+  const ms = remainingMs(now);
+  const live = liveLesson(now);
+  const done = now >= target.start;
+  document.body.classList.toggle('live', !!live && !done);
+  document.body.classList.toggle('done', done);
+
+  const tenths = Math.floor(ms / 100);
+  const min = Math.floor(tenths / 600), sec = Math.floor(tenths / 10) % 60, t = tenths % 10;
+  $('clock').innerHTML = min + ':' + String(sec).padStart(2, '0') + '<span class="t">.' + t + '</span>';
+
+  if (done) $('state').innerHTML = '<b>Dags för ' + target.name.toLowerCase().replace(/^prov/, 'provet') + '!</b>';
+  else if (live) $('state').innerHTML = '<span class="dot"></span>Lektion pågår – tiden räknas ner till ' + hm(live.end) + '. Totalt kvar: <b>' + minText(ms / 60000) + '</b>';
+  else if (ms <= 0) $('state').innerHTML = '<span class="dot"></span>Ingen lektionstid kvar – nästa lektion är <b>' + escapeHtml(target.name) + '</b>.';
+  else {
+    const n = nextLesson(now);
+    $('state').innerHTML = '<span class="dot"></span>Paus. ' + (n ? 'Nästa lektion: <b>' + fmtShort(n.start) + ' kl. ' + hm(n.start) + '</b>' + (n.af ? ' (ämnesfördjupning)' : '') + '. ' : '') + 'Totalt kvar: <b>' + minText(ms / 60000) + '</b>';
+  }
+  const tot = totalMs();
+  $('bar').style.width = (tot ? (100 * (1 - ms / tot)) : 100).toFixed(2) + '%';
+  return { live: !!live && !done, done };
+}
+
+function loop() {
+  cancelAnimationFrame(raf); clearTimeout(timer);
+  const st = render();
+  if (st.live) raf = requestAnimationFrame(loop);
+  else if (!st.done) timer = setTimeout(loop, 1000);
+}
+
+function renderList() {
+  const now = new Date();
+  const list = lessonsBefore(target.start).filter(e => e.end > now);
+  $('passSummary').textContent = list.length + ' lektionspass kvar före provet';
+  $('passes').innerHTML = list.map(e => {
+    const mins = Math.round((Math.min(e.end, target.start) - e.start) / 60000);
+    const cls = (e.start <= now && now < e.end ? 'live ' : '') + (e.af ? 'af' : '');
+    return `<li class="${cls}"><span class="d">${fmtShort(e.start)} ${hm(e.start)}–${hm(e.end)}</span><span>${escapeHtml(e.text || '')}</span><span class="m">${mins} min</span></li>`;
+  }).join('');
+  $('notes').textContent = notes.join(' ');
+}
+function escapeHtml(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+function setTarget(i) {
+  target = exams[i];
+  $('goal').innerHTML = escapeHtml(target.name) + '<small>' + fmtDay(target.start) + (target.start.getHours() ? ' kl. ' + hm(target.start) : '') + '</small>';
+  renderList();
+  loop();
+}
+
+/* ---------- Vyer ---------- */
+function showPick() {
+  cancelAnimationFrame(raf); clearTimeout(timer);
+  $('view').classList.add('hidden'); $('pick').classList.remove('hidden');
+  document.title = 'Lektionstid kvar';
+  $('klassInput').focus();
+}
+function showView() {
+  $('msg').textContent = '';
+  $('pick').classList.add('hidden'); $('view').classList.remove('hidden');
+  $('klassName').textContent = CLASSES[klassKey].namn;
+  document.title = 'Lektionstid kvar · ' + klassKey;
+  $('examSelect').innerHTML = exams.map((e, i) => `<option value="${i}">${escapeHtml(e.name)} – ${fmtShort(e.start)}</option>`).join('');
+  setTarget(0);
+}
+
+$('form').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const key = findClass($('klassInput').value);
+  if (!key) { $('msg').textContent = 'Klassen "' + $('klassInput').value + '" finns inte i nedräknaren.'; return; }
+  history.replaceState(null, '', '?klass=' + encodeURIComponent(key));
+  load(key);
+});
+$('examSelect').addEventListener('change', e => setTarget(+e.target.value));
+$('changeBtn').addEventListener('click', () => { history.replaceState(null, '', location.pathname); $('klassInput').value = ''; showPick(); });
+function toggleFs() {
+  try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {}
+}
+$('fsBtn').addEventListener('click', toggleFs);
+document.addEventListener('fullscreenchange', () => document.body.classList.toggle('fs', !!document.fullscreenElement));
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'f' || e.key === 'F') toggleFs();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden && target) { renderList(); loop(); } });
+setInterval(() => { if (target && !$('view').classList.contains('hidden')) renderList(); }, 60000);
+
+const start = new URLSearchParams(location.search).get('klass');
+if (start && findClass(start)) { $('klassInput').value = findClass(start); load(findClass(start)); }
+else $('klassInput').focus();
+</script>
+</body>
+</html>
