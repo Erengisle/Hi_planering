@@ -759,18 +759,25 @@
                         textEl.textContent = hasText ? text : '—';
                         cell.appendChild(labelEl);
                         cell.appendChild(textEl);
-                        if (laxa) {
+                        // En rad som börjar med "Ämnesfördjupning" (och resten av cellen efter den)
+                        // visas som ett eget fält i stället för under Läxa.
+                        const lines = (laxa || '').split('\n');
+                        const afAt = lines.findIndex(l => /^\s*ämnesfördjupning/i.test(l));
+                        const hwPart = (afAt < 0 ? lines : lines.slice(0, afAt)).join('\n').trim();
+                        const afPart = afAt < 0 ? '' : lines.slice(afAt).join('\n').replace(/^\s*ämnesfördjupning[:\s]*/i, '').trim();
+                        [['Läxa', hwPart], ['Ämnesfördjupning', afPart]].forEach(([rubrik, innehall]) => {
+                            if (!innehall) return;
                             const hw = document.createElement('div');
                             hw.className = 'day-hw';
                             const hwLabel = document.createElement('span');
                             hwLabel.className = 'hw-label';
-                            hwLabel.textContent = 'Läxa';
+                            hwLabel.textContent = rubrik;
                             const hwText = document.createElement('p');
-                            hwText.textContent = laxa;
+                            hwText.textContent = innehall;
                             hw.appendChild(hwLabel);
                             hw.appendChild(hwText);
                             cell.appendChild(hw);
-                        }
+                        });
                         dayGrid.appendChild(cell);
                     });
 

@@ -273,6 +273,8 @@ function build(table) {
     });
   });
   explicit.forEach(x => {
+    // Finns redan ett prov samma dag (t.ex. på ämnesfördjupningen) räknas det inte två gånger.
+    if (events.some(e => e.exam && e.start.toDateString() === x.date.toDateString())) return;
     const same = events.find(e => e.start.toDateString() === x.date.toDateString() && !e.af);
     if (same) { same.exam = true; same.name = same.name || x.name; }
     else events.push({ start: at(x.date, 0, 0), end: at(x.date, 0, 0), exam: true, name: x.name });
