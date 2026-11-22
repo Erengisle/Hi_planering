@@ -236,13 +236,14 @@
     </div>
 
     <script>
-        // ?bas=1 visar planeringen från Planeringsbas (förhandsvisning); utan den läses klassens eget ark.
-        const BAS = new URLSearchParams(location.search).get('bas') === '1';
-        const SHEET_ID = BAS ? '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8' : '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y';
-        const GID = BAS ? '7' : '1800788346';
-        if (BAS) document.addEventListener('DOMContentLoaded', () => {
+        // Planeringen hämtas från Planeringsbas (fliken Utdata för klassen).
+        // ?gammal=1 visar i stället klassens gamla planeringsark (reserv).
+        const GAMMAL = new URLSearchParams(location.search).get('gammal') === '1';
+        const SHEET_ID = GAMMAL ? '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y' : '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8';
+        const GID = GAMMAL ? '1800788346' : '7';
+        if (GAMMAL) document.addEventListener('DOMContentLoaded', () => {
             const n = document.createElement('div');
-            n.textContent = 'Förhandsvisning: planeringen hämtas från Planeringsbas';
+            n.textContent = 'Reservläge: planeringen hämtas från det gamla planeringsarket';
             n.style.cssText = 'background:#FFF4D6;color:#6B4A00;font:13px/1.4 system-ui,sans-serif;padding:6px 12px;text-align:center';
             document.body.prepend(n);
         });
