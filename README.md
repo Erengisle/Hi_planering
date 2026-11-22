@@ -30,6 +30,21 @@ bruk:
 | Svenska som andraspråk 2 | EKNA25:1 | https://erengisle.github.io/Hi_planering/sva2/ekna25-1/ |
 | Svenska 3 | EKA24 | https://erengisle.github.io/Hi_planering/sve3/eka24/ |
 
+## Förhandsvisning från Planeringsbas (`?bas=1`)
+
+Historia 1b-sidorna (NAA24, NAB24, EK26) och nedräknaren kan läsa planeringen
+från arket **Planeringsbas 2026/27** i stället för klassens eget planeringsark.
+Lägg till `?bas=1` i adressen, t.ex.
+`https://erengisle.github.io/Hi_planering/hi1b/naa24/?bas=1` eller
+`https://erengisle.github.io/Hi_planering/nedrakning/?klass=NAA24&bas=1`.
+Utan `?bas=1` ser allt ut som vanligt. Sidan visar en gul rad överst när den
+läser från Planeringsbas.
+
+Planeringsbas (`1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8`, delad
+"Alla med länken kan visa") har en flik per klass som ett Apps Script
+genererar: Utdata NAA24 (gid 5), Utdata NAB24 (gid 6), Utdata EK26 (gid 7).
+Flikarna har samma 6 kolumner och radkonventioner som klassarken.
+
 ## Utskrift per moment (för läraren)
 
 `utskrift/` är en sida för att skriva ut ett elevblad per moment: kort

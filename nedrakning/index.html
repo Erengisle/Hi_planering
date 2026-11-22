@@ -118,9 +118,9 @@
    klassens planeringssida).
    ============================================================ */
 const CLASSES = {
-  'NAA24':    { namn: 'Historia 1b · NAA24', sheet: '1BssPFF8XO6OPxPiXObq72E54ORc96oyN1NFLBFJbrGU', gid: '759481449' },
-  'NAB24':    { namn: 'Historia 1b · NAB24', sheet: '15lq61sadNIsOX3i8ti7WOr8kP-9wk_HwwFoENid2gpM', gid: '759481449' },
-  'EK26':     { namn: 'Historia 1b · EK26',  sheet: '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y', gid: '1800788346' },
+  'NAA24':    { namn: 'Historia 1b · NAA24', sheet: '1BssPFF8XO6OPxPiXObq72E54ORc96oyN1NFLBFJbrGU', gid: '759481449', bas: { sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '5' } },
+  'NAB24':    { namn: 'Historia 1b · NAB24', sheet: '15lq61sadNIsOX3i8ti7WOr8kP-9wk_HwwFoENid2gpM', gid: '759481449', bas: { sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '6' } },
+  'EK26':     { namn: 'Historia 1b · EK26',  sheet: '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y', gid: '1800788346', bas: { sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '7' } },
   'EKA24':    { namn: 'Svenska 3 · EKA24',   sheet: '1uTTYzZlI9dgUSHRAjo3ehFg5dMPYG8BfgMCwbi0xNnw', gid: '920723534' },
   'NAB26':    { namn: 'SVA 1 · NAB26',       sheet: '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4', gid: '1145608673' },
   'EKNA25-1': { namn: 'SVA 2 · EKNA25:1',    sheet: '1dhJDfcmmj1DIn60gbp8YrelxnfF2nFQgNm1oomucW80', gid: '1866411600' }
@@ -188,7 +188,9 @@ function minText(min) { min = Math.round(min); const h = Math.floor(min / 60), m
 /* ---------- Läsa arket ---------- */
 function load(key) {
   klassKey = key;
-  const c = CLASSES[key];
+  const c0 = CLASSES[key];
+  // ?bas=1: läs klassens flik i Planeringsbas (förhandsvisning) i stället för klassens eget ark.
+  const c = (new URLSearchParams(location.search).get('bas') === '1' && c0.bas) ? c0.bas : c0;
   $('msg').textContent = 'Hämtar planeringen …';
   clearTimeout(loadTimeout);
   loadTimeout = setTimeout(() => { $('msg').textContent = 'Planeringen kunde inte hämtas. Kontrollera internetanslutningen och försök igen.'; showPick(); }, 12000);
@@ -375,11 +377,11 @@ $('form').addEventListener('submit', ev => {
   ev.preventDefault();
   const key = findClass($('klassInput').value);
   if (!key) { $('msg').textContent = 'Klassen "' + $('klassInput').value + '" finns inte i nedräknaren.'; return; }
-  history.replaceState(null, '', '?klass=' + encodeURIComponent(key));
+  history.replaceState(null, '', '?klass=' + encodeURIComponent(key) + (new URLSearchParams(location.search).get('bas') === '1' ? '&bas=1' : ''));
   load(key);
 });
 $('examSelect').addEventListener('change', e => setTarget(+e.target.value));
-$('changeBtn').addEventListener('click', () => { history.replaceState(null, '', location.pathname); $('klassInput').value = ''; showPick(); });
+$('changeBtn').addEventListener('click', () => { history.replaceState(null, '', location.pathname + (new URLSearchParams(location.search).get('bas') === '1' ? '?bas=1' : '')); $('klassInput').value = ''; showPick(); });
 function toggleFs() {
   try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (e) {}
 }
