@@ -42,10 +42,11 @@
   .goal small { display: block; font-size: .55em; color: #C9D2DC; font-weight: 400; margin-top: 4px; }
   .clock {
     font-family: 'JetBrains Mono', monospace; font-weight: 700; line-height: 1; margin: 4vh 0 1vh;
-    font-size: clamp(64px, 15vw, 210px); font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+    font-size: clamp(56px, 12.5vw, 190px); font-variant-numeric: tabular-nums; letter-spacing: -.02em;
   }
   .clock .t { color: #F2B24C; font-size: .55em; }
   .units { display: flex; gap: 2.2em; color: #8796A8; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+  .note { margin-top: 10px; color: #8796A8; font-size: 14px; text-align: center; }
   .state { margin-top: 4vh; font-size: clamp(16px, 2vw, 22px); color: #C9D2DC; text-align: center; }
   .state b { color: #F2B24C; }
   .dot { display: inline-block; width: .7em; height: .7em; border-radius: 50%; background: #5A6B80; margin-right: .5em; vertical-align: .05em; }
@@ -58,7 +59,7 @@
   ul.passes { list-style: none; padding: 0; margin: 10px 0 0; }
   ul.passes li { display: flex; gap: 12px; padding: 4px 0; border-bottom: 1px solid #1B2C44; }
   ul.passes .d { flex: 0 0 190px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #FFFFFF; }
-  ul.passes .m { flex: 0 0 70px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+  ul.passes .m { flex: 0 0 90px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
   ul.passes li.live .d { color: #4CD08A; }
   ul.passes li.af .d::after { content: ' ÄF'; color: #F2B24C; }
   .notes { margin-top: 8px; color: #8796A8; font-size: 13px; }
@@ -89,8 +90,9 @@
       </div>
     </div>
     <div class="goal" id="goal"></div>
-    <div class="clock" id="clock">0:00<span class="t">.0</span></div>
-    <div class="units"><span>minuter</span><span>sekunder</span><span>tiondelar</span></div>
+    <div class="clock" id="clock">0:00:00<span class="t">.0</span></div>
+    <div class="units"><span>timmar</span><span>minuter</span><span>sekunder</span><span>tiondelar</span></div>
+    <div class="note">Effektiv lektionstid: 10 minuter per lektion räknas bort för rast och uppstart.</div>
     <div class="state" id="state"></div>
     <div class="bar"><span id="bar" style="width:0%"></span></div>
     <details id="details">
@@ -125,6 +127,8 @@ const CLASSES = {
 };
 const ALIASES = { 'EKNA25': 'EKNA25-1', 'EKNA251': 'EKNA25-1' };
 const AF_MINUTES = 120;
+// Effektiv lektionstid: de första minuterna av varje pass (rast och uppstart) räknas inte.
+const START_MIN = 10;
 
 const EXAM_WORDS = /prov|litteratursamtal/i;
 const NOT_EXAM = /inför\s+\S*prov|omprov/i;
@@ -280,10 +284,11 @@ function build(table) {
 /* ---------- Räkna ---------- */
 // Tidigare prov räknas inte som förberedelsetid.
 function lessonsBefore(t) { return events.filter(e => e.start < t && !e.exam); }
+function eff(e) { return new Date(e.start.getTime() + START_MIN * 60000); }
 function remainingMs(now) {
   let ms = 0;
   lessonsBefore(target.start).forEach(e => {
-    const s = Math.max(e.start, now), en = Math.min(e.end, target.start);
+    const s = Math.max(eff(e), now), en = Math.min(e.end, target.start);
     if (en > s) ms += en - s;
   });
   return ms;
@@ -292,9 +297,10 @@ function remainingMs(now) {
 function totalMs() {
   const prev = events.filter(e => e.exam && e.start < target.start).pop();
   return lessonsBefore(target.start).filter(e => !prev || e.start >= prev.start)
-    .reduce((a, e) => a + (Math.min(e.end, target.start) - e.start), 0);
+    .reduce((a, e) => a + Math.max(0, Math.min(e.end, target.start) - eff(e)), 0);
 }
-function liveLesson(now) { return lessonsBefore(target.start).find(e => e.start <= now && now < e.end) || null; }
+function liveLesson(now) { return lessonsBefore(target.start).find(e => eff(e) <= now && now < e.end) || null; }
+function startingLesson(now) { return lessonsBefore(target.start).find(e => e.start <= now && now < eff(e)) || null; }
 function nextLesson(now) { return lessonsBefore(target.start).find(e => e.start > now) || null; }
 
 function render() {
@@ -306,11 +312,12 @@ function render() {
   document.body.classList.toggle('done', done);
 
   const tenths = Math.floor(ms / 100);
-  const min = Math.floor(tenths / 600), sec = Math.floor(tenths / 10) % 60, t = tenths % 10;
-  $('clock').innerHTML = min + ':' + String(sec).padStart(2, '0') + '<span class="t">.' + t + '</span>';
+  const h = Math.floor(tenths / 36000), min = Math.floor(tenths / 600) % 60, sec = Math.floor(tenths / 10) % 60, t = tenths % 10;
+  $('clock').innerHTML = h + ':' + String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0') + '<span class="t">.' + t + '</span>';
 
   if (done) $('state').innerHTML = '<b>Dags för ' + target.name.toLowerCase().replace(/^prov/, 'provet') + '!</b>';
   else if (live) $('state').innerHTML = '<span class="dot"></span>Lektion pågår – tiden räknas ner till ' + hm(live.end) + '. Totalt kvar: <b>' + minText(ms / 60000) + '</b>';
+  else if (startingLesson(now)) $('state').innerHTML = '<span class="dot"></span>Rast och uppstart – nedräkningen startar kl. ' + hm(eff(startingLesson(now))) + '. Totalt kvar: <b>' + minText(ms / 60000) + '</b>';
   else if (ms <= 0) $('state').innerHTML = '<span class="dot"></span>Ingen lektionstid kvar – nästa lektion är <b>' + escapeHtml(target.name) + '</b>.';
   else {
     const n = nextLesson(now);
@@ -331,10 +338,10 @@ function loop() {
 function renderList() {
   const now = new Date();
   const list = lessonsBefore(target.start).filter(e => e.end > now);
-  $('passSummary').textContent = list.length + ' lektionspass kvar före provet';
+  $('passSummary').textContent = list.length + ' lektionspass kvar före provet (effektiv tid per pass)';
   $('passes').innerHTML = list.map(e => {
-    const mins = Math.round((Math.min(e.end, target.start) - e.start) / 60000);
-    const cls = (e.start <= now && now < e.end ? 'live ' : '') + (e.af ? 'af' : '');
+    const mins = Math.max(0, Math.round((Math.min(e.end, target.start) - eff(e)) / 60000));
+    const cls = (eff(e) <= now && now < e.end ? 'live ' : '') + (e.af ? 'af' : '');
     return `<li class="${cls}"><span class="d">${fmtShort(e.start)} ${hm(e.start)}–${hm(e.end)}</span><span>${escapeHtml(e.text || '')}</span><span class="m">${mins} min</span></li>`;
   }).join('');
   $('notes').textContent = notes.join(' ');

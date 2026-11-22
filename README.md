@@ -209,7 +209,7 @@ Proven visas på två ställen:
 
 Fristående sida för tavlan: `https://erengisle.github.io/Hi_planering/nedrakning/?klass=NAA24`
 (eller utan `?klass=` – då skriver man in klassnamnet). Räknar ner **lektionstid**
-(minuter, sekunder, tiondelar) fram till nästa prov i klassens planeringsark.
+(timmar, minuter, sekunder, tiondelar) fram till nästa prov i klassens planeringsark.
 Tiden står still mellan lektionerna. Ett annat kommande prov kan väljas i menyn.
 
 - **Lektionstider** läses från rubrikraden i arket, t.ex. `Måndag 13:45 - 14:45`.
@@ -218,6 +218,8 @@ Tiden står still mellan lektionerna. Ett annat kommande prov kan väljas i meny
   klämdag – samt röda dagar. Veckor som inte finns i arket räknas inte.
 - **Ämnesfördjupning**: `Ämnesfördjupning tisdag 1/12 kl. 14.30` i valfri cell
   på veckoraden ger 2 timmar extra. Står "prov" i samma cell blir passet målet.
+- **Effektiv lektionstid**: de första 10 minuterna av varje pass (rast och uppstart)
+  räknas inte (`START_MIN`). Gäller även ämnesfördjupningen.
 - **Målet** är början på lektionen där det står "Prov". Tidigare prov räknas inte
   som lektionstid.
 - Ny klass: lägg till en rad i `CLASSES` i `nedrakning/index.html`.
