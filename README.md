@@ -232,12 +232,14 @@ Tiden står still mellan lektionerna. Ett annat kommande prov kan väljas i meny
 - **Ingen lektion** när dagcellen innehåller t.ex. lov, studiedag, programdag,
   friluftsdag, utvecklingssamtal, NP, mässa, "ingen lektion", julavslutning,
   klämdag – samt röda dagar. Veckor som inte finns i arket räknas inte.
-- **Ämnesfördjupning**: `Ämnesfördjupning tisdag 1/12 kl. 14.30` i valfri cell
-  på veckoraden ger 2 timmar extra. Står "prov" i samma cell blir passet målet.
+- **Ämnesfördjupning**: `Ämnesfördjupning tisdag 1/12 kl. 14.30`, `ämnesfördjupningen, tisdag: 14.30 - 16.30`
+  eller bara `ämnesfördjupningen, tisdag` (då kl. 14.30) i valfri cell på veckoraden ger 2 timmar extra. Står "prov" i samma cell blir passet målet.
 - **Effektiv lektionstid**: de första 10 minuterna av varje pass (rast och uppstart)
   räknas inte (`START_MIN`). Gäller även ämnesfördjupningen.
 - **Målet** är början på lektionen där det står "Prov". Tidigare prov räknas inte
   som lektionstid.
+- Kursnamn fungerar också: `?klass=SVA1` (NAB26), `SVA2` (EKNA25:1), `SVE3` (EKA24).
+- Saknar arkets rubrikrad klockslag används `tider` i `CLASSES` (NAB26, EKNA25-1).
 - Ny klass: lägg till en rad i `CLASSES` i `nedrakning/index.html`.
 
 ## Om integritet mellan kurser

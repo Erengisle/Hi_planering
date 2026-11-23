@@ -122,11 +122,16 @@ const CLASSES = {
   'NAB24':    { namn: 'Historia 1b · NAB24', sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '6', gammal: { sheet: '15lq61sadNIsOX3i8ti7WOr8kP-9wk_HwwFoENid2gpM', gid: '759481449' } },
   'EK26':     { namn: 'Historia 1b · EK26',  sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '7', gammal: { sheet: '1JJ5CstuMvuselACdf_MGavxjOblIJYLfzoDAOF5jn2Y', gid: '1800788346' } },
   'EKA24':    { namn: 'Svenska 3 · EKA24',   sheet: '1uTTYzZlI9dgUSHRAjo3ehFg5dMPYG8BfgMCwbi0xNnw', gid: '920723534' },
-  'NAB26':    { namn: 'SVA 1 · NAB26',       sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '10', gammal: { sheet: '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4', gid: '1145608673' } },
-  'EKNA25-1': { namn: 'SVA 2 · EKNA25:1',    sheet: '1dhJDfcmmj1DIn60gbp8YrelxnfF2nFQgNm1oomucW80', gid: '1866411600' }
+  'NAB26':    { namn: 'SVA 1 · NAB26',       sheet: '1odzBFIpAbshowXc31JCKIm2bXHKjJnii41WLDiBeSm8', gid: '10', gammal: { sheet: '1JYwTg9BEaKBpUS5KjTT_FVRX8rdFAY4RGvFLQCL8vu4', gid: '1145608673' },
+                tider: ['Måndag 12.15 - 13.20', 'Fredag 08.20 - 09.20'] },
+  'EKNA25-1': { namn: 'SVA 2 · EKNA25:1',    sheet: '1dhJDfcmmj1DIn60gbp8YrelxnfF2nFQgNm1oomucW80', gid: '1866411600',
+                tider: ['Måndag 10.00 - 11.00', 'Fredag 12.10 - 13.15'] }
 };
-const ALIASES = { 'EKNA25': 'EKNA25-1', 'EKNA251': 'EKNA25-1' };
+// "tider" används bara om rubrikraden i arket saknar klockslag.
+// Kursnamn går också att skriva in: SVA1 = NAB26, SVA2 = EKNA25:1, SVE3 = EKA24.
+const ALIASES = { 'EKNA25': 'EKNA25-1', 'EKNA251': 'EKNA25-1', 'SVA1': 'NAB26', 'SVA2': 'EKNA25-1', 'SVE3': 'EKA24' };
 const AF_MINUTES = 120;
+const AF_DEFAULT_START = '14.30';   // om bara veckodagen står, t.ex. "ämnesfördjupningen, tisdag"
 // Effektiv lektionstid: de första minuterna av varje pass (rast och uppstart) räknas inte.
 const START_MIN = 10;
 
@@ -218,6 +223,8 @@ function build(table) {
     days = [parseDayLabel(cellText(rows[0].c[2])), parseDayLabel(cellText(rows[0].c[4]))];
     rows = rows.slice(1);
   }
+  const fb = CLASSES[klassKey] && CLASSES[klassKey].tider;
+  if (fb) { if (!days[0]) days[0] = parseDayLabel(fb[0]); if (!days[1]) days[1] = parseDayLabel(fb[1]); }
   if (!days[0] || !days[1]) throw new Error('lektionstiderna saknas i rubrikraden (t.ex. "Måndag 13:45 - 14:45").');
 
   const weeks = new Map();       // vecka -> {d: ['', ''], cells: []}
@@ -254,22 +261,33 @@ function build(table) {
       if (NO_LESSON.test(text) || isRedDay(date)) return;
       events.push({ start, end, text: firstLine(text) });
     });
-    // Ämnesfördjupning med datum och tid
+    // Ämnesfördjupning: "Ämnesfördjupning tisdag 1/12 kl. 14.30", "ämnesfördjupningen, tisdag: 14.30 - 16.30"
+    // eller bara "ämnesfördjupningen, tisdag" (då gäller AF_DEFAULT_START). Står "prov" i cellen är det provet.
     w.cells.forEach(t => {
-      const re = /ämnesfördjupning[^\n\d]*?(\d{1,2})\/(\d{1,2})[^\n\d]*?(\d{1,2})[.:](\d{2})/gi;
-      let m;
-      while ((m = re.exec(t))) {
-        const mon = +m[2] - 1, year = mon >= 6 ? autumnYear() : autumnYear() + 1;
-        const start = new Date(year, mon, +m[1], +m[3], +m[4]);
-        const key = start.getTime();
-        if (seen.has(key)) continue;
-        seen.add(key);
-        const end = new Date(key + AF_MINUTES * 60000);
-        if (isProv(t)) events.push({ start, end, exam: true, af: true, name: examName(t) });
+      t.split('\n').forEach(line => {
+        const i = line.search(/ämnesfördjupning/i);
+        if (i < 0) return;
+        const rest = line.slice(i);
+        let date = null;
+        const dm = rest.match(/(\d{1,2})\/(\d{1,2})/);
+        if (dm) {
+          const mon = +dm[2] - 1;
+          date = new Date(mon >= 6 ? autumnYear() : autumnYear() + 1, mon, +dm[1]);
+        } else {
+          const wd = rest.match(/(måndag|tisdag|onsdag|torsdag|fredag)/i);
+          if (wd) date = dateFromWeek(vecka, WEEKDAYS.indexOf(wd[1].toLowerCase()));
+        }
+        if (!date) { notes.push('Vecka ' + vecka + ': ämnesfördjupning utan dag eller datum räknas inte.'); return; }
+        const afterDate = dm ? rest.slice(rest.indexOf(dm[0]) + dm[0].length) : rest;
+        const tm = afterDate.match(/(\d{1,2})[.:](\d{2})(?:\s*[-–]\s*(\d{1,2})[.:](\d{2}))?/);
+        const [sh, sm] = tm ? [+tm[1], +tm[2]] : AF_DEFAULT_START.split('.').map(Number);
+        const start = at(date, sh, sm);
+        const end = tm && tm[3] ? at(date, +tm[3], +tm[4]) : new Date(start.getTime() + AF_MINUTES * 60000);
+        if (seen.has(start.getTime())) return;
+        seen.add(start.getTime());
+        if (isProv(t)) { const n = examName(t); events.push({ start, end, exam: true, af: true, name: /^prov\W*$/i.test(n) ? 'Prov (ämnesfördjupning)' : n }); }
         else events.push({ start, end, af: true, text: 'Ämnesfördjupning' });
-      }
-      if (/ämnesfördjupning/i.test(t) && !/ämnesfördjupning[^\n\d]*?\d{1,2}\/\d{1,2}/i.test(t) && /\d{1,2}\/\d{1,2}|kl\./i.test(t))
-        notes.push('Vecka ' + vecka + ': ämnesfördjupning utan läsbart datum och tid räknas inte.');
+      });
     });
   });
   explicit.forEach(x => {
