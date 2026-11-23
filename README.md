@@ -91,6 +91,23 @@ Förklaring, År, Granskad, Klasser`. Typ är `begrepp`, `person` eller
 (t.ex. `NAA24, NAB24`). Nya moment läggs till som nya rader med ett annat
 värde i kolumn A; sidan visar då ett val av moment, och det sista momentet i arket är förvalt.
 
+## Lektionsmaterial (`hi1b/lektioner/`)
+
+Fristående lektionssidor för tavlan, med tillhörande utskriftsmaterial. De
+länkas inte från någon klasssida.
+
+**Från jordbrukssamhälle till industrisamhälle** (`hi1b/lektioner/jordbrukssamhallet/`)
+
+- Projektorsida: https://erengisle.github.io/Hi_planering/hi1b/lektioner/jordbrukssamhallet/
+  – ← → eller mellanslag byter bild, **V** visar svaret, **T** startar/pausar
+  timern (förvald tid per bild), **F** helskärm. Adressen minns bilden (`#7`).
+- Utskrift: https://erengisle.github.io/Hi_planering/hi1b/lektioner/jordbrukssamhallet/material.html
+  – lärarblad med facit, rollkort, skiftesspel, mysteriekort, matchning,
+  tidslinje, fyra hörn-skyltar, utgångsbiljetter och ordlista. Bocka ur det
+  som inte ska skrivas ut. `?bara=roller,skifte` visar bara de delarna.
+- Texterna ligger överst i `<script>` i respektive fil. Rutnätet i
+  skiftesspelet (`VILLAGE`) finns i båda filerna – ändra på båda ställena.
+
 ## Lägga till en ny kurs/klass
 
 1. Skapa en flik i Google Sheet (eller ett eget kalkylark) med kolumnerna

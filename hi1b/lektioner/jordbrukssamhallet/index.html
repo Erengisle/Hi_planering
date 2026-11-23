@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Från jordbrukssamhälle till industrisamhälle</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F4EE; --paper:#FFFFFF; --ink:#0F1B2D; --mut:#556070; --soft:#96A3B0; --rule:#DDD8D0;
+  --acc:#D4880A; --acc-d:#96590A; --blue:#2355A0; --green:#3D7A4A; --red:#A8402C;
+  --A:#cfe0f5; --B:#f8dcc0; --C:#d4ebd0; --D:#e4d6ef; --M:#efe9c9;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;overflow:hidden}
+.serif{font-family:Spectral,Georgia,serif}
+
+/* ---------- Toppen: delar ---------- */
+.top{display:flex;align-items:center;gap:14px;padding:10px 22px;background:var(--paper);border-bottom:1px solid var(--rule);flex:0 0 auto}
+.top .brand{font-family:Spectral,Georgia,serif;font-weight:600;font-size:18px;white-space:nowrap}
+.parts{display:flex;gap:6px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+.parts button{font:500 14px 'Space Grotesk',sans-serif;border:1px solid var(--rule);background:var(--paper);color:var(--mut);
+  border-radius:999px;padding:6px 13px;cursor:pointer}
+.parts button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.parts button.extra{border-style:dashed}
+
+/* ---------- Bilderna ---------- */
+main{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;padding:3.2vh 5vw 2vh;display:none;flex-direction:column;overflow:auto}
+.slide.on{display:flex;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kicker{font:700 clamp(12px,1.25vw,17px) 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-d);margin-bottom:1.2vh}
+h1{font-family:Spectral,Georgia,serif;font-weight:700;font-size:clamp(34px,4.6vw,74px);line-height:1.05;margin:0 0 2.5vh;letter-spacing:-.01em}
+h2{font-family:Spectral,Georgia,serif;font-weight:700;font-size:clamp(28px,3.4vw,54px);line-height:1.12;margin:0 0 2.2vh}
+p,li{font-size:clamp(19px,1.9vw,31px);line-height:1.4}
+.lead{font-size:clamp(22px,2.3vw,38px);line-height:1.35;max-width:62ch}
+.mut{color:var(--mut)}
+ul.big{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:1.6vh}
+ul.big li{display:flex;gap:.8em;align-items:flex-start}
+ul.big li .ic{flex:0 0 auto;width:1.6em;height:1.6em;border-radius:50%;background:var(--paper);border:2px solid var(--acc);display:flex;align-items:center;justify-content:center;font-size:.8em}
+
+.question{font-family:Spectral,Georgia,serif;font-weight:700;font-size:clamp(34px,4.4vw,72px);line-height:1.12;max-width:24ch;margin:2vh 0 4vh}
+.doit{display:flex;gap:2vw;flex-wrap:wrap;margin-top:auto}
+.doit .d{background:var(--paper);border:1px solid var(--rule);border-left:6px solid var(--acc);border-radius:8px;padding:1.4vh 1.4vw;min-width:16vw}
+.doit .d b{display:block;font:700 clamp(13px,1.1vw,17px) 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-d)}
+.doit .d span{font-size:clamp(20px,2vw,32px);font-weight:600}
+
+.write{display:inline-flex;align-items:center;gap:.6em;background:var(--ink);color:#fff;border-radius:10px;padding:1.2vh 1.4vw;
+  font-size:clamp(20px,2vw,32px);font-weight:600;margin-top:2.5vh;align-self:flex-start}
+.write .box{font:700 1.15em 'JetBrains Mono',monospace;background:var(--acc);color:var(--ink);border-radius:6px;padding:0 .4em}
+
+/* ---------- Visa svaret ---------- */
+.reveal-btn{font:600 clamp(16px,1.5vw,22px) 'Space Grotesk',sans-serif;background:var(--paper);color:var(--ink);border:2px solid var(--ink);
+  border-radius:8px;padding:.5em 1em;cursor:pointer;align-self:flex-start;margin-top:2vh}
+.reveal-btn:hover{background:var(--ink);color:#fff}
+.answer{display:none;background:var(--paper);border:1px solid var(--rule);border-left:8px solid var(--green);border-radius:8px;padding:2vh 2vw;margin-top:2vh}
+.answer.show{display:block;animation:in .3s ease}
+.answer .kicker{color:var(--green)}
+
+/* ---------- Ord som vänds ---------- */
+.flips{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6vh 1.4vw;flex:1;max-height:62vh}
+.flip{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:1.4vh 1.2vw;cursor:pointer;display:flex;flex-direction:column;justify-content:center;
+  transition:background .2s}
+.flip .w{font-family:Spectral,Georgia,serif;font-weight:700;font-size:clamp(24px,2.5vw,42px)}
+.flip .e{display:none;font-size:clamp(16px,1.55vw,25px);line-height:1.3;margin-top:.6vh}
+.flip.open{background:#fff8e9;border-color:var(--acc)}
+.flip.open .e{display:block}
+.flip .hint{font-size:clamp(12px,1vw,15px);color:var(--soft);margin-top:.5vh}
+.flip.open .hint{display:none}
+
+/* ---------- Räkning ---------- */
+.calc{display:flex;gap:2vw;align-items:center;flex-wrap:wrap;margin:2vh 0}
+.calc .n{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:1.5vh 1.6vw;text-align:center}
+.calc .n b{display:block;font:700 clamp(36px,4.5vw,76px) 'JetBrains Mono',monospace;line-height:1}
+.calc .n span{font-size:clamp(15px,1.4vw,22px);color:var(--mut)}
+.calc .op{font:700 clamp(30px,3.4vw,56px) 'JetBrains Mono',monospace;color:var(--soft)}
+
+/* ---------- Skiftet ---------- */
+.skifte{display:flex;gap:4vw;align-items:flex-start;flex-wrap:wrap}
+.skifte h3{font-family:Spectral,Georgia,serif;font-size:clamp(20px,2vw,32px);margin:0 0 1vh}
+.vgrid{display:grid;grid-template-columns:repeat(8,var(--c));grid-auto-rows:var(--c);border:2px solid var(--ink);--c:min(5.2vh,3.4vw)}
+.vgrid div{border:1px solid #8d877c;display:flex;align-items:center;justify-content:center;font:700 calc(var(--c)*.42) 'Space Grotesk',sans-serif;background:#fff;line-height:1;text-align:center}
+.vgrid .A{background:var(--A)}.vgrid .B{background:var(--B)}.vgrid .C{background:var(--C)}.vgrid .D{background:var(--D)}.vgrid .M{background:var(--M);font-size:calc(var(--c)*.28)}
+.vgrid .V{font-size:calc(var(--c)*.5)}
+.vgrid .h{font-size:calc(var(--c)*.6)}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vw;margin-top:2.4vh}
+.steps3 .s{background:var(--paper);border:1px solid var(--rule);border-top:6px solid var(--acc);border-radius:8px;padding:1.4vh 1.2vw}
+.steps3 .s > b{font:700 clamp(14px,1.2vw,19px) 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--acc-d)}
+.steps3 .s ol{margin:.6vh 0 0;padding-left:1.1em}
+.steps3 .s li{font-size:clamp(16px,1.5vw,24px);line-height:1.35;margin:.4vh 0}
+.wl{display:grid;grid-template-columns:1fr 1fr;gap:1.4vw;margin-top:1vh}
+.wl .w{border-radius:8px;padding:1.4vh 1.4vw;background:var(--paper);border:1px solid var(--rule)}
+.wl .w.win{border-left:8px solid var(--green)} .wl .w.lose{border-left:8px solid var(--red)}
+.wl .w b{font:700 clamp(14px,1.2vw,19px) 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+.wl .w p{margin:.6vh 0 0;font-size:clamp(17px,1.65vw,27px)}
+
+/* ---------- Mysteriet: kedja ---------- */
+.chain{display:grid;grid-template-columns:1fr auto 1fr auto 1.25fr;gap:1vw;align-items:stretch}
+.chain .col{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:1.2vh 1vw}
+.chain .col b{display:block;font:700 clamp(13px,1.1vw,17px) 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6vh}
+.chain .col div{font-size:clamp(15px,1.45vw,23px);line-height:1.3;padding:.45vh 0;border-bottom:1px dashed var(--rule)}
+.chain .col div:last-child{border-bottom:0}
+.chain .arr{display:flex;align-items:center;font:700 clamp(28px,3vw,48px) 'JetBrains Mono',monospace;color:var(--acc)}
+
+/* ---------- Fyra hörn ---------- */
+.corners{display:flex;gap:1vw;margin-top:auto;flex-wrap:wrap}
+.corners span{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:.8vh 1vw;font-size:clamp(15px,1.4vw,22px)}
+.corners span b{font-family:'JetBrains Mono',monospace;color:var(--acc-d);margin-right:.4em}
+.stmt{font-family:Spectral,Georgia,serif;font-weight:700;font-size:clamp(34px,4.4vw,70px);line-height:1.12;max-width:22ch;margin:1vh 0 2vh}
+
+/* ---------- Titel ---------- */
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vh 1.4vw;margin-top:3vh}
+.plan div{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:1.3vh 1.2vw;font-size:clamp(17px,1.65vw,27px);font-weight:600}
+.plan div span{display:block;font:700 clamp(12px,1vw,15px) 'JetBrains Mono',monospace;color:var(--acc-d);letter-spacing:.1em}
+
+/* ---------- Botten: navigering + timer ---------- */
+.bottom{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:10px 22px;background:var(--paper);border-top:1px solid var(--rule)}
+.bottom button{font:600 15px 'Space Grotesk',sans-serif;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:6px;padding:8px 14px;cursor:pointer;min-height:40px}
+.bottom button:hover{border-color:var(--acc);color:var(--acc-d)}
+.bottom .count{font:500 13px 'JetBrains Mono',monospace;color:var(--soft)}
+.prog{flex:1;height:6px;background:#eee9df;border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.timer{display:flex;align-items:center;gap:8px}
+.timer .t{font:700 26px 'JetBrains Mono',monospace;min-width:92px;text-align:center;padding:2px 10px;border-radius:6px}
+.timer .t.run{background:var(--ink);color:#fff}
+.timer .t.low{background:var(--acc);color:var(--ink)}
+.timer .t.done{background:var(--red);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.bigtime{position:absolute;right:2.2vw;top:2vh;font:700 clamp(30px,4vw,64px) 'JetBrains Mono',monospace;background:var(--ink);color:#fff;
+  padding:.1em .45em;border-radius:12px;display:none;z-index:5}
+.bigtime.show{display:block}
+.bigtime.low{background:var(--acc);color:var(--ink)}
+.bigtime.done{background:var(--red);animation:pulse 1s infinite}
+.help{font-size:12px;color:var(--soft)}
+@media (max-width:800px){ .plan,.flips,.steps3,.wl{grid-template-columns:1fr} .chain{grid-template-columns:1fr} .chain .arr{justify-content:center;transform:rotate(90deg)} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">Från jordbrukssamhälle till industrisamhälle</div>
+  <nav class="parts" id="parts"></nav>
+</header>
+
+<main id="main"><div class="bigtime" id="bigtime"></div></main>
+
+<footer class="bottom">
+  <button id="prev" title="Föregående (←)">← Bakåt</button>
+  <button id="next" title="Nästa (→ eller mellanslag)">Nästa →</button>
+  <span class="count" id="count"></span>
+  <div class="prog"><i id="prog"></i></div>
+  <div class="timer">
+    <span class="t" id="t">0:00</span>
+    <button id="tStart" title="Starta/pausa (T)">Starta</button>
+    <button id="tPlus" title="+1 minut">+1</button>
+    <button id="tReset" title="Nollställ">↺</button>
+  </div>
+  <button id="fs" title="Helskärm (F)">⛶</button>
+</footer>
+
+<script>
+/* =====================================================================
+   INNEHÅLL. Varje bild: part (delens namn i toppen), min (timerns förval), html.
+   ===================================================================== */
+const VILLAGE = [
+  'A* A  B~ C* C  D* A~ B ',
+  'D  B* B~ A  D~ C~ C  A*',
+  'C  D  A~ V  V  B  D* C ',
+  'B  A* D~ V  V  C* A  D*',
+  'A  C~ D  B* A~ B  D  C*',
+  'D~ B  A  C  B~ D  C~ B*',
+  'M  M  M  M  M  M  M  M ',
+];
+function beforeGrid(){
+  let h='<div class="vgrid">';
+  VILLAGE.forEach(r=>r.trim().split(/\s+/).forEach((c,ci)=>{
+    const f=c[0], q=c[1];
+    if(f==='V') h+='<div class="V">⌂</div>';
+    else if(f==='M') h+= ci===3 ? '<div class="M" style="font-size:calc(var(--c)*.5)">⌂</div>' : '<div class="M">allm.</div>';
+    else h+=`<div class="${f}">${f}${q==='*'?'★':q==='~'?'~':''}</div>`;
+  }));
+  return h+'</div>';
+}
+function afterGrid(){
+  // ett möjligt laga skifte: varje gård får 14 rutor i ett stycke, huset mitt på marken
+  const cols=['A','A','B','B','C','C','D','D']; let h='<div class="vgrid">';
+  for(let r=0;r<7;r++) for(let c=0;c<8;c++){
+    const house = r===3 && c%2===0;
+    h+=`<div class="${cols[c]}${house?' h':''}">${house?'⌂':''}</div>`;
+  }
+  return h+'</div>';
+}
+const write = l => `<div class="write">Skriv på ditt rollkort i ruta <span class="box">${l}</span></div>`;
+const reveal = (label, inner) => `<button class="reveal-btn" data-reveal>${label} <span class="mut">(V)</span></button><div class="answer">${inner}</div>`;
+
+const SLIDES = [
+{ part:'Start', min:0, html:`
+  <div class="kicker">Historia · Sverige 1600–1900</div>
+  <h1>Från jordbrukssamhälle<br>till industrisamhälle</h1>
+  <p class="lead">Idag blir du en person som levde i Sverige för länge sedan. Vad händer med ditt liv när samhället förändras?</p>
+  <div class="plan">
+    <div><span>1</span>Startfrågan</div>
+    <div><span>2</span>Din roll och jordbrukssamhället</div>
+    <div><span>3</span>Skiftesspelet</div>
+    <div><span>4</span>Mysteriet</div>
+    <div><span>5</span>Fyra hörn</div>
+    <div><span>6</span>Utgångsbiljett</div>
+  </div>`},
+
+{ part:'Start', min:3, html:`
+  <div class="kicker">1 · Startfrågan</div>
+  <div class="question">Varför ville makthavarna på 1800-talet att alla barn skulle gå i skolan?</div>
+  <div class="doit">
+    <div class="d"><b>1 minut</b><span>Tänk själv</span></div>
+    <div class="d"><b>2 minuter</b><span>Prata med din granne</span></div>
+    <div class="d"><b>Sedan</b><span>Vi skriver upp era gissningar</span></div>
+  </div>
+  <p class="mut" style="margin-top:2.5vh">Svaret får ni i slutet av lektionen …</p>`},
+
+{ part:'Ord', min:3, html:`
+  <div class="kicker">Viktiga ord · klicka för att visa förklaringen</div>
+  <h2>Kan du förklara orden?</h2>
+  <div class="flips">
+    ${[
+      ['statare','Lantarbetare på en stor gård. En del av lönen var mat och varor ("stat").'],
+      ['dräng / piga','Ung man / ung kvinna som arbetar på någon annans gård.'],
+      ['teg','En smal remsa åkermark. Förr hade varje bonde många tegar runt byn.'],
+      ['allmänning','Mark som alla i byn delar på, till exempel för bete.'],
+      ['skifte','När böndernas mark slogs ihop till större stycken.'],
+      ['förlagssystem','En köpman lämnar råvaror. Människor gör varor hemma och får betalt.'],
+      ['fattigvård','Hjälp till fattiga. Församlingen skulle ta hand om sina fattiga.'],
+      ['medelklass','Gruppen mellan adeln och de fattiga: köpmän, läkare, advokater …'],
+      ['emigrera','Att flytta från sitt land till ett annat.'],
+    ].map(w=>`<div class="flip" data-flip><div class="w">${w[0]}</div><div class="e">${w[1]}</div><div class="hint">klicka</div></div>`).join('')}
+  </div>`},
+
+{ part:'Roll', min:2, html:`
+  <div class="kicker">2 · Din roll</div>
+  <h2>Du får ett rollkort</h2>
+  <ul class="big">
+    <li><span class="ic">1</span><span>Läs kortet tyst för dig själv.</span></li>
+    <li><span class="ic">2</span><span>Ta reda på: <b>Vem är du? Var bor du? När lever du?</b></span></li>
+    <li><span class="ic">3</span><span>Berätta för din granne vem du är – med en mening.</span></li>
+  </ul>
+  <p class="mut" style="margin-top:3vh">Kerstin · Anders · Brita · Pierre · Erik · Per · Maja · Carl</p>
+  <p class="mut">Efter varje del skriver du en kort rad på kortet – <b>som din person</b>.</p>`},
+
+{ part:'Jordbruk', min:0, html:`
+  <div class="kicker">2 · Jordbrukssamhället</div>
+  <h2>Så levde nästan alla i Sverige</h2>
+  <ul class="big">
+    <li><span class="ic">🌾</span><span>Långt in på 1700-talet bodde ungefär <b>95 procent</b> av befolkningen på landsbygden.</span></li>
+    <li><span class="ic">👪</span><span><b>Alla</b> i familjen arbetade på gården – även barnen.</span></li>
+    <li><span class="ic">🐄</span><span>Mannen brukade jorden och arbetade i skogen. Kvinnorna skötte korna, lagade mat, gjorde tyg och sydde kläder.</span></li>
+    <li><span class="ic">🧺</span><span>Unga arbetade som <b>drängar och pigor</b> på andras gårdar. Den som inte ägde jord kunde bli <b>statare</b> på en stor gård.</span></li>
+    <li><span class="ic">⚒</span><span>Redan på 1600-talet byggdes många nya järnbruk. Järn och koppar såldes till andra länder.</span></li>
+  </ul>`},
+
+{ part:'Jordbruk', min:2, html:`
+  <div class="kicker">2 · Räkna med statarna</div>
+  <h2>Statarkvinnorna mjölkade korna 3 gånger om dagen, 7 dagar i veckan – i alla väder.</h2>
+  <p class="lead">Hur många gånger blir det på ett år? Räkna med din granne!</p>
+  ${reveal('Visa svaret',`
+    <div class="kicker">Svar</div>
+    <div class="calc">
+      <div class="n"><b>3</b><span>om dagen</span></div><div class="op">×</div>
+      <div class="n"><b>7</b><span>dagar</span></div><div class="op">×</div>
+      <div class="n"><b>52</b><span>veckor</span></div><div class="op">=</div>
+      <div class="n"><b>1 092</b><span>mjölkningar per år</span></div>
+    </div>
+    <p style="margin:0">Första mjölkningen var ofta vid fyra på morgonen. Det kallades <b>"den vita piskan"</b>. Statarsystemet avskaffades först 1945.</p>`)}
+  ${write('A')}`},
+
+{ part:'Skifte', min:15, html:`
+  <div class="kicker">3 · Skiftesspelet · grupper om fyra</div>
+  <h2>Ni är fyra gårdar i samma by: A, B, C och D</h2>
+  <div class="skifte">
+    <div><h3>Er by – före skiftet</h3>${beforeGrid()}</div>
+    <div style="flex:1;min-width:280px">
+      <p style="margin-top:0">Varje gård har 11 rutor åker – utspridda i smala <b>tegar</b>.</p>
+      <p>★ = bra jord &nbsp; ~ = stenig eller sank jord</p>
+      <p>Längst ner ligger <b>allmänningen</b>. Där bor den jordlöse Per (⌂).</p>
+    </div>
+  </div>
+  <div class="steps3">
+    <div class="s"><b>Steg 1 · Före · 4 min</b><ol><li>Ringa in dina åkrar. Hur många bitar?</li><li>Rita vägen till din åker längst bort.</li><li>Varför har alla både ★ och ~?</li></ol></div>
+    <div class="s"><b>Steg 2 · Laga skifte · 6 min</b><ol><li>Byn rivs, allmänningen delas.</li><li>Varje gård får <b>14 rutor i ett stycke</b>.</li><li>Rita ditt nya hus mitt på din mark.</li></ol></div>
+    <div class="s"><b>Steg 3 · Vem förlorade? · 5 min</b><ol><li>Vad blev bättre för bönderna?</li><li>Var ska Per ta vägen?</li><li>Vad händer med livet i byn?</li></ol></div>
+  </div>`},
+
+{ part:'Skifte', min:3, html:`
+  <div class="kicker">3 · Skiftena · så blev det</div>
+  <div class="skifte">
+    <div><h3>Före: tegskifte</h3>${beforeGrid()}</div>
+    <div><h3>Efter: laga skifte</h3>${afterGrid()}</div>
+  </div>
+  ${reveal('Vem vann – vem förlorade?',`
+    <div class="wl">
+      <div class="w win"><b>Vann</b><p>Bönder som ägde jord: större åkrar i ett stycke, de kunde bestämma själva och jordbruket gav mer mat.</p></div>
+      <div class="w lose"><b>Förlorade</b><p>De jordlösa som bodde på allmänningen fick ge sig av – många till städerna. Byns gemenskap splittrades.</p></div>
+    </div>`)}
+  ${write('B')}`},
+
+{ part:'Mysteriet', min:8, html:`
+  <div class="kicker">4 · Mysteriet · grupper om 3–4</div>
+  <div class="question" style="max-width:28ch">Mellan år 1800 och 1870 ökade Sveriges befolkning från 2,3 till 4,2 miljoner. Varför? Och vad hände sedan?</div>
+  <div class="doit" style="margin-top:0">
+    <div class="d"><b>1</b><span>Läs alla korten</span></div>
+    <div class="d"><b>2</b><span>Lägg dem i en kedja:<br>Orsaker → Det som hände → Följder</span></div>
+    <div class="d"><b>3</b><span>Ett kort passar inte in. Vilket?</span></div>
+  </div>`},
+
+{ part:'Mysteriet', min:3, html:`
+  <div class="kicker">4 · Mysteriet · ett förslag</div>
+  <h2>"Freden, vaccinet och potäterna"</h2>
+  ${reveal('Visa kedjan',`
+    <div class="chain">
+      <div class="col"><b>Orsaker</b><div>Lång fred</div><div>Vaccin mot smittkoppor</div><div>Potatisen</div><div>Mer mat efter skiftena</div></div>
+      <div class="arr">→</div>
+      <div class="col"><b>Det som hände</b><div>Färre dog</div><div>Befolkningen växte snabbt</div></div>
+      <div class="arr">→</div>
+      <div class="col"><b>Följder</b><div>Jorden räcker inte – bara äldste sonen tar över gården</div><div>Få fabriksjobb → många blir fattiga</div><div>De styrande blir rädda för "den farliga underklassen"</div><div>Många flyttar till städerna eller till Amerika</div></div>
+    </div>
+    <p style="margin:1.6vh 0 0"><b>Kortet som inte passar:</b> "Sverige var en stormakt och förde många krig" – det gäller 1600-talet. Det var tvärtom <b>freden</b> som gjorde att fler överlevde.</p>`)}
+  ${write('C')}`},
+
+...[
+  ['Den som inte arbetar ska inte få hjälp.',
+   'Den som inte arbetade kunde gripas för <b>lösdriveri</b> och sättas i tvångsarbete. Män kunde tvingas in i armén. Kvinnor kunde sättas på <b>spinnhus</b> och spinna garn.'],
+  ['Fattiga ska få flytta dit de vill.',
+   'År <b>1847</b> bestämdes att de fattiga fick flytta fritt i landet. De styrande hoppades att de skulle hitta arbete och klara sig själva.'],
+  ['Det är bättre att vanliga människor hjälper de fattiga än att samhället gör det.',
+   'Varje <b>församling</b> skulle ta hand om sina fattiga – men det räckte inte. Fattiga fick flytta runt mellan gårdar eller bo i fattighus. Därför startades <b>välgörenhetsföreningar</b>, ofta av medelklassens kvinnor.'],
+  ['Skolan finns för att göra eleverna till lydiga medborgare.',
+   'Minns ni startfrågan? Läs nästa bild!'],
+].map((s,i)=>({ part:'Fyra hörn', min:3, html:`
+  <div class="kicker">5 · Fyra hörn · påstående ${i+1} av 4</div>
+  <div class="stmt">"${s[0]}"</div>
+  <p class="mut" style="margin:0">Gå till det hörn som stämmer för dig. Var beredd att förklara varför.</p>
+  ${reveal('Så tänkte man då',`<div class="kicker">På 1800-talet</div><p style="margin:0">${s[1]}</p>`)}
+  <div class="corners"><span><b>1</b>Håller med helt</span><span><b>2</b>Håller med lite</span><span><b>3</b>Håller inte med riktigt</span><span><b>4</b>Håller inte med alls</span></div>`})),
+
+{ part:'Fyra hörn', min:2, html:`
+  <div class="kicker">Tillbaka till startfrågan</div>
+  <div class="question" style="font-size:clamp(28px,3.4vw,54px)">Varför ville makthavarna att alla barn skulle gå i skolan?</div>
+  ${reveal('Visa svaret',`
+    <div class="kicker">Svar</div>
+    <p style="margin:0">År <b>1842</b> blev folkskolan obligatorisk. Ett av syftena var att uppfostra <b>"den farliga underklassen"</b> med undervisning i religion och moral. Makthavarna var rädda att de många fattiga skulle göra uppror.</p>
+    <p style="margin:1.2vh 0 0" class="mut">Hur var era gissningar?</p>`)}
+  ${write('D')}`},
+
+{ part:'Biljett', min:4, html:`
+  <div class="kicker">6 · Utgångsbiljett</div>
+  <h2>Innan du går</h2>
+  <ul class="big">
+    <li><span class="ic">✎</span><span>Skriv ditt namn och vem din person är.</span></li>
+    <li><span class="ic">✎</span><span>Avsluta meningen: <b>"Det största som förändrades för min person var …"</b></span></li>
+    <li><span class="ic">✎</span><span>Skriv ett nytt ord du lärde dig idag.</span></li>
+  </ul>
+  <p class="mut" style="margin-top:3vh">Lämna biljetten och rollkortet till läraren.</p>`},
+
+{ part:'Extra', min:8, html:`
+  <div class="kicker">Extra · matchning</div>
+  <h2>Vem och vad byggde Sverige?</h2>
+  <p class="lead">Para ihop korten: varje namn med rätt beskrivning.</p>
+  <p>Valloner · Bröderna de Rees · Tyskar och skottar · Franz Jennings · Koppar och järn · Svenska kanoner · Tjära · Kolmilor</p>
+  ${reveal('Visa svaren',`<p style="margin:0;font-size:clamp(16px,1.5vw,24px);line-height:1.5">
+    <b>Valloner</b> – experter på att göra järn, från nuvarande södra Belgien och norra Frankrike.<br>
+    <b>Bröderna de Rees</b> – holländare som drev Huseby bruk i Småland på 1640-talet.<br>
+    <b>Tyskar och skottar</b> – många soldater och officerare i den svenska armén på 1600-talet.<br>
+    <b>Franz Jennings</b> – engelsman som blev rik på att sälja svenskt järn till Storbritannien.<br>
+    <b>Koppar och järn</b> – ungefär 80 procent av exporten på 1600-talet.<br>
+    <b>Svenska kanoner</b> – ansågs mycket bra och såldes till andra länder.<br>
+    <b>Tjära</b> – gjordes av ved och användes för att göra fartyg, väggar och tak täta.<br>
+    <b>Kolmilor</b> – här gjorde bönder träkol till järnframställningen.</p>`)}`},
+
+{ part:'Extra', min:6, html:`
+  <div class="kicker">Extra · tidslinje</div>
+  <h2>Lägg händelserna i rätt ordning</h2>
+  <ul class="big">
+    <li><span class="ic">1</span><span>Vik årtalet bakåt på alla kort.</span></li>
+    <li><span class="ic">2</span><span>Lägg korten i den ordning du tror att det hände.</span></li>
+    <li><span class="ic">3</span><span>Vik fram årtalen och rätta själva. Vilket kort var svårast?</span></li>
+  </ul>
+  ${reveal('Visa rätt ordning',`<p style="margin:0;font-size:clamp(16px,1.5vw,24px);line-height:1.5">
+    <b>1600-talet</b> nya järnbruk och vapensmedjor · <b>1640-talet</b> bröderna de Rees i Småland · <b>1750-talet</b> storskiftet ·
+    <b>1800-talets början</b> statarna · <b>1827</b> laga skifte · <b>1800–1870</b> befolkningen ökar från 2,3 till 4,2 miljoner ·
+    <b>1842</b> folkskolan · <b>1847</b> ny fattigvårdslag · <b>1866</b> ståndsriksdagen avskaffas · <b>1945</b> statarsystemet avskaffas</p>`)}`},
+];
+
+/* =====================================================================
+   MOTOR
+   ===================================================================== */
+const main = document.getElementById('main');
+SLIDES.forEach((s,i)=>{ const d=document.createElement('section'); d.className='slide'; d.innerHTML=s.html; d.dataset.i=i; main.appendChild(d); });
+const slides=[...main.querySelectorAll('.slide')];
+const PARTS=[...new Set(SLIDES.map(s=>s.part))];
+const partsEl=document.getElementById('parts');
+PARTS.forEach(p=>{ const b=document.createElement('button'); b.textContent=p; if(p==='Extra') b.classList.add('extra');
+  b.onclick=()=>go(SLIDES.findIndex(s=>s.part===p)); partsEl.appendChild(b); });
+
+let cur=0;
+function go(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  [...partsEl.children].forEach(b=>b.classList.toggle('on',b.textContent===SLIDES[cur].part));
+  document.getElementById('count').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('prog').style.width=`${(cur+1)/slides.length*100}%`;
+  history.replaceState(null,'','#'+(cur+1));
+  if(!running) setTimer(SLIDES[cur].min*60);
+}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+
+/* visa svar + vändkort */
+main.addEventListener('click',e=>{
+  const r=e.target.closest('[data-reveal]');
+  if(r){ const a=r.nextElementSibling; a.classList.toggle('show'); r.style.display=a.classList.contains('show')?'none':''; return; }
+  const f=e.target.closest('[data-flip]'); if(f) f.classList.toggle('open');
+});
+function revealNext(){
+  const s=slides[cur]; const b=[...s.querySelectorAll('[data-reveal]')].find(x=>x.style.display!=='none');
+  if(b) b.click(); else { const f=[...s.querySelectorAll('[data-flip]:not(.open)')][0]; if(f) f.click(); }
+}
+
+/* timer */
+let left=0, total=0, running=false, tick=null;
+const tEl=document.getElementById('t'), big=document.getElementById('bigtime'), tBtn=document.getElementById('tStart');
+const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+function paint(){
+  tEl.textContent=fmt(left); big.textContent=fmt(left);
+  const low=running && left<=30 && left>0, done=total>0 && left===0;
+  tEl.className='t'+(done?' done':low?' low':running?' run':'');
+  big.className='bigtime'+((running||done)?' show':'')+(done?' done':low?' low':'');
+  tBtn.textContent=running?'Pausa':'Starta';
+}
+function setTimer(s){ clearInterval(tick); running=false; left=s; total=s; paint(); }
+function beep(){ try{ const c=new (window.AudioContext||window.webkitAudioContext)(); [0,.35,.7].forEach(t=>{ const o=c.createOscillator(),g=c.createGain();
+  o.frequency.value=880; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(.18,c.currentTime+t); g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+.3);
+  o.start(c.currentTime+t); o.stop(c.currentTime+t+.32); }); }catch(e){} }
+function toggleTimer(){
+  if(running){ clearInterval(tick); running=false; paint(); return; }
+  if(left===0){ left=total||60; total=left; }
+  running=true; paint();
+  tick=setInterval(()=>{ left--; if(left<=0){ left=0; clearInterval(tick); running=false; beep(); } paint(); },1000);
+}
+tBtn.onclick=toggleTimer;
+document.getElementById('tPlus').onclick=()=>{ left+=60; total=Math.max(total,left); paint(); };
+document.getElementById('tReset').onclick=()=>setTimer(SLIDES[cur].min*60||0);
+
+/* helskärm + tangenter */
+function fs(){ if(!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+document.getElementById('fs').onclick=fs;
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('input,textarea')) return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); go(cur+1); }
+  else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); go(cur-1); }
+  else if(e.key==='t'||e.key==='T') toggleTimer();
+  else if(e.key==='v'||e.key==='V') revealNext();
+  else if(e.key==='f'||e.key==='F') fs();
+});
+
+go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>

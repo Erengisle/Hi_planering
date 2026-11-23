@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Från jordbrukssamhälle till industrisamhälle – material att skriva ut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- Grund ---------- */
+@page { size: A4 portrait; margin: 11mm 12mm; }
+:root{
+  --ink:#1f2328; --mut:#625c52; --rule:#d9d3c7; --acc:#7a3b2e; --tint:#f6f2ea;
+  --A:#cfe0f5; --B:#f8dcc0; --C:#d4ebd0; --D:#e4d6ef; --V:#e9e4da; --M:#efe9c9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#e9e5dd;color:var(--ink);font-family:Inter,"Helvetica Neue",Arial,sans-serif;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.serif{font-family:Lora,Georgia,"DejaVu Serif",serif}
+
+/* ---------- Verktygsrad (syns bara på skärmen) ---------- */
+.toolbar{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--rule);
+  padding:12px 20px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:14px}
+.toolbar h1{font-family:Lora,Georgia,serif;font-size:18px;margin:0 12px 0 0}
+.toolbar label{display:inline-flex;gap:6px;align-items:center;cursor:pointer;white-space:nowrap}
+.toolbar button{font:600 14px Inter,sans-serif;background:var(--acc);color:#fff;border:0;border-radius:5px;
+  padding:9px 16px;cursor:pointer}
+.toolbar .hint{color:var(--mut);font-size:12.5px;flex-basis:100%}
+.toolbar a{color:var(--acc)}
+
+/* ---------- Ark ---------- */
+.sheet{width:210mm;min-height:297mm;margin:10mm auto;background:#fff;padding:11mm 12mm;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);position:relative;page-break-after:always;break-after:page}
+.sheet.hidden{display:none}
+.kicker{font-size:8pt;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700}
+h2.title{font-family:Lora,Georgia,serif;font-size:20pt;margin:1mm 0 4mm;line-height:1.1}
+h3{font-family:Lora,Georgia,serif;font-size:12pt;margin:4mm 0 1.5mm}
+p,li{font-size:10pt;line-height:1.45}
+.small{font-size:8.5pt;color:var(--mut)}
+.cutnote{font-size:8pt;color:var(--mut);margin:0 0 2mm}
+.box{background:var(--tint);border-left:3px solid var(--acc);padding:3mm 4mm;margin:2mm 0}
+
+@media print{
+  body{background:#fff}
+  .toolbar{display:none}
+  .sheet{margin:0;box-shadow:none;width:auto;min-height:0;padding:0}
+  #out > div:last-child > .sheet:last-child{page-break-after:auto;break-after:auto}
+}
+
+/* ---------- Lärarblad ---------- */
+.plan{width:100%;border-collapse:collapse;margin:1mm 0 3mm}
+.plan td,.plan th{border-bottom:.6pt solid var(--rule);text-align:left;vertical-align:top;padding:1.6mm 2mm;font-size:9.4pt;line-height:1.4}
+.plan th{font-size:7.5pt;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);border-bottom:1.2pt solid var(--ink)}
+.plan td.t{white-space:nowrap;font-weight:700;width:16mm}
+.plan td.n{font-weight:700;width:44mm}
+.twocol{columns:2;column-gap:7mm}
+.twocol > *{break-inside:avoid}
+ol.tight,ul.tight{margin:1mm 0 2mm;padding-left:5mm}
+ol.tight li,ul.tight li{font-size:9.4pt;margin:.6mm 0}
+
+/* ---------- Rollkort ---------- */
+.role{height:134mm;border:1px dashed #9a9387;padding:5mm 6mm;display:flex;flex-direction:column;position:relative}
+.role + .role{margin-top:4mm}
+.role .band{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:2mm;margin-bottom:2.5mm}
+.role .name{font-family:Lora,Georgia,serif;font-size:21pt;font-weight:700;line-height:1}
+.role .what{font-size:10pt;font-weight:700;color:var(--acc);margin-top:1mm}
+.role .where{font-size:9pt;color:var(--mut);text-align:right}
+.role .badge{display:inline-block;font-size:7.5pt;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--ink);color:#fff;padding:1mm 2mm;border-radius:2mm;margin-bottom:1mm}
+.role .story{font-size:10.3pt;line-height:1.45;margin:0 0 2.5mm}
+.role .qs{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm;flex:1}
+.role .q{border:1px solid var(--rule);border-radius:2mm;padding:2mm 2.5mm;display:flex;flex-direction:column}
+.role .q b{font-size:8pt;text-transform:uppercase;letter-spacing:.06em}
+.role .q span{font-size:8.6pt;color:var(--mut);line-height:1.3}
+.role .q .lines{flex:1;margin-top:1.5mm;background:repeating-linear-gradient(to bottom,transparent 0,transparent 6.4mm,#cfc8bb 6.4mm,#cfc8bb 6.7mm)}
+.scissor{position:absolute;top:-3.2mm;left:4mm;font-size:9pt;color:#9a9387;background:#fff;padding:0 1mm}
+
+/* ---------- Skiftesspelet ---------- */
+.grids{display:flex;gap:6mm;justify-content:space-between;margin:2mm 0 3mm}
+.gridwrap{flex:1}
+.gridwrap h3{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(8,11mm);grid-auto-rows:11mm;border:1.2pt solid var(--ink);width:max-content}
+.cell{border:.5pt solid #8d877c;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  font-weight:800;font-size:10pt;line-height:1;position:relative}
+.cell small{font-size:8pt;font-weight:700;margin-top:.6mm}
+.cell.A{background:var(--A)} .cell.B{background:var(--B)} .cell.C{background:var(--C)} .cell.D{background:var(--D)}
+.cell.V{background:#fff;font-size:7pt;font-weight:700;text-align:center}
+.cell.M{background:var(--M);font-size:6.5pt;font-weight:700}
+.cell.E{background:#fff}
+.cell.E.M{background:var(--M)}
+.legend{display:flex;flex-wrap:wrap;gap:2mm 5mm;font-size:8.6pt;margin:1mm 0 2mm}
+.legend i{display:inline-block;width:4mm;height:4mm;border:.5pt solid #8d877c;vertical-align:-0.7mm;margin-right:1mm}
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm}
+.step{border:1px solid var(--rule);border-top:3px solid var(--acc);padding:2.5mm 3mm;border-radius:1mm}
+.step h4{margin:0 0 1mm;font-size:10pt}
+.step ol{margin:0;padding-left:4.5mm}
+.step li{font-size:9pt;line-height:1.38;margin:.8mm 0}
+.write{margin-top:3mm;border:1px solid var(--rule);border-radius:1mm;padding:2.5mm 3mm;font-size:9.6pt}
+.write b{font-size:9.4pt}
+.write .lines{height:47mm;margin-top:1mm;background:repeating-linear-gradient(to bottom,transparent 0,transparent 6.4mm,#cfc8bb 6.4mm,#cfc8bb 6.7mm)}
+
+/* ---------- Kort (mysteriet, matchning, tidslinje) ---------- */
+.cards{display:grid;grid-template-columns:1fr 1fr;border-top:1px dashed #9a9387;border-left:1px dashed #9a9387}
+.card{border-right:1px dashed #9a9387;border-bottom:1px dashed #9a9387;padding:3.5mm 4.5mm;display:flex;flex-direction:column;justify-content:center;position:relative}
+.cards.mys .card{height:40mm}
+.cards.match .card{height:31mm}
+.card .tag{position:absolute;top:2.2mm;left:4.5mm;font-size:7pt;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.card .txt{font-size:11.3pt;line-height:1.35}
+.card.big .txt{font-family:Lora,Georgia,serif;font-size:13.5pt;font-weight:700}
+.card.head{background:var(--tint);color:var(--ink);text-align:center}
+.card.head .txt{font-size:20pt;font-weight:800;letter-spacing:.06em}
+.card.question{background:var(--tint)}
+/* ledtrådskorten ser likadana ut – färgen får inte avslöja svaret */
+.card.name .txt{font-family:Lora,Georgia,serif;font-size:16pt;font-weight:700;text-align:center}
+.card.desc .txt{font-size:10.3pt}
+
+.cards.time .card{height:52mm;padding:0;justify-content:flex-start}
+.time .ev{flex:1;display:flex;align-items:center;padding:3mm 5mm}
+.time .ev .txt{font-size:12.5pt;line-height:1.35}
+.time .fold{height:14mm;border-top:1.2pt dashed var(--acc);display:flex;align-items:center;justify-content:center;
+  font-family:Lora,Georgia,serif;font-size:17pt;font-weight:700;background:var(--tint);position:relative}
+.time .fold:before{content:"vik bakåt";position:absolute;top:-3.2mm;right:4mm;background:#fff;padding:0 1mm;
+  font:700 6.5pt Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--acc)}
+
+/* ---------- Fyra hörn ---------- */
+.corner{height:273mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:3mm solid var(--ink)}
+.corner .num{font-family:Lora,Georgia,serif;font-size:120pt;font-weight:700;line-height:1;color:var(--acc)}
+.corner .lbl{font-size:52pt;font-weight:800;line-height:1.1;margin-top:8mm;padding:0 10mm}
+.corner .emo{font-size:60pt;margin-top:6mm}
+
+/* ---------- Utgångsbiljetter ---------- */
+.ticket{height:66mm;border:1px dashed #9a9387;padding:4mm 5mm;position:relative}
+.ticket + .ticket{margin-top:2.2mm}
+.ticket .head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1.5pt solid var(--ink);padding-bottom:1.5mm;margin-bottom:2mm}
+.ticket .head b{font-family:Lora,Georgia,serif;font-size:14pt}
+.ticket .row{display:flex;gap:4mm;font-size:9.6pt;margin:1.6mm 0;align-items:flex-end}
+.ticket .row .ln{flex:1;border-bottom:.6pt solid #9a9387;height:5mm}
+.ticket .lbl{font-size:9.6pt;font-weight:600;margin-top:2mm}
+.ticket .lines{height:13.4mm;background:repeating-linear-gradient(to bottom,transparent 0,transparent 6.4mm,#9a9387 6.4mm,#9a9387 6.7mm)}
+
+/* ---------- Ordlista ---------- */
+.words{width:100%;border-collapse:collapse}
+.words td{border-bottom:.6pt solid var(--rule);padding:1.9mm 2mm;vertical-align:top;font-size:10pt;line-height:1.38}
+.words td.w{font-weight:700;width:44mm}
+.words td.own{width:42mm;border-left:.6pt solid var(--rule);color:var(--mut);font-size:7.5pt}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>Material att skriva ut</h1>
+  <span id="picks"></span>
+  <button onclick="window.print()">Skriv ut / spara som PDF</button>
+  <span class="hint">Bocka ur det du inte vill skriva ut. Bäst i Chrome: välj A4, marginaler "Standard" och stäng av "Sidhuvud och sidfot". Tavelsidan: <a href="./">öppna projektorsidan</a>.</span>
+</div>
+
+<div id="out"></div>
+
+<script>
+/* =====================================================================
+   INNEHÅLL – ändra texterna här. Sidorna byggs om automatiskt.
+   ===================================================================== */
+
+const ROLES = [
+  { name:'Kerstin', what:'statarhustru, 34 år', where:'Skåne, 1830-talet',
+    story:'Jag och min man arbetar på en stor gård. En del av lönen får vi i "stat" – säd, mjölk och ved i stället för pengar. Jag mjölkar gårdens kor tre gånger om dagen, alla dagar i veckan. Första mjölkningen är vid fyra på morgonen. Vi får bara byta arbetsplats under flyttveckan i oktober. Vi bor trångt i en statarlänga.' },
+  { name:'Anders', what:'tredje sonen till en bonde, 19 år', where:'Västergötland, 1820-talet',
+    story:'Min pappa äger en gård i byn. Det är min äldste bror som ska ta över den, så jag och min andre bror måste klara oss själva. Just nu arbetar jag som dräng på en annan gård. Jag drömmer om en egen bit jord – men var ska den komma ifrån?' },
+  { name:'Brita', what:'piga, 17 år', where:'Småland, 1820-talet',
+    story:'Jag är bonddotter och arbetar som piga på en grannes gård. Jag mjölkar, lagar mat, spinner, väver och syr. När det är skörd arbetar jag ute på fälten. Jag hoppas att få gifta mig med en bonde och bli husmor på en egen gård. Men det finns många pigor och få gårdar.' },
+  { name:'Pierre', what:'smed vid ett järnbruk, 40 år', where:'Uppland, 1790-talet',
+    story:'Min farfars farfar kom till Sverige från Vallonien på 1600-talet. Han kunde göra järn på ett sätt som svenskarna inte kunde. Nu arbetar jag på samma bruk. Järnet vi gör säljs till England. Bruket ger arbete åt många: smeder, kolare och bönder som kör transporter.' },
+  { name:'Erik', what:'förläggare (köpman), 45 år', where:'Västergötland, 1820-talet',
+    story:'Jag åker runt till gårdarna på landsbygden och lämnar ull. Kvinnorna spinner garn och stickar vantar och strumpor hemma. Sedan betalar jag dem och säljer varorna vidare i städerna. Ju fler som behöver extra pengar, desto fler vill arbeta åt mig.' },
+  { name:'Per', what:'jordlös, 50 år', where:'Östergötland, 1820-talet',
+    story:'Jag äger ingen jord. Jag bor i en liten stuga på byns allmänning – marken som alla i byn delar på. Där betar min get och där samlar jag ved. Ibland får jag arbeta en dag hos bönderna när de behöver extra hjälp. Det är ett fattigt liv, men jag har tak över huvudet.' },
+  { name:'Maja', what:'fattig änka, 38 år', where:'Värmland, 1840-talet',
+    story:'Min man dog förra vintern. Jag har tre barn och inga pengar. Församlingen måste hjälpa oss, men det känns förnedrande. Vi får bo en tid på en gård och sedan skickas vi vidare till nästa. Jag är rädd att mina barn ska auktioneras bort till den som tar hand om dem för minst pengar.' },
+  { name:'Carl', what:'läkare, 42 år', where:'Stockholm, 1840-talet',
+    story:'Jag har studerat länge och tjänar bra. Jag hör varken till adeln eller till bönderna – vi kallar oss medelklass. Vi har pengar, men inte så mycket makt i riksdagen. Min fru samlar in pengar till de fattiga. Ändå är många jag känner rädda för "den farliga underklassen".' },
+];
+
+const ROLE_QS = [
+  ['A. Jordbrukssamhället','Hur ser en vanlig dag ut för mig? Vem arbetar jag tillsammans med?'],
+  ['B. Skiftena','Vinner eller förlorar jag – eller mina grannar – på skiftet? Varför?'],
+  ['C. Fler människor','Befolkningen växer snabbt. Vad betyder det för mig och min familj?'],
+  ['D. Fattigfrågan','Hur ser jag på de fattiga – eller hur ser andra på mig?'],
+];
+
+/* Skiftesspelet: 8 kolumner x 7 rader. A–D = gårdarnas tegar, V = byn, M = allmänningen.
+   Varje gård har 11 rutor. * = bra jord, ~ = stenig/sank jord. */
+const VILLAGE = [
+  'A* A  B~ C* C  D* A~ B ',
+  'D  B* B~ A  D~ C~ C  A*',
+  'C  D  A~ V  V  B  D* C ',
+  'B  A* D~ V  V  C* A  D*',
+  'A  C~ D  B* A~ B  D  C*',
+  'D~ B  A  C  B~ D  C~ B*',
+  'M  M  M  M  M  M  M  M ',
+];
+
+const MYSTERY = [
+  {k:'question', tag:'Mysteriet', big:true, t:'Mellan år 1800 och 1870 ökade Sveriges befolkning från 2,3 till 4,2 miljoner människor. Varför? Och vad hände sedan?'},
+  {k:'question', tag:'Uttrycket', t:'Man brukar säga att befolkningen ökade på grund av "freden, vaccinet och potäterna". Förklara uttrycket med hjälp av korten!'},
+  {k:'head', t:'ORSAKER'},
+  {k:'head', t:'DET SOM HÄNDE'},
+  {k:'head', t:'FÖLJDER'},
+  {k:'orsak', tag:'Ledtråd', t:'Sverige hade fred under en lång tid. Inga män dog i krig.'},
+  {k:'orsak', tag:'Ledtråd', t:'Ett vaccin mot smittkoppor började användas. Smittkoppor var en sjukdom som dödade många, särskilt barn.'},
+  {k:'orsak', tag:'Ledtråd', t:'Potatisen blev vanlig mat. Den ger mycket mat på en liten åker.'},
+  {k:'orsak', tag:'Ledtråd', t:'Efter skiftena, och med bättre redskap, gav jordbruket mer mat.'},
+  {k:'trap', tag:'Ledtråd', t:'Sverige var en stormakt och förde många krig.'},
+  {k:'hand', tag:'Ledtråd', t:'Färre människor dog.'},
+  {k:'hand', tag:'Ledtråd', t:'Befolkningen växte snabbt.'},
+  {k:'foljd', tag:'Ledtråd', t:'Bara den äldste sonen tar över gården. Syskonen måste söka arbete någon annanstans.'},
+  {k:'foljd', tag:'Ledtråd', t:'Den jord som går att odla räcker inte till alla.'},
+  {k:'foljd', tag:'Ledtråd', t:'Många blir fattiga.'},
+  {k:'foljd', tag:'Ledtråd', t:'Industrin i Sverige är ännu liten. Det finns få fabriksjobb.'},
+  {k:'foljd', tag:'Ledtråd', t:'De styrande blir rädda för "den farliga underklassen".'},
+  {k:'foljd', tag:'Ledtråd', t:'Många flyttar från landsbygden till städerna.'},
+  {k:'foljd', tag:'Ledtråd', t:'Många utvandrar till Amerika.'},
+];
+
+const MATCH = [
+  ['Valloner','Invandrare från ett område i nuvarande södra Belgien och norra Frankrike. De var experter på att göra järn.'],
+  ['Bröderna de Rees','Två bröder från Holland som drev Huseby bruk i Småland på 1640-talet och tjänade mycket på kanoner.'],
+  ['Tyskar och skottar','Många soldater och officerare i den svenska armén på 1600-talet kom härifrån.'],
+  ['Franz Jennings','Engelsman som på 1700-talet blev rik på att sälja svenskt järn till Storbritannien och köpa hem salt, socker, tyg och tobak.'],
+  ['Koppar och järn','Ungefär 80 procent av allt Sverige sålde till andra länder på 1600-talet.'],
+  ['Svenska kanoner','Ansågs mycket bra och såldes till andra länder.'],
+  ['Tjära','Gjordes av ved som brändes under granris och jord. Användes för att göra fartyg, väggar och tak täta.'],
+  ['Kolmilor','Här gjorde bönder träkol som behövdes för att framställa järn – ett sätt att tjäna extra pengar.'],
+];
+const MATCH_DESC_ORDER = [5,2,7,0,6,3,1,4];   // blandad ordning på beskrivningarna
+
+const TIMELINE = [
+  ['1600-talet','Många nya järnbruk, glasbruk och vapensmedjor byggs. Sverige är en stormakt.'],
+  ['1640-talet','Bröderna de Rees får ensamrätt att gjuta järn i Småland.'],
+  ['1750-talet','Storskiftet: de första försöken att slå ihop böndernas tegar.'],
+  ['1800-talets början','Statare börjar arbeta på de stora gårdarna.'],
+  ['1827','Laga skifte: gårdarna flyttas ut från byarna.'],
+  ['1800–1870','Befolkningen ökar från 2,3 till 4,2 miljoner.'],
+  ['1842','Folkskolan blir obligatorisk för alla barn.'],
+  ['1847','Ny lag: varje församling måste ta hand om sina fattiga.'],
+  ['1866','Ståndsriksdagen avskaffas. Medelklassen får mer makt.'],
+  ['1945','Statarsystemet avskaffas.'],
+];
+const TIMELINE_PRINT_ORDER = [6,2,9,0,4,7,1,5,3,8];
+
+const CORNERS = [
+  ['1','Håller med helt'],
+  ['2','Håller med lite'],
+  ['3','Håller inte med riktigt'],
+  ['4','Håller inte med alls'],
+];
+
+const WORDS = [
+  ['jordbrukssamhälle','Samhälle där de flesta lever av jordbruk och djur.'],
+  ['dräng / piga','Ung man / ung kvinna som arbetar på någon annans gård.'],
+  ['statare','Lantarbetare på en stor gård som fick en del av lönen i mat och varor ("stat").'],
+  ['järnbruk','Plats där man tillverkar järn.'],
+  ['export / import','Att sälja varor till / köpa varor från andra länder.'],
+  ['invandrare','Person som flyttar till ett nytt land.'],
+  ['förlagssystem','En köpman (förläggare) lämnar råvaror. Människor tillverkar varor hemma och får betalt.'],
+  ['teg','En smal remsa åkermark.'],
+  ['tegskifte','Varje bonde har många smala tegar på olika ställen runt byn.'],
+  ['storskifte / laga skifte','Reformer där böndernas mark slogs ihop till större stycken. Vid laga skifte flyttades gårdarna ut från byn.'],
+  ['allmänning','Mark som alla i byn delar på, till exempel för bete.'],
+  ['jordlös','Person som inte äger någon jord.'],
+  ['befolkningsökning','Det blir fler människor i landet.'],
+  ['fattigvård','Hjälp till fattiga. Församlingen skulle ta hand om sina fattiga.'],
+  ['lösdriveri','Att inte ha arbete och fast bostad. Det var straffbart.'],
+  ['spinnhus','Arbetsinrättning för kvinnor där de fick spinna garn. Blev senare kvinnofängelse.'],
+  ['folkskola','Skola för alla barn. Obligatorisk från 1842.'],
+  ['medelklass','Gruppen mellan adeln och de fattiga, till exempel köpmän, läkare och advokater.'],
+  ['urbanisering','När människor flyttar från landsbygden till städerna.'],
+  ['emigrera / utvandra','Att flytta från sitt land till ett annat.'],
+];
+
+/* =====================================================================
+   BYGG SIDORNA
+   ===================================================================== */
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const SECTIONS = [];
+function section(id, label, sheetsHtml){ SECTIONS.push({id,label,sheets:sheetsHtml}); }
+function sheet(inner){ return `<section class="sheet">${inner}</section>`; }
+function chunk(arr,n){ const o=[]; for(let i=0;i<arr.length;i+=n) o.push(arr.slice(i,i+n)); return o; }
+
+/* --- Lärarblad --- */
+section('larare','Lärarblad',[
+sheet(`
+  <div class="kicker">Lärarblad · skrivs inte ut till eleverna</div>
+  <h2 class="title">Från jordbrukssamhälle till industrisamhälle</h2>
+  <p>En aktiv lektion på cirka 60 minuter. Eleverna följer en person genom hela lektionen (rollkortet) och skriver en kort rad på kortet efter varje del (A–D). Du pratar högst 5–8 minuter åt gången. Projektorsidan visar varje steg med timer och svar att visa.</p>
+  <table class="plan">
+    <thead><tr><th>Tid</th><th>Del</th><th>Så går det till</th></tr></thead>
+    <tbody>
+      <tr><td class="t">5 min</td><td class="n">1. Startfrågan</td><td>"Varför ville makthavarna att alla barn skulle gå i skolan?" Tänk själv, prata i par, skriv upp gissningarna på tavlan. <b>Avslöja inte svaret</b> – det kommer i del 5.</td></tr>
+      <tr><td class="t">10 min</td><td class="n">2. Rollkort + jordbrukssamhället</td><td>Dela ut rollkorten (par eller enskilt). Kort genomgång om livet i jordbrukssamhället. Statarräkningen på tavlan. Eleverna skriver i ruta <b>A</b>.</td></tr>
+      <tr><td class="t">15 min</td><td class="n">3. Skiftesspelet</td><td>Grupper om fyra, en gård (A–D) per elev. Steg 1: före skiftet. Steg 2: laga skifte på det tomma rutnätet. Steg 3: vem förlorade? Eleverna skriver i ruta <b>B</b>.</td></tr>
+      <tr><td class="t">10 min</td><td class="n">4. Mysteriet</td><td>Grupper om 3–4 lägger ledtrådskorten i en orsakskedja under rubrikerna Orsaker – Det som hände – Följder. Ett kort passar inte in. Eleverna skriver i ruta <b>C</b>.</td></tr>
+      <tr><td class="t">10 min</td><td class="n">5. Fyra hörn</td><td>Läs ett påstående, eleverna går till ett hörn och några motiverar. Visa sedan "Så tänkte man då". Avsluta med svaret på startfrågan. Eleverna skriver i ruta <b>D</b>.</td></tr>
+      <tr><td class="t">5 min</td><td class="n">6. Utgångsbiljett</td><td>"Det största som förändrades för min person var …" + ett nytt ord.</td></tr>
+      <tr><td class="t">Extra</td><td class="n">Matchning · Tidslinje</td><td>Kan ersätta en del eller användas om tid blir över, eller som start nästa lektion.</td></tr>
+    </tbody>
+  </table>
+  <h3>Förberedelser</h3>
+  <ul class="tight">
+    <li><b>Rollkort:</b> 8 roller, två per A4. Skriv ut 2 exemplar om klassen har fler än 8 par – samma roll kan finnas två gånger.</li>
+    <li><b>Skiftesspelet:</b> ett ark per grupp om fyra. Färgpennor gör steg 2 tydligare (blå, orange, grön, lila), men bokstäverna räcker.</li>
+    <li><b>Mysteriet:</b> en uppsättning per grupp, klipp ut korten (två sidor).</li>
+    <li><b>Fyra hörn:</b> sätt upp skyltarna 1–4 i klassrummets hörn före lektionen.</li>
+    <li><b>Utgångsbiljetter:</b> fyra per A4. <b>Ordlistan</b> kan delas ut eller ligga på bänken som stöd.</li>
+  </ul>
+  <div class="box"><p style="margin:0"><b>Tips för en klass som har svårt med genomgångar:</b> samma rytm hela lektionen – kort genomgång, uppgift, prata i par, ta upp i helklass. Starta timern på projektorsidan varje gång så att eleverna ser hur lång tid de har.</p></div>
+`),
+sheet(`
+  <div class="kicker">Lärarblad · svar och stöd</div>
+  <h2 class="title">Svar och samtalsstöd</h2>
+  <div class="twocol">
+    <div>
+      <h3>1 & 5. Startfrågan</h3>
+      <p>Folkskolan blev obligatorisk 1842. Ett av syftena var att uppfostra "den farliga underklassen" med undervisning i religion och moral, så att de fattiga inte skulle bli ett hot mot ordningen i samhället.</p>
+    </div>
+    <div>
+      <h3>2. Statarräkningen</h3>
+      <p>3 mjölkningar × 7 dagar = 21 i veckan. 21 × 52 veckor = 1 092 – alltså ungefär 1 100 mjölkningar om året, oavsett väder. Mjölkningstvånget kallades "den vita piskan". Statarsystemet avskaffades 1945.</p>
+    </div>
+    <div>
+      <h3>3. Skiftesspelet – vem vann, vem förlorade?</h3>
+      <ul class="tight">
+        <li><b>Före:</b> varje gård har 11 rutor i många små tegar. Alla har både bra och dålig jord – det var tänkt att vara rättvist. Bönderna måste så och skörda samtidigt, för de måste gå över varandras tegar.</li>
+        <li><b>Efter:</b> varje gård får 14 rutor i ett stycke (byns 4 rutor och allmänningens 8 delas också). Gården flyttas ut mitt på den egna marken.</li>
+        <li><b>Vinnare:</b> bönder som äger jord – större åkrar, kan bestämma själva, mer mat.</li>
+        <li><b>Förlorare:</b> de jordlösa på allmänningen (Per) måste ge sig av; många söker sig till städerna. Byns gemenskap splittras.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>4. Mysteriet – en möjlig kedja</h3>
+      <p><b>Orsaker:</b> fred + vaccin mot smittkoppor + potatis + mer mat efter skiftena →<br>
+      <b>Det som hände:</b> färre dog → befolkningen växte snabbt →<br>
+      <b>Följder:</b> jorden räcker inte, bara äldste sonen tar över gården, få fabriksjobb → många blir fattiga → de styrande blir rädda för "den farliga underklassen" / många flyttar till städerna / många utvandrar till Amerika.</p>
+      <p><b>Kortet som inte passar:</b> "Sverige var en stormakt och förde många krig" – det gäller 1600-talet. Det var tvärtom freden som gjorde att fler överlevde.</p>
+      <p class="small">Städerna och utvandringen är en brygga till nästa lektion (migration och emigration).</p>
+    </div>
+    <div>
+      <h3>5. Fyra hörn – så tänkte man då</h3>
+      <ol class="tight">
+        <li><b>"Den som inte arbetar ska inte få hjälp."</b> Den som inte arbetade kunde gripas för lösdriveri och sättas i tvångsarbete. Män kunde tvingas in i armén och kvinnor sättas på spinnhus.</li>
+        <li><b>"Fattiga ska få flytta dit de vill."</b> 1847 bestämdes att de fattiga fick röra sig fritt. De styrande hoppades att de skulle hitta arbete och försörja sig själva.</li>
+        <li><b>"Det är bättre att vanliga människor hjälper de fattiga än att samhället gör det."</b> Församlingen skulle ta hand om sina fattiga, men det räckte inte. Därför startades välgörenhetsföreningar, ofta av medelklassens kvinnor.</li>
+        <li><b>"Skolan finns för att göra eleverna till lydiga medborgare."</b> Folkskolan 1842 skulle bland annat uppfostra underklassen med religion och moral. Knyt an till startfrågan.</li>
+      </ol>
+    </div>
+  </div>
+`),
+sheet(`
+  <div class="kicker">Lärarblad · extraövningar</div>
+  <h2 class="title">Facit till matchning och tidslinje</h2>
+  <div class="twocol">
+    <div>
+      <h3>Extra: Matchning – facit</h3>
+      <ul class="tight">
+        ${MATCH.map(m=>`<li><b>${esc(m[0])}</b> – ${esc(m[1])}</li>`).join('')}
+      </ul>
+    </div>
+    <div>
+      <h3>Extra: Tidslinje – rätt ordning</h3>
+      <ol class="tight">${TIMELINE.map(t=>`<li><b>${esc(t[0])}</b> ${esc(t[1])}</li>`).join('')}</ol>
+      <p class="small">Eleverna viker bakåt årtalsremsan och lägger korten i ordning. Sedan viker de fram årtalen och rättar själva.</p>
+    </div>
+  </div>
+`)
+]);
+
+/* --- Rollkort --- */
+function roleCard(r){
+  return `<div class="role"><span class="scissor">✂</span>
+    <div class="band"><div><div class="badge">Rollkort</div><div class="name">${esc(r.name)}</div><div class="what">${esc(r.what)}</div></div>
+    <div class="where">${esc(r.where)}<br><span style="font-size:8pt">Namn: ____________________</span></div></div>
+    <p class="story">${esc(r.story)}</p>
+    <div class="qs">${ROLE_QS.map(q=>`<div class="q"><b>${esc(q[0])}</b><span>${esc(q[1])}</span><div class="lines"></div></div>`).join('')}</div>
+  </div>`;
+}
+section('roller','Rollkort (4 sidor)', chunk(ROLES,2).map(p=>sheet(p.map(roleCard).join(''))));
+
+/* --- Skiftesspelet --- */
+function parseVillage(){
+  return VILLAGE.map(row => row.trim().split(/\s+/).map(c => ({f:c[0], q:c[1]||''})));
+}
+function gridHtml(empty){
+  const rows = parseVillage(); let h = '<div class="grid">';
+  rows.forEach(r => r.forEach((c,ci) => {
+    if(empty){
+      h += `<div class="cell E${c.f==='M'?' M':''}"></div>`;
+    } else if(c.f==='V'){
+      h += `<div class="cell V">⌂<br>byn</div>`;
+    } else if(c.f==='M'){
+      h += ci===3 ? `<div class="cell M" style="font-size:8pt">⌂<br>Per</div>` : `<div class="cell M">allmän-<br>ning</div>`;
+    } else {
+      const mark = c.q==='*' ? '★' : c.q==='~' ? '~' : '';
+      h += `<div class="cell ${c.f}">${c.f}${mark?`<small>${mark}</small>`:''}</div>`;
+    }
+  }));
+  return h + '</div>';
+}
+section('skifte','Skiftesspelet (1 per grupp)',[sheet(`
+  <div class="kicker">Skiftesspelet · en gård per person</div>
+  <h2 class="title">Från tegskifte till laga skifte</h2>
+  <p style="margin:0 0 1mm">Ni är fyra bondfamiljer i samma by. Varje person är en gård: <b>A, B, C</b> eller <b>D</b>. Längst ner ligger allmänningen, där den jordlöse Per bor i en liten stuga (⌂ Per) och betar sin get.</p>
+  <div class="legend">
+    <span><i style="background:var(--A)"></i>Gård A</span><span><i style="background:var(--B)"></i>Gård B</span>
+    <span><i style="background:var(--C)"></i>Gård C</span><span><i style="background:var(--D)"></i>Gård D</span>
+    <span>★ bra jord</span><span>~ stenig eller sank jord</span><span>⌂ husen i byn</span>
+  </div>
+  <div class="grids">
+    <div class="gridwrap"><h3>Före skiftet</h3>${gridHtml(false)}</div>
+    <div class="gridwrap"><h3>Efter laga skifte</h3>${gridHtml(true)}</div>
+  </div>
+  <div class="steps">
+    <div class="step"><h4>Steg 1 · Före</h4><ol>
+      <li>Ringa in alla dina åkrar. Hur många bitar har du?</li>
+      <li>Rita en väg från ditt hus i byn till din åker längst bort. Måste du gå över grannarnas åkrar?</li>
+      <li>Varför har alla både ★ och ~?</li></ol></div>
+    <div class="step"><h4>Steg 2 · Laga skifte</h4><ol>
+      <li>Byn rivs och allmänningen delas. Nu finns 56 rutor.</li>
+      <li>Dela upp marken i det tomma rutnätet: varje gård får <b>14 rutor i ett enda stycke</b>.</li>
+      <li>Rita ditt nya hus mitt på din mark. Kommer ni överens?</li></ol></div>
+    <div class="step"><h4>Steg 3 · Vem förlorade?</h4><ol>
+      <li>Vad blev bättre för bönderna?</li>
+      <li>Allmänningen finns inte längre. Var ska Per ta vägen?</li>
+      <li>Vad händer med livet i byn när alla bor långt ifrån varandra?</li></ol></div>
+  </div>
+  <div class="write"><b>Vi kom fram till:</b> Den som vann mest på skiftet var … Den som förlorade mest var … eftersom …<div class="lines"></div></div>
+`)]);
+
+/* --- Mysteriet --- */
+function mysCard(c){
+  return `<div class="card ${c.k}${c.big?' big':''}">${c.tag?`<span class="tag">${esc(c.tag)}</span>`:''}<div class="txt">${esc(c.t)}</div></div>`;
+}
+const MYSTERY_PRINT_ORDER = [0,1,2,3,4,12,7,16,5,10,14,9,18,6,13,8,17,11,15]; // ledtrådarna blandade
+section('mysteriet','Mysteriet (2 sidor, 1 set per grupp)', chunk(MYSTERY_PRINT_ORDER.map(i=>MYSTERY[i]),12).map((p,i)=>sheet(`
+  <div class="kicker">Mysteriet · klipp ut korten · sida ${i+1} av 2</div>
+  <p class="cutnote">✂ Klipp längs de streckade linjerna. Lägg korten i en kedja under rubrikerna. Ett kort passar inte in – vilket?</p>
+  <div class="cards mys">${p.map(mysCard).join('')}</div>`)));
+
+/* --- Matchning --- */
+section('matchning','Extra: Matchning (1 sida)',[sheet(`
+  <div class="kicker">Matchning · klipp ut korten</div>
+  <h2 class="title" style="font-size:16pt;margin-bottom:2mm">Vem och vad byggde Sverige?</h2>
+  <p class="cutnote">✂ Klipp ut korten och para ihop varje namn med rätt beskrivning.</p>
+  <div class="cards match">${MATCH.map((m,i)=>
+     `<div class="card name"><div class="txt">${esc(m[0])}</div></div>`+
+     `<div class="card desc"><div class="txt">${esc(MATCH[MATCH_DESC_ORDER[i]][1])}</div></div>`).join('')}</div>`)]);
+
+/* --- Tidslinje --- */
+section('tidslinje','Extra: Tidslinje (1 sida)',[sheet(`
+  <div class="kicker">Tidslinje · klipp ut korten</div>
+  <p class="cutnote">✂ Klipp ut korten och vik årtalet bakåt. Lägg korten i rätt ordning – vik sedan fram årtalen och rätta själva.</p>
+  <div class="cards time">${TIMELINE_PRINT_ORDER.map(i=>
+     `<div class="card"><div class="ev"><div class="txt">${esc(TIMELINE[i][1])}</div></div><div class="fold">${esc(TIMELINE[i][0])}</div></div>`).join('')}</div>`)]);
+
+/* --- Fyra hörn --- */
+section('horn','Fyra hörn-skyltar (4 sidor)', CORNERS.map(c=>sheet(`
+  <div class="corner"><div class="num">${c[0]}</div><div class="lbl">${esc(c[1])}</div></div>`)));
+
+/* --- Utgångsbiljetter --- */
+const ticket = `<div class="ticket"><span class="scissor">✂</span>
+  <div class="head"><b>Utgångsbiljett</b><span class="small">Lämna till läraren när du går</span></div>
+  <div class="row">Namn:<span class="ln"></span>Min roll:<span class="ln"></span></div>
+  <div class="lbl">Det största som förändrades för min person var …</div>
+  <div class="lines"></div>
+  <div class="row">Ett nytt ord jag lärde mig idag:<span class="ln"></span></div>
+</div>`;
+section('biljett','Utgångsbiljetter (4 per sida)',[sheet(ticket.repeat(4))]);
+
+/* --- Ordlista --- */
+section('ordlista','Ordlista (1 sida)',[sheet(`
+  <div class="kicker">Ordlista</div>
+  <h2 class="title">Viktiga ord: från jordbrukssamhälle till industrisamhälle</h2>
+  <table class="words"><tbody>
+    ${WORDS.map(w=>`<tr><td class="w">${esc(w[0])}</td><td>${esc(w[1])}</td><td class="own">På mitt språk / mitt exempel:</td></tr>`).join('')}
+  </tbody></table>`)]);
+
+/* --- Rendera + val av delar --- */
+const out = document.getElementById('out');
+out.innerHTML = SECTIONS.map(s=>`<div data-sec="${s.id}">${s.sheets.join('')}</div>`).join('');
+document.getElementById('picks').innerHTML = SECTIONS.map(s=>
+  `<label><input type="checkbox" checked data-pick="${s.id}"> ${esc(s.label)}</label>`).join('');
+document.querySelectorAll('[data-pick]').forEach(cb=>cb.addEventListener('change',()=>{
+  document.querySelector(`[data-sec="${cb.dataset.pick}"]`).querySelectorAll('.sheet')
+    .forEach(sh=>sh.classList.toggle('hidden',!cb.checked));
+}));
+/* ?bara=roller,skifte  →  visar bara de delarna */
+const only = new URLSearchParams(location.search).get('bara');
+if(only){ const keep = only.split(','); document.querySelectorAll('[data-pick]').forEach(cb=>{
+  if(!keep.includes(cb.dataset.pick)){ cb.checked=false; cb.dispatchEvent(new Event('change')); } }); }
+</script>
+</body>
+</html>
